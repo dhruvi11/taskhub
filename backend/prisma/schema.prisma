@@ -15,6 +15,10 @@ enum ProjectRole {
   MANAGER
   MEMBER
 }
+enum ProjectStatus {
+  ACTIVE
+  ARCHIVED
+}
 
 enum TaskStatus {
   TODO
@@ -49,22 +53,21 @@ role UserRole @default(USER)
 }
 
 model Project {
-  id          String   @id @default(uuid())
+  id          String        @id @default(uuid())
   name        String
   description String?
+  ownerId     String
+  status      ProjectStatus @default(ACTIVE)
 
-  ownerId String
+  owner   User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members ProjectMember[]
+  tasks   Task[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner   User            @relation("ProjectOwner", fields: [ownerId], references: [id])
-  members ProjectMember[]
-  tasks   Task[]
-
   @@index([ownerId])
 }
-
 model ProjectMember {
   id String @id @default(uuid())
 

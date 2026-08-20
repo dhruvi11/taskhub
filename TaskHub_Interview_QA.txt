@@ -421,3 +421,156 @@ A. A refresh token allows the application to obtain a new access token after the
 
 Q20. Explain our complete authentication architecture.
 A. TaskHub supports local authentication and Google OAuth. Local authentication verifies a password, while Google OAuth delegates identity verification to Google. Both flows eventually produce TaskHub access and refresh tokens. Protected APIs use authentication middleware to validate the TaskHub access token.
+
+
+Milestone 6 — Interview Q&A Copy/Paste
+Q1. What is the User Module responsible for in TaskHub?
+A. The User Module handles authenticated user profile management, including viewing the current profile, updating profile information, avatar upload preparation, and role-based authorization.
+
+Q2. Why do we separate Controller, Service and Repository?
+A. The Controller handles HTTP requests and responses, the Service contains business logic, and the Repository handles database operations. This separation makes the application easier to maintain, test and scale.
+
+Q3. How does GET /users/me know which user is logged in?
+A. The client sends a JWT access token in the Authorization Bearer header. The authentication middleware verifies the token and extracts the user ID. The controller then uses that ID to fetch the user's profile.
+
+Q4. Why should users not send their user ID to GET /users/me?
+A. The user ID should come from the verified JWT rather than the request body or URL. This prevents users from attempting to access another user's profile by changing an ID.
+
+Q5. Why do we use PATCH for profile updates?
+A. PATCH is appropriate because profile updates are usually partial. The user may update only their name or email without sending the complete user object.
+
+Q6. Why do we validate profile data with Zod?
+A. Zod validates and parses incoming data at the application boundary. It prevents invalid data from reaching the business and database layers.
+
+Q7. Why don't we allow role in the profile update request?
+A. Allowing users to update their own role could cause privilege escalation. A normal USER could potentially change their role to ADMIN. Role changes should be controlled by an authorized administrative process.
+
+Q8. What is authorization?
+A. Authentication answers who the user is, while authorization determines what the authenticated user is allowed to do.
+
+Q9. What is the difference between authentication and authorization?
+A. Authentication verifies identity, such as validating a JWT. Authorization checks permissions, such as determining whether the authenticated user has an ADMIN role.
+
+Q10. Why did we add UserRole to Prisma?
+A. UserRole provides a controlled set of permissions-related identities such as USER and ADMIN. It allows the backend to implement role-based authorization.
+
+Q11. Why should the default role be USER?
+A. New accounts should have the minimum required privileges by default. This follows the principle of least privilege.
+
+Q12. What is Multer?
+A. Multer is Express middleware used to process multipart/form-data, especially file uploads.
+
+Q13. Why do we use multipart/form-data for avatar uploads?
+A. Files cannot be sent as normal JSON. multipart/form-data allows text fields and binary files to be sent in the same HTTP request.
+
+Q14. Why did we use memoryStorage for Multer?
+A. Memory storage keeps the uploaded file in memory temporarily so it can later be transferred directly to cloud storage such as AWS S3 or Firebase Storage without permanently storing files on the application server.
+
+Q15. Why shouldn't we permanently store uploaded files on the backend server?
+A. Application servers can be replaced or scaled horizontally. Cloud object storage provides durable, scalable storage and allows multiple backend instances to access the same files.
+
+Q16. What file validation do we perform for avatars?
+A. We validate the MIME type and restrict the upload to JPEG, PNG and WEBP images. We also limit the file size to 5 MB.
+
+Q17. Why should we generate our own file name?
+A. Original file names can collide and may contain unsafe or unexpected characters. Generating unique file names makes cloud storage safer and prevents collisions.
+
+Q18. Where will avatar files eventually be stored?
+A. TaskHub can use AWS S3 or Firebase Storage. The database should store the resulting file URL or object key rather than the binary file itself.
+
+Q19. Should the database store the image itself?
+A. Generally no. The database should store metadata such as the avatar URL or storage key, while the actual binary file is stored in object storage.
+
+Q20. What happens when a request doesn't contain a JWT?
+A. The authentication middleware rejects the request with HTTP 401 Unauthorized.
+
+Q21. What happens when an authenticated USER tries to access an ADMIN endpoint?
+A. Authentication succeeds, but authorization fails. The authorization middleware returns HTTP 403 Forbidden.
+
+Q22. What is the difference between 401 and 403?
+A. 401 means the request is not properly authenticated. 403 means the user is authenticated but does not have permission to perform the requested action.
+
+Q23. Why should password and googleId not be returned in a normal profile response?
+A. Sensitive authentication-related fields should not be exposed unnecessarily. The API should return only the information required by the client.
+
+Q24. How does the User Module work with Google OAuth?
+A. Google OAuth creates or finds the TaskHub user and stores the Google ID. Once authenticated, the same user can use the User Module through the TaskHub JWT.
+
+Q25. How would you test the User Module?
+A. I would test authenticated profile retrieval, profile updates, validation errors, unauthorized requests, role authorization, avatar uploads, file type restrictions, file size restrictions, and database persistence.
+
+Milestone 7 — Interview Q&A Copy/Paste
+Q1. How did you implement CRUD for projects?
+A. I created REST endpoints for creating, listing, retrieving, updating and deleting projects. The routes use authentication middleware, the controller handles HTTP requests, the service contains business logic, and the repository handles Prisma database operations.
+
+Q2. What is CRUD?
+A. CRUD stands for Create, Read, Update and Delete. In TaskHub these operations are represented by POST, GET, PATCH and DELETE endpoints.
+
+Q3. How do you determine the project owner?
+A. The owner ID is taken from the authenticated user's JWT rather than from the request body. This prevents a client from creating a project on behalf of another user.
+
+Q4. Why shouldn't ownerId be accepted from the frontend?
+A. Because the frontend cannot be trusted. A malicious user could submit another user's ID. The backend should derive ownership from the verified authentication context.
+
+Q5. How does project authorization work?
+A. When retrieving, updating or deleting a project, the service retrieves the project and compares its ownerId with the authenticated user's ID. If they don't match, the API returns 403 Forbidden.
+
+Q6. What is the difference between authentication and project authorization?
+A. Authentication verifies the user's identity using the JWT. Project authorization determines whether that authenticated user is allowed to access or modify a particular project.
+
+Q7. How did you implement pagination?
+A. I accept page and limit query parameters and calculate skip using (page - 1) * limit. Prisma uses skip and take to retrieve the appropriate records.
+
+Q8. Why do we need total and totalPages?
+A. The frontend needs this information to build pagination controls and know how many pages of data are available.
+
+Q9. What is the formula for pagination?
+A. skip = (page - 1) * limit, and totalPages = Math.ceil(total / limit).
+
+Q10. How did you implement search?
+A. I use Prisma filtering with case-insensitive contains conditions on the project name and description.
+
+Q11. How did you implement sorting?
+A. I allow a controlled list of sortable fields such as name, createdAt and updatedAt, along with ascending or descending order.
+
+Q12. Why do we restrict the sortBy values?
+A. Allowing arbitrary database field names is unnecessary and unsafe. A whitelist ensures the client can only sort by supported fields.
+
+Q13. How does filtering work?
+A. The API accepts optional filters such as project status. The repository dynamically builds the Prisma where condition based on the validated query parameters.
+
+Q14. Why does GET /projects only return the current user's projects?
+A. The repository includes ownerId in the database query. Therefore PostgreSQL only returns projects belonging to the authenticated user.
+
+Q15. Why is filtering by ownerId in the database better than filtering after retrieving all projects?
+A. Database-level filtering is more efficient because only authorized records are retrieved from the database. It also reduces the risk of accidentally exposing another user's records.
+
+Q16. What HTTP status code should project creation return?
+A. 201 Created because a new project resource has been successfully created.
+
+Q17. What status should be returned when a project doesn't exist?
+A. 404 Not Found.
+
+Q18. What status should be returned when a user tries to access another user's project?
+A. 403 Forbidden because the user is authenticated but doesn't have permission to access that project.
+
+Q19. What status should be returned when the JWT is missing?
+A. 401 Unauthorized because the request has not been authenticated.
+
+Q20. Why use PATCH for updating projects?
+A. PATCH is appropriate for partial updates because the client can send only the fields that need to change.
+
+Q21. Why is Zod used for project validation?
+A. Zod validates request body and query parameters before they reach the service and database layers. It also provides TypeScript types from the validation schemas.
+
+Q22. Why use a repository layer?
+A. The repository isolates database-specific operations from business logic. This makes the service easier to test and allows the persistence implementation to change without rewriting controllers.
+
+Q23. Why use a service layer?
+A. The service contains business rules such as ownership checks, validation-related decisions and project management logic. Controllers remain focused on HTTP concerns.
+
+Q24. What is the N+1 problem?
+A. The N+1 problem occurs when an application performs one query to retrieve a list and then performs another query for each individual item. ORMs can accidentally cause this. Using Prisma include or appropriate joins/queries can reduce unnecessary database calls.
+
+Q25. How would you improve project listing for a large production database?
+A. I would add proper database indexes, optimize search, consider cursor-based pagination for very large datasets, select only required fields, monitor slow queries and potentially introduce caching where appropriate.

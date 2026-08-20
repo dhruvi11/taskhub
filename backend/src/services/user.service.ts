@@ -65,6 +65,7 @@ export class UserService {
     return this.sanitizeUser(updatedUser);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private sanitizeUser(user: any) {
     return {
       id: user.id,

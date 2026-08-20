@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-export interface AuthenticatedRequest
-  extends Request {
+export interface AuthenticatedRequest extends Omit<Request, "user"> {
   user?: {
     userId: string;
     role: string;
@@ -50,7 +49,7 @@ export const authMiddleware = (
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: "Invalid or expired token",
+      message: "Invalid or expired token: " + error,
     });
   }
 };

@@ -10,7 +10,7 @@ export class UserRepository {
     });
   }
 
-  async findUserById(id: string) {
+  async findById(id: string) {
     return prisma.user.findUnique({
       where: {
         id,
@@ -18,7 +18,7 @@ export class UserRepository {
     });
   }
 
-  async findUserByEmail(email: string) {
+  async findByEmail(email: string) {
     return prisma.user.findUnique({
       where: {
         email,
@@ -26,12 +26,13 @@ export class UserRepository {
     });
   }
 
-  async updateUser(
+  async updateById(
     id: string,
     data: {
       name?: string;
+      email?: string;
       avatarUrl?: string;
-    }
+    },
   ) {
     return prisma.user.update({
       where: {

@@ -6,7 +6,6 @@ import {
 } from "../repositories/auth.repository";
 import {
   hashPassword,
-  comparePassword,
 } from '../utils/password';
 
 import {
