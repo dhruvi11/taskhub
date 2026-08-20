@@ -1,15 +1,4 @@
-import express from "express";
-
-const app = express();
-
-app.use(express.json());
-
-app.get("/api/v1/health", (_req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "TaskHub API is healthy",
-  });
-});
+import app from "./app";
 
 const PORT = 5050;
 

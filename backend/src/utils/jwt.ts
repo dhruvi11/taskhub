@@ -3,6 +3,7 @@
 const accessSecret = process.env.JWT_ACCESS_SECRET;
 const refreshSecret = process.env.JWT_REFRESH_SECRET;
 
+
 if (!accessSecret || !refreshSecret) {
   throw new Error('JWT secrets are not configured');
 }

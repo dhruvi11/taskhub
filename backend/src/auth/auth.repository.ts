@@ -20,18 +20,6 @@ export const findUserById = async (
   });
 };
 
-export const createUser = async (
-  data: {
-    name: string;
-    email: string;
-    password: string;
-  },
-) => {
-  return prisma.user.create({
-    data,
-  });
-};
-
 export const createRefreshToken = async (
   data: {
     token: string;
@@ -40,6 +28,41 @@ export const createRefreshToken = async (
   },
 ) => {
   return prisma.refreshToken.create({
+    data,
+  });
+};
+
+export const findUserByGoogleId = async (
+  googleId: string,
+) => {
+  return prisma.user.findUnique({
+    where: {
+      googleId,
+    },
+  });
+};
+
+export const updateUserGoogleId = async (
+  userId: string,
+  googleId: string,
+) => {
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      googleId,
+    },
+  });
+};
+
+export const createUser = async (data: {
+  name: string;
+  email: string;
+  password?: string | null;
+  googleId?: string;
+}) => {
+  return prisma.user.create({
     data,
   });
 };

@@ -1,0 +1,656 @@
+🚀 TASKHUB
+Full-Stack Project — Complete Milestone Roadmap
+Next.js • React • React Native • Express • PostgreSQL • AWS • Firebase
+
+Production-style learning project
+Goal: Build one complete application while learning the full development lifecycle.
+
+1. Project Overview
+TaskHub is a project and task-management application designed as a practical full-stack learning project. The same REST API will power a Next.js web application, a React Native mobile application, and an administrative interface.
+Core Technology Stack
+Area
+Technologies
+Web
+Next.js, React, TypeScript, Tailwind CSS, Material UI, Redux Toolkit / RTK Query
+Mobile
+React Native, Expo, TypeScript, Redux Toolkit, Firebase
+Backend
+Node.js, Express.js, TypeScript, REST API, JWT, Google OAuth, Zod
+Database
+PostgreSQL, Prisma
+Testing
+Jest, Supertest
+Quality
+ESLint, Prettier, TypeScript
+Cloud
+AWS S3, AWS SES, AWS CloudWatch, Firebase FCM, Analytics, Crashlytics
+Monitoring
+Sentry
+DevOps
+Docker, GitHub Actions, CI/CD
+Documentation
+Swagger / OpenAPI
+Target Architecture
+                    TASKHUB                        │        ┌───────────────┼────────────────┐        │               │                │      WEB             MOBILE           BACKEND        │               │                │     Next.js        React Native       Express     React          Expo               Node.js     TypeScript     TypeScript         TypeScript     Tailwind       Redux              Prisma     MUI            REST               PostgreSQL     Redux          Firebase           JWT        │               │                │        └───────────────┼────────────────┘                        │                 Infrastructure                        │           ┌────────────┼─────────────┐           │            │             │          AWS        Firebase       Sentry           │            │             │          S3           FCM          Errors          SES          Analytics        CloudWatch    Crashlytics           │       GitHub Actions           │        CI/CD
+Milestone 1 — Project Foundation
+Set up the complete development environment and repository architecture.
+What you'll learn
+Monorepo and npm workspaces
+Git and GitHub workflow basics
+TypeScript configuration
+Next.js web app
+React Native / Expo mobile app
+Express backend
+Shared packages
+Docker and PostgreSQL
+ESLint and Prettier
+Environment variables
+Implementation tasks
+Create Git repository
+Initialize npm workspace
+Create backend
+Create Next.js application
+Create React Native application
+Create shared packages
+Configure TypeScript
+Configure ESLint and Prettier
+Configure .env files
+Configure Docker
+Start PostgreSQL
+Checkpoint
+Web, mobile, backend, and PostgreSQL all start successfully; Git repository is initialized.
+Milestone 2 — PostgreSQL + Prisma
+Build the relational database layer.
+What you'll learn
+PostgreSQL fundamentals
+Primary and foreign keys
+Relationships
+Prisma ORM
+Migrations
+Database seeding
+Implementation tasks
+Install Prisma
+Configure DATABASE_URL
+Create schema.prisma
+Create User, Project, ProjectMember, Task and RefreshToken models
+Create enums
+Run migration
+Generate Prisma client
+Create seed script
+Checkpoint
+Database tables and relationships are created successfully through Prisma.
+Milestone 3 — Express Backend Architecture
+Create a scalable backend architecture.
+What you'll learn
+REST API architecture
+Controller-Service-Repository pattern
+Middleware
+Error handling
+API versioning
+Implementation tasks
+Express setup
+CORS
+Helmet
+JSON parser
+Error middleware
+404 middleware
+Async handler
+ApiError
+ApiResponse
+Base repository
+Environment configuration
+/api/v1 versioning
+Checkpoint
+GET /api/v1/health returns a successful TaskHub API response.
+Milestone 4 — Authentication System
+Build secure application authentication.
+What you'll learn
+Password hashing
+JWT access tokens
+Refresh tokens
+Authentication middleware
+Authorization
+Secure cookies
+Implementation tasks
+Register
+Login
+Refresh token
+Logout
+Current user endpoint
+bcrypt password hashing
+authMiddleware
+Protected routes
+Checkpoint
+Register → Login → Protected API → Logout works.
+Milestone 5 — Google OAuth
+Add social authentication using Google OAuth.
+What you'll learn
+OAuth 2.0
+Google login
+OAuth callback flow
+Account linking
+OAuth security
+Implementation tasks
+Google login endpoint
+Google callback
+Find or create user
+Issue authentication credentials
+Handle OAuth errors
+Checkpoint
+Users can sign in with Google and reach protected application functionality.
+Milestone 6 — User Module
+Build user profile management.
+What you'll learn
+CRUD for profile data
+Authorization
+File upload preparation
+Implementation tasks
+Get current profile
+Update profile
+Avatar upload endpoint
+User roles
+Profile validation
+Checkpoint
+Authenticated users can view and update their profile.
+Milestone 7 — Project Module
+Allow users to create and manage projects.
+What you'll learn
+CRUD
+Pagination
+Filtering
+Sorting
+Authorization
+Implementation tasks
+Create project
+List projects
+Project details
+Update project
+Delete project
+Owner handling
+Search and pagination
+Checkpoint
+Authenticated users can fully manage their permitted projects.
+Milestone 8 — Project Members
+Add collaboration and role-based access control.
+What you'll learn
+RBAC
+Project membership
+Permission checks
+Implementation tasks
+List members
+Add member
+Remove member
+Owner/Manager/Member roles
+Permission middleware
+Checkpoint
+Project permissions correctly control member and project operations.
+Milestone 9 — Task Module
+Build the core TaskHub functionality.
+What you'll learn
+CRUD
+Assignment
+Status workflows
+Filtering
+Search
+Pagination
+Implementation tasks
+Create task
+List tasks
+Task details
+Update task
+Delete task
+Assign task
+Complete task
+Due dates
+Priority
+Checkpoint
+Users can create, assign, update, filter and complete tasks.
+Milestone 10 — Advanced REST API
+Make the REST API production-quality.
+What you'll learn
+Pagination
+Filtering
+Searching
+Sorting
+Query parameters
+Consistent API responses
+Implementation tasks
+Implement page/limit
+Status and priority filters
+Text search
+Sort options
+Metadata responses
+Consistent error codes
+Checkpoint
+API endpoints return predictable, documented response structures.
+Milestone 11 — Validation + Security
+Harden the backend.
+What you'll learn
+Zod validation
+Helmet
+CORS
+Rate limiting
+Secure authentication
+Input and file validation
+Implementation tasks
+Request schemas
+Password rules
+Rate limits
+CORS whitelist
+Secure error handling
+Upload restrictions
+Checkpoint
+Invalid and malicious requests are rejected safely and consistently.
+Milestone 12 — Swagger API Documentation
+Document the entire REST API.
+What you'll learn
+OpenAPI
+Swagger UI
+JWT authorization in Swagger
+Implementation tasks
+Document auth, users, projects, members and tasks
+Document request/response schemas
+Document errors
+Configure bearer authorization
+Checkpoint
+Developers can explore and test the API through /api-docs.
+Milestone 13 — Next.js Web Foundation
+Build the web application foundation.
+What you'll learn
+Next.js App Router
+React components
+TypeScript
+Responsive UI architecture
+Implementation tasks
+Login
+Signup
+Dashboard
+Projects
+Project details
+Tasks
+Profile
+Reusable UI components
+Checkpoint
+Next.js application has a complete navigation and page structure.
+Milestone 14 — Tailwind + Material UI
+Create a professional responsive interface.
+What you'll learn
+Tailwind layout and responsive styling
+MUI components
+Design consistency
+Implementation tasks
+Navbar
+Sidebar
+Cards
+Tables
+Dialogs
+Forms
+Pagination
+Toast/Snackbar
+Loading and empty states
+Checkpoint
+Web UI is responsive and visually consistent.
+Milestone 15 — Redux Toolkit + RTK Query
+Manage application state and REST data.
+What you'll learn
+Redux store
+Slices
+Actions
+Reducers
+Selectors
+RTK Query
+Caching
+Invalidation
+Implementation tasks
+Auth state
+UI state
+API slice
+Login mutation
+Project queries
+Task queries
+Cache invalidation
+Checkpoint
+Web application manages server and client state predictably.
+Milestone 16 — Web + API Integration
+Connect Next.js to the Express REST API.
+What you'll learn
+API clients
+Authentication flow
+Loading/error handling
+Cache management
+Implementation tasks
+Login
+Signup
+Logout
+Current user
+Projects
+Tasks
+Members
+Error handling
+Checkpoint
+The web app performs real CRUD operations through the backend.
+Milestone 17 — React Native Foundation
+Build the mobile application foundation.
+What you'll learn
+React Native
+Expo
+Navigation
+Reusable mobile components
+Implementation tasks
+Splash
+Login
+Signup
+Home
+Projects
+Project details
+Tasks
+Task details
+Profile
+Checkpoint
+Mobile app has working navigation and core screens.
+Milestone 18 — React Native + Redux + REST
+Connect mobile to the same backend.
+What you'll learn
+Mobile API integration
+Redux Toolkit
+Authentication persistence
+Mobile UX
+Implementation tasks
+Login
+Signup
+Logout
+Projects
+Tasks
+Profile
+Refresh
+Loading
+Error states
+Checkpoint
+Web and mobile use the same REST backend successfully.
+Milestone 19 — AWS S3
+Add cloud file storage.
+What you'll learn
+AWS S3
+IAM
+AWS SDK
+Signed URLs
+Implementation tasks
+Create bucket
+Configure permissions
+Upload profile images
+Delete files
+Generate signed URLs
+Validate file type and size
+Checkpoint
+User files can be uploaded and safely referenced by the application.
+Milestone 20 — AWS SES
+Send transactional email.
+What you'll learn
+AWS SES
+Email templates
+Email service architecture
+Implementation tasks
+Welcome email
+Password reset
+Project invitation
+Task assignment
+Task completion email
+Checkpoint
+Important application events can trigger transactional emails.
+Milestone 21 — AWS CloudWatch
+Monitor backend logs and metrics.
+What you'll learn
+Application logs
+Metrics
+Operational monitoring
+Implementation tasks
+API request logs
+Error logs
+Latency metrics
+Resource monitoring
+Checkpoint
+Backend activity can be inspected centrally.
+Milestone 22 — Firebase
+Add mobile cloud services.
+What you'll learn
+Firebase Cloud Messaging
+Firebase Analytics
+Firebase Crashlytics
+Implementation tasks
+Task assignment push notifications
+Login/signup analytics
+Task events
+Crash reporting
+Checkpoint
+Mobile users receive relevant notifications and mobile events are observable.
+Milestone 23 — Sentry
+Add application-wide error monitoring.
+What you'll learn
+Error tracking
+Performance monitoring
+Release context
+Implementation tasks
+Next.js integration
+Express integration
+React Native integration
+User/context metadata
+API exception reporting
+Checkpoint
+Important production errors are visible in Sentry.
+Milestone 24 — Jest + Supertest
+Build automated backend tests.
+What you'll learn
+Unit testing
+Integration testing
+HTTP endpoint testing
+Implementation tasks
+Auth tests
+Project tests
+Task tests
+Validation tests
+Authorization tests
+Checkpoint
+Core backend functionality is covered by automated tests.
+Milestone 25 — Code Quality
+Standardize maintainability and developer experience.
+What you'll learn
+ESLint
+Prettier
+TypeScript strictness
+Git conventions
+Implementation tasks
+Lint rules
+Formatting
+Strict TypeScript
+Naming conventions
+Commit conventions
+PR checklist
+Checkpoint
+Code passes linting, formatting and type checks consistently.
+Milestone 26 — GitHub Actions
+Automate continuous integration.
+What you'll learn
+CI pipelines
+Automated tests
+Build verification
+Implementation tasks
+Backend workflow
+Web workflow
+Mobile workflow
+Lint
+Type check
+Test
+Build
+Checkpoint
+Every relevant push is automatically checked.
+Milestone 27 — Docker
+Containerize the backend and database development environment.
+What you'll learn
+Docker
+Docker Compose
+Container networking
+Implementation tasks
+Backend Dockerfile
+PostgreSQL container
+Compose networking
+Environment configuration
+Checkpoint
+The backend can run consistently in a containerized environment.
+Milestone 28 — Deployment
+Deploy TaskHub to production infrastructure.
+What you'll learn
+Production configuration
+Environment management
+Deployment strategy
+Implementation tasks
+Deploy web
+Deploy API
+Provision PostgreSQL
+Configure storage
+Configure Firebase
+Configure domains and HTTPS
+Checkpoint
+Web, API and supporting services are reachable in a production environment.
+Milestone 29 — Production Security
+Perform a production security hardening pass.
+What you'll learn
+HTTPS
+Secure cookies
+Token rotation
+Rate limiting
+Secret management
+Backups
+Implementation tasks
+HTTPS
+Secure cookie settings
+Refresh-token rotation
+CORS restrictions
+Secrets
+Database backups
+Security headers
+Checkpoint
+Production environment follows a defined security checklist.
+Milestone 30 — Performance
+Improve responsiveness and scalability.
+What you'll learn
+Database indexes
+Query optimization
+Caching
+Frontend optimization
+Mobile performance
+Implementation tasks
+Indexes
+Efficient queries
+Pagination
+Next.js optimization
+Image optimization
+FlatList optimization
+Checkpoint
+Application remains responsive as data volume grows.
+Milestone 31 — Admin Panel
+Create an administrative interface.
+What you'll learn
+Admin authorization
+Management dashboards
+Operational CRUD
+Implementation tasks
+Users
+Projects
+Tasks
+Activity
+Reports
+Admin APIs
+Checkpoint
+Admin users can manage platform-level resources.
+Milestone 32 — Dashboard & Analytics
+Create business and product analytics.
+What you'll learn
+Aggregation
+Statistics
+Charts
+Dashboard APIs
+Implementation tasks
+Total projects
+Total tasks
+Completed tasks
+Pending tasks
+Task status charts
+Recent activity
+Checkpoint
+Dashboard provides useful operational insights.
+Milestone 33 — End-to-End Testing
+Validate critical user journeys.
+What you'll learn
+E2E testing concepts
+Workflow testing
+Regression testing
+Implementation tasks
+Signup
+Login
+Create project
+Add member
+Create task
+Assign task
+Receive notification
+Complete task
+Dashboard update
+Checkpoint
+The primary user journey works end-to-end.
+Milestone 34 — Documentation
+Create professional technical documentation.
+What you'll learn
+Architecture documentation
+ER diagrams
+API documentation
+Deployment documentation
+Implementation tasks
+README
+Architecture diagram
+Database ER diagram
+API flow
+Authentication flow
+Deployment architecture
+Troubleshooting
+Checkpoint
+A new developer can understand and run the project from the documentation.
+Milestone 35 — Final Portfolio Version
+Package TaskHub as a strong portfolio and interview project.
+What you'll learn
+System design explanation
+Project storytelling
+Architecture tradeoffs
+Deployment and operations
+Implementation tasks
+Clean repository
+Screenshots
+Architecture diagram
+API docs
+Test evidence
+CI/CD evidence
+Portfolio README
+Interview explanation
+Checkpoint
+TaskHub demonstrates the full development lifecycle from local setup to production.
+
+36. Key Architecture Flows
+Backend Request Flow
+Request    ↓ Route    ↓ Middleware    ↓ Controller    ↓ Service    ↓ Repository    ↓ Prisma    ↓ PostgreSQL
+Task Creation Flow
+Web / Mobile      ↓ Redux Toolkit / RTK Query      ↓ POST /api/v1/tasks      ↓ JWT Authentication      ↓ Express      ↓ Task Controller      ↓ Task Service      ↓ Task Repository      ↓ Prisma      ↓ PostgreSQL      ↓ JSON Response      ↓ Client Cache / UI
+Push Notification Flow
+Task Assigned      ↓ Express Backend      ↓ Firebase Cloud Messaging      ↓ React Native      ↓ Push Notification
+Overall Learning Path
+Foundation     ↓ PostgreSQL + Prisma     ↓ Express Architecture     ↓ JWT Authentication     ↓ Google OAuth     ↓ CRUD + REST API     ↓ Security + Swagger     ↓ Next.js Web     ↓ React Native Mobile     ↓ AWS + Firebase     ↓ Testing + Monitoring     ↓ GitHub Actions + Docker     ↓ Deployment + Security + Performance     ↓ Admin + Analytics + Documentation     ↓ 🚀 TASKHUB v1
+37. How We Will Execute Each Milestone
+Each milestone will be implemented incrementally. The working pattern is designed to keep the project understandable and to make debugging easier.
+Goal — define what the milestone accomplishes.
+Concepts — explain the technology and why it is used.
+Folder structure — show exactly where files belong.
+Commands — provide the commands to run.
+Implementation — create the required files and code.
+Testing — verify the feature locally.
+Common errors — diagnose likely problems.
+Checkpoint — confirm the milestone is complete before moving on.
+Interview questions — connect the implementation to interview knowledge.
+Recommended Rule
+Do not add advanced infrastructure before the foundation works. Complete each checkpoint before moving to the next milestone. This keeps the project stable and makes it easier to understand the relationship between frontend, mobile, API, database and cloud services.
