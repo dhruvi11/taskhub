@@ -2,16 +2,15 @@ import { prisma } from '../config/prisma';
 
 async function testDatabase() {
   try {
-    const user = await prisma.user.create({
-      data: {
-        name: 'TaskHub Demo',
-        email: 'demo@taskhub.com',
-      },
-    });
+    await prisma.$connect();
 
-    console.log('✅ User created:', user);
+    console.log('✅ PostgreSQL connected successfully');
+
+    const users = await prisma.user.findMany();
+
+    console.log('Users:', users);
   } catch (error) {
-    console.error('❌ Database operation failed');
+    console.error('❌ Database connection failed');
     console.error(error);
   } finally {
     await prisma.$disconnect();
