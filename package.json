@@ -14,6 +14,11 @@
     "test": "npm run test --workspaces"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "prettier": "^3.9.6"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3"
   }
 }
