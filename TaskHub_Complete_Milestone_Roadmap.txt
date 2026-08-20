@@ -31,7 +31,7 @@ Docker, GitHub Actions, CI/CD
 Documentation
 Swagger / OpenAPI
 Target Architecture
-                    TASKHUB                        │        ┌───────────────┼────────────────┐        │               │                │      WEB             MOBILE           BACKEND        │               │                │     Next.js        React Native       Express     React          Expo               Node.js     TypeScript     TypeScript         TypeScript     Tailwind       Redux              Prisma     MUI            REST               PostgreSQL     Redux          Firebase           JWT        │               │                │        └───────────────┼────────────────┘                        │                 Infrastructure                        │           ┌────────────┼─────────────┐           │            │             │          AWS        Firebase       Sentry           │            │             │          S3           FCM          Errors          SES          Analytics        CloudWatch    Crashlytics           │       GitHub Actions           │        CI/CD
+                    TASKHUB                       │       ┌───────────────┼────────────────┐       │               │                │     WEB             MOBILE           BACKEND       │               │                │    Next.js        React Native       Express    React          Expo               Node.js    TypeScript     TypeScript         TypeScript    Tailwind       Redux              Prisma    MUI            REST               PostgreSQL    Redux          Firebase           JWT       │               │                │       └───────────────┼────────────────┘                       │                Infrastructure                       │          ┌────────────┼─────────────┐          │            │             │         AWS        Firebase       Sentry          │            │             │         S3           FCM          Errors         SES          Analytics       CloudWatch    Crashlytics          │      GitHub Actions          │       CI/CD
 Milestone 1 — Project Foundation
 Set up the complete development environment and repository architecture.
 What you'll learn
@@ -634,13 +634,13 @@ TaskHub demonstrates the full development lifecycle from local setup to producti
 
 36. Key Architecture Flows
 Backend Request Flow
-Request    ↓ Route    ↓ Middleware    ↓ Controller    ↓ Service    ↓ Repository    ↓ Prisma    ↓ PostgreSQL
+Request   ↓Route   ↓Middleware   ↓Controller   ↓Service   ↓Repository   ↓Prisma   ↓PostgreSQL
 Task Creation Flow
-Web / Mobile      ↓ Redux Toolkit / RTK Query      ↓ POST /api/v1/tasks      ↓ JWT Authentication      ↓ Express      ↓ Task Controller      ↓ Task Service      ↓ Task Repository      ↓ Prisma      ↓ PostgreSQL      ↓ JSON Response      ↓ Client Cache / UI
+Web / Mobile     ↓Redux Toolkit / RTK Query     ↓POST /api/v1/tasks     ↓JWT Authentication     ↓Express     ↓Task Controller     ↓Task Service     ↓Task Repository     ↓Prisma     ↓PostgreSQL     ↓JSON Response     ↓Client Cache / UI
 Push Notification Flow
-Task Assigned      ↓ Express Backend      ↓ Firebase Cloud Messaging      ↓ React Native      ↓ Push Notification
+Task Assigned     ↓Express Backend     ↓Firebase Cloud Messaging     ↓React Native     ↓Push Notification
 Overall Learning Path
-Foundation     ↓ PostgreSQL + Prisma     ↓ Express Architecture     ↓ JWT Authentication     ↓ Google OAuth     ↓ CRUD + REST API     ↓ Security + Swagger     ↓ Next.js Web     ↓ React Native Mobile     ↓ AWS + Firebase     ↓ Testing + Monitoring     ↓ GitHub Actions + Docker     ↓ Deployment + Security + Performance     ↓ Admin + Analytics + Documentation     ↓ 🚀 TASKHUB v1
+Foundation    ↓PostgreSQL + Prisma    ↓Express Architecture    ↓JWT Authentication    ↓Google OAuth    ↓CRUD + REST API    ↓Security + Swagger    ↓Next.js Web    ↓React Native Mobile    ↓AWS + Firebase    ↓Testing + Monitoring    ↓GitHub Actions + Docker    ↓Deployment + Security + Performance    ↓Admin + Analytics + Documentation    ↓🚀 TASKHUB v1
 37. How We Will Execute Each Milestone
 Each milestone will be implemented incrementally. The working pattern is designed to keep the project understandable and to make debugging easier.
 Goal — define what the milestone accomplishes.

@@ -340,3 +340,84 @@ A. Authentication middleware verifies the user's credentials or JWT before allow
 
 Q20. Why should JWT secrets not be hardcoded?
 A. JWT secrets are sensitive credentials. They should be stored in environment variables or a secure secrets manager so they are not exposed in source control and can be rotated safely.
+
+Q1. How do you know Google OAuth succeeded?
+A. Google redirected the user to our registered callback endpoint, Passport successfully verified the Google profile, and our backend found or created the corresponding TaskHub user.
+
+Q2. What information did Google provide to TaskHub?
+A. We received the Google profile ID, display name, and email address. We store the Google profile ID as googleId so the same Google account can be recognized in future logins.
+
+Q3. Why is password null for a Google user?
+A. The user's identity was verified by Google, so the user does not need a local TaskHub password for Google authentication.
+
+Q4. What is googleId used for?
+A. googleId uniquely identifies the user's Google identity and allows TaskHub to find the same user during subsequent Google logins.
+
+Q5. Does successful Google OAuth mean the user is authenticated to all TaskHub APIs?
+A. Not by itself. After Google verifies the identity, TaskHub must issue its own access token, such as a JWT, which is then used to authenticate requests to protected TaskHub APIs.
+
+Q6. Why does TaskHub generate its own JWT after Google authentication?
+A. Google authenticates the external identity, while TaskHub needs its own authentication mechanism for its APIs. Issuing a TaskHub JWT gives the backend a consistent authentication mechanism for both Google users and normal email/password users.
+
+Q7. What should the API response contain after successful Google authentication?
+A. It should contain safe user information and TaskHub authentication credentials such as an access token and refresh token. Sensitive database fields such as password hashes and internal OAuth identifiers should not be unnecessarily returned.
+
+Q1. Explain the Google OAuth flow in TaskHub.
+A. The user starts Google login from TaskHub. The backend redirects the user to Google. Google authenticates the user and redirects back to our registered callback URL. Passport's Google strategy processes the profile, TaskHub finds or creates the user, and then TaskHub generates its own JWT access and refresh tokens.
+
+Q2. Why do we use Passport?
+A. Passport is authentication middleware for Node.js. It provides reusable authentication strategies, including Google OAuth 2.0, which simplifies integrating external authentication providers.
+
+Q3. What is OAuth 2.0?
+A. OAuth 2.0 is an authorization framework that allows an application to obtain authorized access through an external provider without handling the user's provider password directly.
+
+Q4. What is the OAuth callback?
+A. The callback is the backend endpoint to which Google redirects the user after successful authentication. TaskHub processes the authorization response there.
+
+Q5. Why do we store googleId?
+A. googleId uniquely identifies the user's Google account. It allows TaskHub to recognize the same Google account during future logins.
+
+Q6. How does account linking work?
+A. TaskHub first searches for a user using googleId. If no user exists, it can search by email. If an existing TaskHub account has the same email, we link the Google account by saving googleId rather than creating a duplicate user.
+
+Q7. What happens when a completely new Google user logs in?
+A. TaskHub creates a new user with the Google profile information and stores the Google ID. The user can then receive TaskHub authentication credentials.
+
+Q8. Why can password be null for a Google user?
+A. Because Google is responsible for authenticating the user's identity. The user does not need a local TaskHub password when using Google authentication.
+
+Q9. Why does TaskHub generate its own JWT after Google login?
+A. Google authenticates the external identity, but TaskHub needs to authenticate requests to its own APIs. Therefore, after successful Google authentication, TaskHub generates its own access and refresh tokens.
+
+Q10. What is the difference between Google authentication and TaskHub authentication?
+A. Google verifies the user's Google identity. TaskHub then creates its own authenticated session/token context so the user can access TaskHub's protected APIs.
+
+Q11. What is redirect_uri_mismatch?
+A. It occurs when the redirect URI sent by the application does not exactly match the authorized redirect URI configured in Google Cloud.
+
+Q12. Why was redirect_uri_mismatch happening in our project?
+A. Our backend was sending a localhost callback URL on port 5050, but the Google OAuth client configuration did not exactly match that URL. Once the exact callback URL was configured, Google accepted the request.
+
+Q13. What OAuth scopes did we use?
+A. We used openid, profile, and email because TaskHub only needs basic identity information for Google login.
+
+Q14. Why should we request minimum OAuth scopes?
+A. Minimum scopes reduce security risk and avoid requesting unnecessary access to the user's Google data.
+
+Q15. Where should GOOGLE_CLIENT_SECRET be stored?
+A. It should be stored securely on the backend using environment variables or a secret manager. It must never be committed to GitHub or exposed to frontend or mobile applications.
+
+Q16. What happens if the user cancels Google authentication?
+A. The OAuth provider returns an authentication error or denial. Our backend should handle it and return a safe error response instead of issuing authentication credentials.
+
+Q17. How do we protect APIs after Google login?
+A. The backend issues a TaskHub JWT access token. The client sends it using the Authorization Bearer header, and authMiddleware validates the token before allowing access to protected endpoints.
+
+Q18. Can a Google user also have a password?
+A. Yes, depending on the application's account-linking policy. A user can potentially have both a local password and a linked Google identity.
+
+Q19. What is the purpose of the refresh token?
+A. A refresh token allows the application to obtain a new access token after the short-lived access token expires without requiring the user to authenticate again.
+
+Q20. Explain our complete authentication architecture.
+A. TaskHub supports local authentication and Google OAuth. Local authentication verifies a password, while Google OAuth delegates identity verification to Google. Both flows eventually produce TaskHub access and refresh tokens. Protected APIs use authentication middleware to validate the TaskHub access token.
