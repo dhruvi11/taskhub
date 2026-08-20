@@ -3,7 +3,7 @@ import {
   findUserByGoogleId,
   createUser,
   updateUserGoogleId,
-} from "./auth.repository";
+} from "../repositories/auth.repository";
 import {
   hashPassword,
   comparePassword,

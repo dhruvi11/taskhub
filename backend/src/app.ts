@@ -3,8 +3,9 @@ import express from "express";
 import helmet from "helmet";
 import passport from "passport";
 
-import "./auth/google.strategy";
-import authRoutes from "./auth/auth.routes";
+import "./module/auth/google.strategy";
+import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
 
 const app = express();
 
@@ -24,6 +25,11 @@ app.use(passport.initialize());
 app.use(
   "/api/v1/auth",
   authRoutes,
+);
+
+app.use(
+  "/api/v1/users",
+  userRoutes
 );
 
 app.get("/api/v1/health", (_req, res) => {

@@ -1,8 +1,8 @@
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import passport from "passport";
 
-import { findOrCreateGoogleUser } from "./auth.service";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { findOrCreateGoogleUser } from "../../services/auth.service";
+import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;

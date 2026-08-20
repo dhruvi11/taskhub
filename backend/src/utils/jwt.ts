@@ -14,9 +14,10 @@ export interface AccessTokenPayload {
 
 export const generateAccessToken = (
   userId: string,
+  role: string,
 ): string => {
   return jwt.sign(
-    { userId },
+    { userId, role },
     accessSecret,
     {
       expiresIn: '15m',

@@ -6,7 +6,10 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
+enum UserRole {
+  USER
+  ADMIN
+}
 enum ProjectRole {
   OWNER
   MANAGER
@@ -33,6 +36,8 @@ model User {
   avatarUrl String?
  googleId String? @unique
  
+role UserRole @default(USER)
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
