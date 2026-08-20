@@ -15,3 +15,6 @@ coverage/
 
 .idea/
 .vscode/
+/generated/prisma
+
+/generated/prisma
