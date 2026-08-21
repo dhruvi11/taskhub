@@ -1,0 +1,4 @@
+POST   /api/v1/projects/:projectId/members
+GET    /api/v1/projects/:projectId/members
+PATCH  /api/v1/projects/:projectId/members/:userId
+DELETE /api/v1/projects/:projectId/members/:userId

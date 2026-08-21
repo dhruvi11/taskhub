@@ -574,3 +574,95 @@ A. The N+1 problem occurs when an application performs one query to retrieve a l
 
 Q25. How would you improve project listing for a large production database?
 A. I would add proper database indexes, optimize search, consider cursor-based pagination for very large datasets, select only required fields, monitor slow queries and potentially introduce caching where appropriate.
+
+Milestone 8 — Interview Q&A
+Q1. What is RBAC?
+A. RBAC stands for Role-Based Access Control. Instead of assigning permissions directly to users, permissions are assigned to roles such as OWNER, MANAGER and MEMBER, and users receive permissions through their role.
+
+Q2. Why did you introduce ProjectMember?
+A. ProjectMember represents the many-to-many relationship between users and projects. A user can belong to multiple projects, and a project can have multiple users. The membership also stores the user's role within that project.
+
+Q3. What roles did you implement?
+A. I implemented OWNER, MANAGER and MEMBER roles.
+
+Q4. What is the difference between authentication and authorization?
+A. Authentication verifies who the user is, usually using a JWT. Authorization determines what that authenticated user is allowed to do.
+
+Q5. How does TaskHub determine a user's project role?
+A. The backend queries the ProjectMember table using the authenticated user's ID and the project ID. The returned membership contains the user's role.
+
+Q6. Why should the frontend not decide whether a user is an OWNER or MANAGER?
+A. The frontend cannot be trusted because users can modify requests. Authorization must always be enforced on the backend.
+
+Q7. How does your permission middleware work?
+A. The middleware receives allowed roles, retrieves the user's ProjectMember record, checks whether the user belongs to the project, and then checks whether their role is included in the allowed roles. If not, it returns 403 Forbidden.
+
+Q8. Why return 403 for a member who cannot add another member?
+A. The user is authenticated, but they don't have sufficient permission for the operation, so 403 Forbidden is appropriate.
+
+Q9. Why return 401 instead?
+A. 401 is used when authentication is missing or invalid. 403 is used when authentication succeeded but authorization failed.
+
+Q10. Why is ProjectMember a separate table?
+A. Because the relationship between users and projects is many-to-many and the relationship itself contains additional information such as the user's role.
+
+Q11. What is a many-to-many relationship?
+A. It means one user can belong to many projects and one project can contain many users. A join table such as ProjectMember is used to represent this relationship.
+
+Q12. Why use @@unique([projectId, userId])?
+A. It prevents the same user from being added to the same project multiple times.
+
+Q13. Can the same user belong to multiple projects?
+A. Yes. The unique constraint applies to the combination of projectId and userId, not to userId alone.
+
+Q14. Why don't you allow the API client to create an OWNER membership?
+A. Ownership is controlled by the backend. Allowing clients to assign themselves or another user as OWNER could create a privilege escalation vulnerability.
+
+Q15. How does a project owner become a member?
+A. When the project is created, the backend creates a corresponding ProjectMember record with the OWNER role.
+
+Q16. Why use a database transaction when creating the project and owner membership?
+A. Both operations should succeed or fail together. A transaction prevents a project from being created without its required owner membership.
+
+Q17. Can a project have multiple owners in your implementation?
+A. No. The project's owner is controlled by the ownerId field and the ProjectMember OWNER role is reserved for the project owner.
+
+Q18. Can a MEMBER add another member?
+A. No. The member management endpoints require OWNER or MANAGER permissions.
+
+Q19. Can a MEMBER view project members?
+A. Yes. In our current permission matrix, OWNER, MANAGER and MEMBER can list members.
+
+Q20. Can a MANAGER change the OWNER's role?
+A. No. The service explicitly prevents changing the OWNER role.
+
+Q21. Can a MANAGER remove the OWNER?
+A. No. The service prevents removing the OWNER.
+
+Q22. What happens when a user is not a project member?
+A. The permission middleware cannot find a ProjectMember record and returns 403 Forbidden.
+
+Q23. Where should authorization logic live?
+A. Reusable permission checks can live in middleware, while resource-specific business rules should remain in the service layer. This keeps authorization reusable without moving all business logic into middleware.
+
+Q24. Why use middleware for RBAC?
+A. Middleware allows permission checks to be applied consistently to multiple routes without duplicating authorization code in every controller.
+
+Q25. How would you extend RBAC in the future?
+A. I would define explicit permissions such as PROJECT_UPDATE, MEMBER_ADD, MEMBER_REMOVE and TASK_UPDATE, then map roles to permissions. This would make the authorization system more flexible as the application grows.
+
+Q26. What is privilege escalation?
+A. Privilege escalation occurs when a user gains permissions they should not have, such as a MEMBER assigning themselves the OWNER role. Backend authorization prevents this.
+
+Q27. Why should authorization be checked on every protected operation?
+A. A user may be authenticated but their permission depends on the specific project and role. Therefore authentication alone is not sufficient.
+
+Q28. How would you test RBAC?
+A. I would create users with OWNER, MANAGER and MEMBER roles and verify each operation against the expected permission matrix. I would also test non-members, invalid tokens and attempts to modify the owner.
+
+Q29. What is the principle of least privilege?
+A. Users should receive only the permissions required to perform their responsibilities. For example, a MEMBER should not receive member-management or project-deletion permissions.
+
+Q30. How would you improve the current RBAC implementation for a large application?
+A. I would introduce centralized permission definitions, avoid hard-coded role checks across the codebase, add authorization unit tests, add audit logs for sensitive operations, and potentially cache frequently accessed membership permissions.
+

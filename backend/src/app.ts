@@ -7,6 +7,7 @@ import "./module/auth/google.strategy";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import projectRoutes from "./routes/project.routes";
+import projectMemberRoutes from "./routes/project-member.routes";
 
 const app = express();
 
@@ -36,6 +37,11 @@ app.use(
 app.use(
   "/api/v1/projects",
   projectRoutes
+);
+
+app.use(
+  "/api/v1/projects/:projectId/members",
+  projectMemberRoutes
 );
 
 app.get("/api/v1/health", (_req, res) => {
