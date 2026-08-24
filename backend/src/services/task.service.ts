@@ -8,11 +8,7 @@ export class TaskService {
   async createTask(data: {
     title: string;
     description?: string;
-    priority:
-      | "LOW"
-      | "MEDIUM"
-      | "HIGH"
-      | "URGENT";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
     dueDate?: string;
     projectId: string;
     createdById: string;
@@ -29,12 +25,50 @@ export class TaskService {
 
   async listTasks(
     projectId: string,
-    options: any
+    options: {
+      page: number;
+      limit: number;
+      search?: string;
+      status?: "TODO" | "IN_PROGRESS" | "COMPLETED";
+      priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+      assignedToId?: string;
+      sortBy?:
+        | "createdAt"
+        | "updatedAt"
+        | "dueDate"
+        | "title"
+        | "priority"
+        | "status";
+      sortOrder?: "asc" | "desc";
+    }
   ) {
-    return this.repository.findMany(
-      projectId,
-      options
-    );
+    const result =
+      await this.repository.findMany(
+        projectId,
+        options
+      );
+
+    const totalPages =
+      Math.ceil(
+        result.total / options.limit
+      );
+
+    return {
+      tasks: result.tasks,
+
+      pagination: {
+        page: options.page,
+        limit: options.limit,
+        total: result.total,
+        totalPages,
+
+        hasNextPage:
+          options.page < totalPages,
+
+        hasPreviousPage:
+          options.page > 1,
+      },
+    };
   }
 
   async getTask(
@@ -91,41 +125,6 @@ export class TaskService {
 
     await this.repository.delete(
       taskId
-    );
-  }
-
-  async assignTask(
-    projectId: string,
-    taskId: string,
-    assignedToId: string
-  ) {
-    await this.getTask(
-      projectId,
-      taskId
-    );
-
-    return this.repository.update(
-      taskId,
-      {
-        assignedToId,
-      }
-    );
-  }
-
-  async completeTask(
-    projectId: string,
-    taskId: string
-  ) {
-    await this.getTask(
-      projectId,
-      taskId
-    );
-
-    return this.repository.update(
-      taskId,
-      {
-        status: "COMPLETED",
-      }
     );
   }
 }

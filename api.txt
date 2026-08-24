@@ -168,6 +168,46 @@ curl -i \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
   http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks/TASK_ID
 
+curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODc1NzExNjcsImV4cCI6MTc4NzU3MjA2N30.S_3hK2VJELP9dV4dBd0g36DfMKY29pzbOpsOpni7HEA" \
+  "http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks?page=0"
+
+//ALL TASK
+  curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks"
+
+//ALL TASK PAGINATION
+  curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?page=1&limit=5"
+
+//TASK STATUS
+  curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?status=TODO"
+
+//TASK PRIORITY
+curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?priority=HIGH"
+
+//TASK SEEACRH
+curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?search=authentication"
+  
+  //TASK SORT
+  curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?sortBy=dueDate&sortOrder=asc"
+  
+  //ALL FILTER COMBINED
+curl -i \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?page=1&limit=10&status=TODO&priority=HIGH&search=API&sortBy=dueDate&sortOrder=asc"
+
+
   git status
 git add src/controllers/auth.controller.ts src/routes/auth.routes.ts src/services/auth.service.ts src/utils/jwt.ts
 git commit -m "feat(auth): add register login and current user APIs"

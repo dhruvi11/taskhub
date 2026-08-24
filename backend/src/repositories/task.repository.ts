@@ -48,7 +48,13 @@ export class TaskRepository {
       status?: "TODO" | "IN_PROGRESS" | "COMPLETED";
       priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
       assignedToId?: string;
-      sortBy?: "createdAt" | "dueDate" | "priority" | "title";
+      sortBy?:
+        | "createdAt"
+        | "updatedAt"
+        | "dueDate"
+        | "title"
+        | "priority"
+        | "status";
       sortOrder?: "asc" | "desc";
     }
   ) {
@@ -68,6 +74,24 @@ export class TaskRepository {
     const where = {
       projectId,
 
+      ...(status
+        ? {
+            status,
+          }
+        : {}),
+
+      ...(priority
+        ? {
+            priority,
+          }
+        : {}),
+
+      ...(assignedToId
+        ? {
+            assignedToId,
+          }
+        : {}),
+
       ...(search
         ? {
             OR: [
@@ -86,59 +110,45 @@ export class TaskRepository {
             ],
           }
         : {}),
-
-      ...(status ? { status } : {}),
-
-      ...(priority ? { priority } : {}),
-
-      ...(assignedToId
-        ? { assignedToId }
-        : {}),
     };
 
-    const [tasks, total] =
-      await Promise.all([
-        prisma.task.findMany({
-          where,
-          skip,
-          take: limit,
+    const [tasks, total] = await Promise.all([
+      prisma.task.findMany({
+        where,
+        skip,
+        take: limit,
 
-          orderBy: {
-            [sortBy]: sortOrder,
-          },
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
 
-          include: {
-            createdBy: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
-
-            assignedTo: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
+        include: {
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
             },
           },
-        }),
 
-        prisma.task.count({
-          where,
-        }),
-      ]);
+          assignedTo: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      }),
+
+      prisma.task.count({
+        where,
+      }),
+    ]);
 
     return {
       tasks,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-      },
+      total,
     };
   }
 
@@ -181,24 +191,6 @@ export class TaskRepository {
         id: taskId,
       },
       data,
-
-      include: {
-        createdBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-
-        assignedTo: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-      },
     });
   }
 

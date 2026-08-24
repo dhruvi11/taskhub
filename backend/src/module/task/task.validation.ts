@@ -68,6 +68,63 @@ export const updateTaskSchema = z.object({
     .optional(),
 });
 
+export const taskQuerySchema = z.object({
+  page: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .default(1),
+
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .default(10),
+
+  search: z
+    .string()
+    .trim()
+    .optional(),
+
+  status: z
+    .enum([
+      "TODO",
+      "IN_PROGRESS",
+      "COMPLETED",
+    ])
+    .optional(),
+
+  priority: z
+    .enum([
+      "LOW",
+      "MEDIUM",
+      "HIGH",
+      "URGENT",
+    ])
+    .optional(),
+
+  assignedToId: z
+    .string()
+    .uuid()
+    .optional(),
+
+  sortBy: z
+    .enum([
+      "createdAt",
+      "updatedAt",
+      "dueDate",
+      "title",
+      "priority",
+      "status",
+    ])
+    .default("createdAt"),
+
+  sortOrder: z
+    .enum(["asc", "desc"])
+    .default("desc"),
+});
+
 export const assignTaskSchema = z.object({
   assignedToId: z.string().uuid(),
 });
