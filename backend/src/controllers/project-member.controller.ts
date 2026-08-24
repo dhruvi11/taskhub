@@ -13,7 +13,7 @@ export class ProjectMemberController {
   ) {}
 
   listMembers = async (
-    req: Request,
+    req: Request<{ projectId: string }>,
     res: Response
   ) => {
     const members =
@@ -29,7 +29,7 @@ export class ProjectMemberController {
   };
 
   addMember = async (
-    req: Request,
+    req: Request<{ projectId: string }>,
     res: Response
   ) => {
     const data =
@@ -50,7 +50,7 @@ export class ProjectMemberController {
   };
 
   updateMemberRole = async (
-    req: Request,
+    req: Request<{ projectId: string; userId: string }>,
     res: Response
   ) => {
     const data =
@@ -71,7 +71,7 @@ export class ProjectMemberController {
   };
 
   removeMember = async (
-    req: Request,
+    req: Request<{ projectId: string; userId: string }>,
     res: Response
   ) => {
     const result =

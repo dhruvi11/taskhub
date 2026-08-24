@@ -5,6 +5,14 @@ declare global {
     interface User {
       userId: string;
       role: string;
+      accessToken?: string;
+      refreshToken?: string;
+      user?: {
+        id: string;
+        name: string;
+        email: string;
+        role: string;
+      };
     }
 
     interface ProjectMembership {

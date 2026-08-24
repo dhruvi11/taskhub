@@ -1,5 +1,14 @@
 import { prisma } from "../config/prisma";
 
+type TaskUpdateData = {
+  title?: string;
+  description?: string | null;
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  dueDate?: Date | null;
+  status?: "TODO" | "IN_PROGRESS" | "COMPLETED";
+  assignedToId?: string;
+};
+
 export class TaskRepository {
   async create(data: {
     title: string;
@@ -184,7 +193,7 @@ export class TaskRepository {
 
   async update(
     taskId: string,
-    data: any
+    data: TaskUpdateData
   ) {
     return prisma.task.update({
       where: {

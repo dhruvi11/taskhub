@@ -9,6 +9,7 @@ import {
 } from "../controllers/auth.controller";
 
 import { authMiddleware } from "../middleware/auth";
+import { authRateLimiter } from "../middleware/rate-limit";
 
 const router = Router();
 
@@ -114,14 +115,12 @@ router.get(
  */
 router.get(
   "/google",
+  authRateLimiter,
   passport.authenticate("google", {
-    scope: [
-      "openid",
-      "profile",
-      "email",
-    ],
+    scope: ["openid", "profile", "email"],
   }),
 );
+
 
 
 // ========================================
@@ -141,6 +140,7 @@ router.get(
  */
 router.get(
   "/google/callback",
+  authRateLimiter,
   passport.authenticate("google", {
     session: false,
   }),
@@ -152,6 +152,5 @@ router.get(
     });
   },
 );
-
 
 export default router;

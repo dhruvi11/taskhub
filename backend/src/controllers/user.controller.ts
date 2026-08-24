@@ -9,7 +9,7 @@ export class UserController {
     req: Request,
     res: Response
   ) => {
-    const userId = req.user.userId;
+    const userId = req.user!.userId;
 
     const user =
       await this.userService.getCurrentProfile(userId);
@@ -25,7 +25,7 @@ export class UserController {
     req: Request,
     res: Response
   ) => {
-    const userId = req.user.userId;
+    const userId = req.user!.userId;
 
     const validatedData =
       updateProfileSchema.parse(req.body);
@@ -47,7 +47,7 @@ export class UserController {
     req: Request,
     res: Response
   ) => {
-    const userId = req.user.userId;
+    const userId = req.user!.userId;
 
     const file = req.file;
 

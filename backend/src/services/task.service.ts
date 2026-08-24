@@ -1,4 +1,5 @@
 import { TaskRepository } from "../repositories/task.repository";
+import { UpdateTaskInput } from "../module/task/task.validation";
 
 export class TaskService {
   constructor(
@@ -91,22 +92,24 @@ export class TaskService {
   async updateTask(
     projectId: string,
     taskId: string,
-    data: any
+    data: UpdateTaskInput
   ) {
     await this.getTask(
       projectId,
       taskId
     );
 
+    const { dueDate, ...taskData } = data;
+
     return this.repository.update(
       taskId,
       {
-        ...data,
+        ...taskData,
 
-        ...(data.dueDate !== undefined
+        ...(dueDate !== undefined
           ? {
-              dueDate: data.dueDate
-                ? new Date(data.dueDate)
+              dueDate: dueDate
+                ? new Date(dueDate)
                 : null,
             }
           : {}),
@@ -126,5 +129,28 @@ export class TaskService {
     await this.repository.delete(
       taskId
     );
+  }
+
+  async assignTask(
+    projectId: string,
+    taskId: string,
+    assignedToId: string,
+  ) {
+    await this.getTask(projectId, taskId);
+
+    return this.repository.update(taskId, {
+      assignedToId,
+    });
+  }
+
+  async completeTask(
+    projectId: string,
+    taskId: string,
+  ) {
+    await this.getTask(projectId, taskId);
+
+    return this.repository.update(taskId, {
+      status: "COMPLETED",
+    });
   }
 }

@@ -11,6 +11,7 @@ import projectRoutes from "./routes/project.routes";
 import projectMemberRoutes from "./routes/project-member.routes";
 import taskRoutes from "./routes/task.routes";
 import { errorMiddleware } from "./middleware/error.middleware";
+import { errorHandler } from "./middleware/error-handler";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
@@ -19,70 +20,67 @@ const app = express();
 
 app.use(helmet());
 
+cors({
+  origin: true,
+  credentials: true,
+});
+
+const allowedOrigins =
+  process.env.CORS_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean) || [];
+
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      // Allow requests such as curl/Postman with no Origin header
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS origin not allowed"));
+    },
     credentials: true,
   }),
 );
 
 app.use(express.json());
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec)
-);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(passport.initialize());
-
 
 // ===============================
 // AUTH
 // ===============================
 
-app.use(
-  "/api/v1/auth",
-  authRoutes,
-);
-
+app.use("/api/v1/auth", authRoutes);
 
 // ===============================
 // USERS
 // ===============================
 
-app.use(
-  "/api/v1/users",
-  userRoutes,
-);
-
+app.use("/api/v1/users", userRoutes);
 
 // ===============================
 // PROJECTS
 // ===============================
 
-app.use(
-  "/api/v1/projects",
-  projectRoutes,
-);
-
+app.use("/api/v1/projects", projectRoutes);
 
 // ===============================
 // PROJECT MEMBERS
 // ===============================
 
-app.use(
-  "/api/v1/projects/:projectId/members",
-  projectMemberRoutes,
-);
-
+app.use("/api/v1/projects/:projectId/members", projectMemberRoutes);
 
 // ===============================
 // TASKS
 // ===============================
 
-app.use(
-  "/api/v1/projects/:projectId/tasks",
-  taskRoutes,
-);
+app.use("/api/v1/projects/:projectId/tasks", taskRoutes);
 
 /**
  * @swagger
@@ -104,5 +102,5 @@ app.get("/api/v1/health", (_req, res) => {
 });
 
 app.use(errorMiddleware);
-
+app.use(errorHandler);
 export default app;

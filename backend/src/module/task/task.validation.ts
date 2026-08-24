@@ -128,3 +128,5 @@ export const taskQuerySchema = z.object({
 export const assignTaskSchema = z.object({
   assignedToId: z.string().uuid(),
 });
+
+export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;

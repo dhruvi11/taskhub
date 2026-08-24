@@ -58,7 +58,7 @@ export class ProjectController {
   };
 
   getProject = async (
-    req: Request,
+    req: Request<{ id: string }>,
     res: Response
   ) => {
     const userId = req.user!.userId;
@@ -77,7 +77,7 @@ export class ProjectController {
   };
 
   updateProject = async (
-    req: Request,
+    req: Request<{ id: string }>,
     res: Response
   ) => {
     const userId = req.user!.userId;
@@ -100,7 +100,7 @@ export class ProjectController {
   };
 
   deleteProject = async (
-    req: Request,
+    req: Request<{ id: string }>,
     res: Response
   ) => {
     const userId = req.user!.userId;

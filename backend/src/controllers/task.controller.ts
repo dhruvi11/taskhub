@@ -2,11 +2,17 @@ import { Request, Response } from "express";
 
 import {
   createTaskSchema,
+  taskQuerySchema,
   updateTaskSchema,
   assignTaskSchema,
 } from "../module/task/task.validation";
 
 import { TaskService } from "../services/task.service";
+
+type TaskParams = {
+  projectId: string;
+  taskId: string;
+};
 
 export class TaskController {
   constructor(
@@ -14,7 +20,7 @@ export class TaskController {
   ) {}
 
   createTask = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
     const data =
@@ -35,41 +41,15 @@ export class TaskController {
   };
 
   listTasks = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
-    const page = Math.max(
-      Number(req.query.page) || 1,
-      1
-    );
-
-    const limit = Math.min(
-      Math.max(
-        Number(req.query.limit) || 10,
-        1
-      ),
-      100
-    );
+    const query = taskQuerySchema.parse(req.query);
 
     const result =
       await this.service.listTasks(
         req.params.projectId,
-        {
-          page,
-          limit,
-          search:
-            req.query.search as string,
-          status:
-            req.query.status as any,
-          priority:
-            req.query.priority as any,
-          assignedToId:
-            req.query.assignedToId as string,
-          sortBy:
-            req.query.sortBy as any,
-          sortOrder:
-            req.query.sortOrder as any,
-        }
+        query
       );
 
     return res.status(200).json({
@@ -80,7 +60,7 @@ export class TaskController {
   };
 
   getTask = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
     const task =
@@ -97,7 +77,7 @@ export class TaskController {
   };
 
   updateTask = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
     const data =
@@ -118,7 +98,7 @@ export class TaskController {
   };
 
   deleteTask = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
     await this.service.deleteTask(
@@ -133,7 +113,7 @@ export class TaskController {
   };
 
   assignTask = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
     const data =
@@ -154,7 +134,7 @@ export class TaskController {
   };
 
   completeTask = async (
-    req: Request,
+    req: Request<TaskParams>,
     res: Response
   ) => {
     const task =
