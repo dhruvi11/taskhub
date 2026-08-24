@@ -6,12 +6,15 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  TextField,
 } from "@mui/material";
+
+import { useState } from "react";
 
 interface AppDialogProps {
   open: boolean;
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onClose: () => void;
   onConfirm?: () => void;
   confirmText?: string;
@@ -32,7 +35,6 @@ export default function AppDialog({
       fullWidth
       maxWidth="sm"
     >
-
       <DialogTitle>
         {title}
       </DialogTitle>
@@ -41,9 +43,12 @@ export default function AppDialog({
         {children}
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions className="px-6 pb-5">
 
-        <Button onClick={onClose}>
+        <Button
+          onClick={onClose}
+          color="inherit"
+        >
           Cancel
         </Button>
 
@@ -57,7 +62,6 @@ export default function AppDialog({
         )}
 
       </DialogActions>
-
     </Dialog>
   );
 }
