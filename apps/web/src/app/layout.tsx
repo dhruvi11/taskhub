@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import ReduxProvider from "@/src/components/providers/ReduxProvider";
+
 export const metadata: Metadata = {
   title: "TaskHub",
-  description: "Task and project management application",
+  description: "Task and project management platform",
 };
 
 export default function RootLayout({
@@ -13,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
+      </body>
     </html>
   );
 }

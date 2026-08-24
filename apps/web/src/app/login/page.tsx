@@ -2,24 +2,74 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import {
+  useLoginMutation,
+} from "@/src/store/api";
+
+import {
+  setCredentials,
+} from "@/src/store/slices/authSlice";
+
+import {
+  useAppDispatch,
+} from "@/src/store/hooks";
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const dispatch = useAppDispatch();
+
+  const [
+    login,
+    {
+      isLoading,
+      error,
+    },
+  ] = useLoginMutation();
+
+  const [email, setEmail] =
+    useState("");
+
+  const [password, setPassword] =
+    useState("");
+
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>,
+  ) => {
     e.preventDefault();
 
-    setLoading(true);
+    try {
+      const response =
+        await login({
+          email,
+          password,
+        }).unwrap();
 
-    // API integration will be added after UI foundation
-    setTimeout(() => {
-      setLoading(false);
-    }, 800);
+      dispatch(
+        setCredentials({
+          user: response.data.user,
+          accessToken:
+            response.data.accessToken,
+          refreshToken:
+            response.data.refreshToken,
+        }),
+      );
+
+      router.push("/dashboard");
+    } catch (err) {
+      console.error(
+        "Login failed:",
+        err,
+      );
+    }
   };
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
       <div className="w-full max-w-md">
+
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-slate-900">
             TaskHub
@@ -31,6 +81,7 @@ export default function LoginPage() {
         </div>
 
         <div className="rounded-2xl bg-white p-8 shadow-lg">
+
           <h2 className="text-2xl font-semibold text-slate-900">
             Welcome back
           </h2>
@@ -43,6 +94,7 @@ export default function LoginPage() {
             onSubmit={handleSubmit}
             className="mt-6 space-y-5"
           >
+
             <div>
               <label
                 htmlFor="email"
@@ -54,56 +106,65 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
                 placeholder="you@example.com"
                 required
-                className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </div>
 
             <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium text-slate-700"
-                >
-                  Password
-                </label>
-
-                <Link
-                  href="/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-700"
-                >
-                  Forgot password?
-                </Link>
-              </div>
+              <label
+                htmlFor="password"
+                className="mb-2 block text-sm font-medium text-slate-700"
+              >
+                Password
+              </label>
 
               <input
                 id="password"
                 type="password"
+                value={password}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
                 placeholder="••••••••"
                 required
-                className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600">
+                Invalid email or password.
+              </p>
+            )}
+
             <button
               type="submit"
-              disabled={loading}
-              className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isLoading}
+              className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {isLoading
+                ? "Signing in..."
+                : "Sign in"}
             </button>
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
             Don't have an account?{" "}
+
             <Link
               href="/signup"
-              className="font-medium text-blue-600 hover:text-blue-700"
+              className="font-medium text-blue-600"
             >
               Create account
             </Link>
           </p>
+
         </div>
       </div>
     </main>

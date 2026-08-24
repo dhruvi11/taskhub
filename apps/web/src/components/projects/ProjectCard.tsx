@@ -1,125 +1,45 @@
-"use client";
-
 import Link from "next/link";
 
-import {
-  Card,
-  CardContent,
-  Chip,
-  Typography,
-} from "@mui/material";
+import type {
+  Project,
+} from "@/src/store/api";
 
-import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
-import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
-import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-
-import { Project } from "@/src/types/project";
-
-interface ProjectCardProps {
+interface Props {
   project: Project;
 }
 
 export default function ProjectCard({
   project,
-}: ProjectCardProps) {
+}: Props) {
   return (
-    <Card
-      elevation={0}
-      className="
-        h-full
-        border
-        border-gray-200
-        transition
-        duration-200
-        hover:-translate-y-1
-        hover:shadow-md
-      "
-    >
-      <CardContent className="flex h-full flex-col">
+    <div className="rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md">
 
-        <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between">
 
-          <div className="flex items-center gap-3">
+        <h2 className="text-lg font-semibold text-slate-900">
+          {project.name}
+        </h2>
 
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50">
-              <FolderOutlinedIcon className="text-blue-600" />
-            </div>
+        {project.status && (
+          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+            {project.status}
+          </span>
+        )}
 
-            <div>
-              <Typography
-                variant="h6"
-                className="font-semibold text-gray-900"
-              >
-                {project.name}
-              </Typography>
+      </div>
 
-              <Typography
-                variant="body2"
-                className="text-gray-500"
-              >
-                Project
-              </Typography>
-            </div>
+      <p className="mt-3 line-clamp-2 text-sm text-slate-500">
+        {project.description ||
+          "No description available."}
+      </p>
 
-          </div>
+      <Link
+        href={`/projects/${project.id}`}
+        className="mt-5 inline-block text-sm font-medium text-blue-600 hover:text-blue-700"
+      >
+        View project →
+      </Link>
 
-          <Chip
-            size="small"
-            label={project.status || "ACTIVE"}
-            color={
-              project.status === "ARCHIVED"
-                ? "default"
-                : "success"
-            }
-          />
-
-        </div>
-
-        <Typography
-          variant="body2"
-          className="mt-5 min-h-[40px] text-gray-600"
-        >
-          {project.description ||
-            "No project description available."}
-        </Typography>
-
-        <div className="mt-6 flex items-center gap-5 border-t border-gray-100 pt-4">
-
-          <div className="flex items-center gap-1.5 text-sm text-gray-500">
-            <TaskOutlinedIcon fontSize="small" />
-
-            <span>
-              {project._count?.tasks ?? 0} tasks
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1.5 text-sm text-gray-500">
-            <GroupOutlinedIcon fontSize="small" />
-
-            <span>
-              {project._count?.members ?? 0} members
-            </span>
-          </div>
-
-        </div>
-
-        <div className="mt-auto pt-5">
-
-          <Link
-            href={`/projects/${project.id}`}
-            className="
-              text-sm
-              font-semibold
-              text-blue-600
-              hover:text-blue-800
-            "
-          >
-            View project →
-          </Link>
-
-        </div>
-
-      </CardContent>
-    </Card>
+    </div>
   );
 }
