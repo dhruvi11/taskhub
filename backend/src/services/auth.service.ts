@@ -3,25 +3,34 @@ import {
   findUserByGoogleId,
   createUser,
   updateUserGoogleId,
+  findUserById,
+  createRefreshToken,
 } from "../repositories/auth.repository";
-import {
-  hashPassword,
-} from '../utils/password';
 
 import {
-  generateAccessToken,
-  generateRefreshToken,
-} from '../utils/jwt';
+  hashPassword,
+  comparePassword,
+} from "../utils/password";
 
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/jwt";
 
-export const createAuthTokens = (userId: string) => {
-  const accessToken = generateAccessToken(userId);
 
-  const refreshToken = generateRefreshToken(userId);
+// ========================================
+// CREATE AUTH TOKENS
+// ========================================
+
+export const createAuthTokens = async (
+  userId: string,
+  role: string,
+) => {
+  const accessToken =
+    generateAccessToken(userId, role);
+
+  const refreshToken =
+    generateRefreshToken(userId);
 
   return {
     accessToken,
@@ -29,44 +38,25 @@ export const createAuthTokens = (userId: string) => {
   };
 };
 
-export const authenticateGoogleUser = async ({
-  googleId,
-  email,
-  name,
-}: {
-  googleId: string;
-  email: string;
-  name: string;
-}) => {
-  const user = await findOrCreateGoogleUser({
-    googleId,
-    email,
-    name,
-  });
 
-  const tokens = createAuthTokens(user.id);
+// ========================================
+// REGISTER
+// ========================================
 
-  return {
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    },
-    ...tokens,
-  };
-};
 export const register = async (
   name: string,
   email: string,
   password: string,
 ) => {
-  const existingUser = await findUserByEmail(email);
+  const existingUser =
+    await findUserByEmail(email);
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new Error("User already exists");
   }
 
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword =
+    await hashPassword(password);
 
   const user = await createUser({
     name,
@@ -74,51 +64,186 @@ export const register = async (
     password: hashedPassword,
   });
 
-  const accessToken = generateAccessToken(user.id);
-  const refreshToken = generateRefreshToken(user.id);
+  const tokens =
+    await createAuthTokens(
+      user.id,
+      user.role,
+    );
 
   return {
     user: {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
     },
-    accessToken,
-    refreshToken,
+    ...tokens,
   };
 };
-export const findOrCreateGoogleUser = async ({
-  googleId,
-  email,
-  name,
-}: {
-  googleId: string;
-  email: string;
-  name: string;
-}) => {
-  // 1. Find by Google ID
-  const googleUser = await findUserByGoogleId(googleId);
 
-  if (googleUser) {
-    return googleUser;
-  }
 
-  // 2. Find by email
-  const existingUser = await findUserByEmail(email);
+// ========================================
+// LOGIN
+// ========================================
 
-  if (existingUser) {
-    // Link Google account
-    return updateUserGoogleId(
-      existingUser.id,
-      googleId,
+export const login = async (
+  email: string,
+  password: string,
+) => {
+  const user =
+    await findUserByEmail(email);
+
+  if (!user) {
+    throw new Error(
+      "Invalid email or password",
     );
   }
 
-  // 3. Create new user
-  return createUser({
-    name,
-    email,
-    password: null,
-    googleId,
-  });
+  if (!user.password) {
+    throw new Error(
+      "This account does not have a password. Please use Google login.",
+    );
+  }
+
+  const isPasswordValid =
+    await comparePassword(
+      password,
+      user.password,
+    );
+
+  if (!isPasswordValid) {
+    throw new Error(
+      "Invalid email or password",
+    );
+  }
+
+  const tokens =
+    await createAuthTokens(
+      user.id,
+      user.role,
+    );
+
+  return {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+    ...tokens,
+  };
 };
+
+
+// ========================================
+// CURRENT USER
+// ========================================
+
+export const getCurrentUser = async (
+  userId: string,
+) => {
+  const user =
+    await findUserById(userId);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    avatarUrl: user.avatarUrl,
+    googleId: user.googleId,
+    role: user.role,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+};
+
+
+// ========================================
+// GOOGLE USER
+// ========================================
+
+export const findOrCreateGoogleUser =
+  async ({
+    googleId,
+    email,
+    name,
+  }: {
+    googleId: string;
+    email: string;
+    name: string;
+  }) => {
+
+    // 1. Find by Google ID
+
+    const googleUser =
+      await findUserByGoogleId(googleId);
+
+    if (googleUser) {
+      return googleUser;
+    }
+
+    // 2. Find by email
+
+    const existingUser =
+      await findUserByEmail(email);
+
+    if (existingUser) {
+      return updateUserGoogleId(
+        existingUser.id,
+        googleId,
+      );
+    }
+
+    // 3. Create new Google user
+
+    return createUser({
+      name,
+      email,
+      password: null,
+      googleId,
+    });
+  };
+
+
+// ========================================
+// GOOGLE AUTHENTICATION
+// ========================================
+
+export const authenticateGoogleUser =
+  async ({
+    googleId,
+    email,
+    name,
+  }: {
+    googleId: string;
+    email: string;
+    name: string;
+  }) => {
+
+    const user =
+      await findOrCreateGoogleUser({
+        googleId,
+        email,
+        name,
+      });
+
+    const tokens =
+      await createAuthTokens(
+        user.id,
+        user.role,
+      );
+
+    return {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      ...tokens,
+    };
+  };

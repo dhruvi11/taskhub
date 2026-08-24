@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-import { prisma } from '../config/prisma';
-
+import { prisma } from "../config/prisma";
 
 type ProjectRole =
   | "OWNER"
@@ -17,15 +16,73 @@ export const requireProjectRole = (
     next: NextFunction
   ) => {
     try {
-      const userId = req.user!.userId;
+      const userId = req.user?.userId;
       const projectId = req.params.projectId;
 
-      if (typeof projectId !== "string") {
+      if (!userId) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized",
+        });
+      }
+
+      if (
+        !projectId ||
+        typeof projectId !== "string"
+      ) {
         return res.status(400).json({
           success: false,
           message: "Invalid project ID",
         });
       }
+
+      // --------------------------------
+      // Check if project exists
+      // --------------------------------
+
+      const project =
+        await prisma.project.findUnique({
+          where: {
+            id: projectId,
+          },
+          select: {
+            id: true,
+            ownerId: true,
+          },
+        });
+
+      if (!project) {
+        return res.status(404).json({
+          success: false,
+          message: "Project not found",
+        });
+      }
+
+      // --------------------------------
+      // Project Owner
+      // --------------------------------
+
+      if (project.ownerId === userId) {
+        if (!allowedRoles.includes("OWNER")) {
+          return res.status(403).json({
+            success: false,
+            message:
+              "You do not have permission to perform this action",
+          });
+        }
+
+        req.projectMembership = {
+          projectId,
+          userId,
+          role: "OWNER",
+        };
+
+        return next();
+      }
+
+      // --------------------------------
+      // Project Member
+      // --------------------------------
 
       const membership =
         await prisma.projectMember.findUnique({
@@ -45,11 +102,14 @@ export const requireProjectRole = (
         });
       }
 
-      if (
-        !allowedRoles.includes(
-          membership.role as ProjectRole
-        )
-      ) {
+      // --------------------------------
+      // Role Permission
+      // --------------------------------
+
+      const role =
+        membership.role as ProjectRole;
+
+      if (!allowedRoles.includes(role)) {
         return res.status(403).json({
           success: false,
           message:
@@ -60,7 +120,7 @@ export const requireProjectRole = (
       req.projectMembership = {
         projectId,
         userId,
-        role: membership.role,
+        role,
       };
 
       next();

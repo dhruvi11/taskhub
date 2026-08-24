@@ -666,3 +666,124 @@ A. Users should receive only the permissions required to perform their responsib
 Q30. How would you improve the current RBAC implementation for a large application?
 A. I would introduce centralized permission definitions, avoid hard-coded role checks across the codebase, add authorization unit tests, add audit logs for sensitive operations, and potentially cache frequently accessed membership permissions.
 
+Milestone 9 — Interview Q&A
+
+Q1. How did you design the Task model?
+A. A Task belongs to a Project and has relationships with two users: createdBy and assignedTo. It also contains status, priority, dueDate, timestamps and projectId.
+
+Q2. Why do you need both createdById and assignedToId?
+A. The user who creates a task and the user responsible for completing it can be different. createdById represents the creator while assignedToId represents the assignee.
+
+Q3. What task statuses did you implement?
+A. TODO, IN_PROGRESS and COMPLETED.
+
+Q4. What priorities did you implement?
+A. LOW, MEDIUM, HIGH and URGENT.
+
+Q5. How does task assignment work?
+A. The API receives an assignedToId. Before assigning the task, the service checks ProjectMember to verify that the user belongs to the same project.
+
+Q6. Why must the assigned user belong to the project?
+A. Otherwise a task from one project could be assigned to a user who has no access to that project. This is both a business and security requirement.
+
+Q7. How does pagination work?
+A. I accept page and limit query parameters. The database offset is calculated using (page - 1) * limit, and Prisma uses skip and take to retrieve only the required records.
+
+Q8. Why use pagination?
+A. It prevents the API from loading thousands of records into memory and sending a very large response to the client.
+
+Q9. What is the maximum page size?
+A. I limit the page size to 100 to prevent clients from requesting an unnecessarily large dataset.
+
+Q10. How did you implement search?
+A. I use Prisma's OR condition to search the task title and description using a case-insensitive contains filter.
+
+Q11. How did you implement filtering?
+A. Optional query parameters such as status, priority and assignedToId are converted into Prisma where conditions.
+
+Q12. How did you implement sorting?
+A. The API accepts a controlled sortBy value and sortOrder value, which are passed to Prisma's orderBy.
+
+Q13. Why should sortBy be restricted to allowed values?
+A. To prevent invalid queries and keep control over which database fields can be used for sorting.
+
+Q14. Why use database indexes?
+A. Indexes improve lookup and filtering performance. I added indexes on fields such as projectId, assignedToId, status, priority and dueDate.
+
+Q15. Why is projectId indexed?
+A. Most task queries are scoped to a project, so indexing projectId improves those queries.
+
+Q16. How do you prevent a user from accessing a task from another project?
+A. The task lookup uses both taskId and projectId. Therefore a valid task ID from another project will not be returned.
+
+Q17. Why is checking only taskId unsafe?
+A. If the API only checks taskId, a user could potentially provide a task ID belonging to another project. Scoping the query by projectId prevents cross-project resource access.
+
+Q18. How does task authorization work?
+A. First the JWT middleware authenticates the user. Then project permission middleware verifies their project membership and role. Finally, task-specific business rules are handled in the service layer.
+
+Q19. Can every project member create tasks?
+A. In the current design, OWNER, MANAGER and MEMBER can create tasks.
+
+Q20. Can every project member delete tasks?
+A. No. Only OWNER and MANAGER can delete tasks.
+
+Q21. Can every project member assign tasks?
+A. No. Assignment is restricted to OWNER and MANAGER in the current permission matrix.
+
+Q22. Can a MEMBER complete a task?
+A. Yes. Members can complete tasks because completing assigned work is part of their normal responsibility.
+
+Q23. Why have a separate complete endpoint?
+A. Completing a task is an important business operation with its own rules, so a dedicated endpoint makes the API clearer and allows the service to enforce completion-specific logic.
+
+Q24. What happens if a task is already completed?
+A. The service checks the current status and rejects another completion request instead of unnecessarily updating it.
+
+Q25. Where do business rules belong?
+A. Business rules belong primarily in the service layer. Controllers handle HTTP concerns, repositories handle database access, and services handle application logic.
+
+Q26. Why use a repository layer?
+A. It separates database access from business logic. This makes the service easier to test and allows database implementation details to remain inside the repository.
+
+Q27. Why use Zod?
+A. Zod validates incoming request data at runtime. TypeScript types disappear at runtime, so runtime validation is required for API input.
+
+Q28. How do you validate dueDate?
+A. I validate that it is an ISO datetime string and convert it to a JavaScript Date before storing it in PostgreSQL.
+
+Q29. What happens if assignedToId doesn't belong to the project?
+A. The service queries ProjectMember using projectId and assignedToId. If no membership exists, the operation is rejected.
+
+Q30. Why use a transaction for task listing?
+A. The list operation needs both the task records and the total count. Using a transaction keeps those related queries together and provides a consistent result.
+
+Q31. What is the difference between skip and take in Prisma?
+A. skip determines how many records to ignore, while take determines how many records to return.
+
+Q32. How do you calculate pagination metadata?
+A. totalPages is calculated using Math.ceil(total / limit).
+
+Q33. How would you handle overdue tasks?
+A. I would compare dueDate with the current time and expose an overdue filter or computed overdue property.
+
+Q34. How would you implement "My Tasks"?
+A. I would filter tasks using assignedToId equal to the authenticated user's ID.
+
+Q35. How would you allow members to update only their assigned tasks?
+A. The service would verify that the authenticated user's ID matches assignedToId before allowing the update.
+
+Q36. How would you prevent a member from changing task priority?
+A. I would implement field-level authorization in the service layer and allow members to change only permitted fields such as status.
+
+Q37. What HTTP status do you return when a task doesn't exist?
+A. Typically 404 Not Found.
+
+Q38. What HTTP status do you return when the user doesn't have permission?
+A. 403 Forbidden.
+
+Q39. What HTTP status do you return when the JWT is missing or invalid?
+A. 401 Unauthorized.
+
+Q40. How would you improve the Task module for production?
+A. I would add comprehensive unit and integration tests, centralized permission definitions, audit logging, optimistic concurrency handling, better database indexes, full-text search if required, task activity history, notifications and monitoring with Sentry.

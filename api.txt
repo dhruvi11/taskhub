@@ -1,4 +1,173 @@
-POST   /api/v1/projects/:projectId/members
-GET    /api/v1/projects/:projectId/members
-PATCH  /api/v1/projects/:projectId/members/:userId
-DELETE /api/v1/projects/:projectId/members/:userId
+curl -i http://localhost:5050/api/v1/health
+
+curl -i \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "TaskHub Test User",
+    "email": "taskhubtest@example.com",
+    "password": "Test@12345"
+  }' \
+  http://localhost:5050/api/v1/auth/register
+
+  curl -i \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "taskhubtest@example.com",
+    "password": "Test@12345"
+  }' \
+  http://localhost:5050/api/v1/auth/login
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/users/me
+
+  curl -i \
+  http://localhost:5050/api/v1/auth/google
+
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/users/me
+
+  curl -i \
+  -X PATCH \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "TaskHub Updated User"
+  }' \
+  http://localhost:5050/api/v1/users/me
+
+  curl -i \
+  -X POST \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Milestone 9 Test Project",
+    "description": "Testing TaskHub APIs"
+  }' \
+  http://localhost:5050/api/v1/projects
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  "http://localhost:5050/api/v1/projects?page=1&limit=10"
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee
+
+  curl -i \
+  -X PATCH \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Updated TaskHub Project",
+    "description": "Updated description"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/members
+
+
+curl -i \
+  -X POST \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "c067f5e6-b6e7-43a1-9976-0f63f3364c28",
+    "role": "MEMBER"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/members
+
+  curl -i \
+  -X POST \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": "SECOND_USER_ID",
+    "role": "MEMBER"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/members
+
+  curl -i \
+  -X PATCH \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "MANAGER"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/members/SECOND_USER_ID
+
+  curl -i \
+  -X DELETE \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/members/SECOND_USER_ID
+
+  curl -i \
+  -X POST \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Build authentication API",
+    "description": "Implement JWT authentication",
+    "priority": "HIGH",
+    "dueDate": "2026-08-30T18:00:00.000Z"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  "http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks?page=1&limit=10"
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  "http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks?search=authentication"
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  "http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks?priority=HIGH"
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  "http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks?status=TODO"
+
+  curl -i \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks/TASK_ID
+
+  curl -i \
+  -X PATCH \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Build JWT authentication API",
+    "priority": "MEDIUM"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks/TASK_ID
+
+  curl -i \
+  -X PATCH \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "assignedToId": "USER_ID"
+  }' \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks/TASK_ID/assign
+
+  curl -i \
+  -X PATCH \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks/TASK_ID/complete
+
+  curl -i \
+  -X DELETE \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzNmVjMWU5ZS1lNTQ3LTRjNjQtOTdlNy1lMDY3MjI2MTNhNzEiLCJpYXQiOjE3ODczMjE0OTgsImV4cCI6MTc4NzMyMjM5OH0.FzbWAs5KvNMvTp4MV1WCAGvJnYWuTjxIFJXWbkNYiDQ" \
+  http://localhost:5050/api/v1/projects/fc4db627-ab96-480b-aab4-c800007f64ee/tasks/TASK_ID
+
+  git status
+git add src/controllers/auth.controller.ts src/routes/auth.routes.ts src/services/auth.service.ts src/utils/jwt.ts
+git commit -m "feat(auth): add register login and current user APIs"

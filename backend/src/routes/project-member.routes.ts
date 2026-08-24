@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import { authMiddleware } from "../middleware/auth";
-
 import {
   requireProjectRole,
 } from "../middleware/project-permission.middleware";
@@ -10,7 +9,9 @@ import { ProjectMemberRepository } from "../repositories/project-member.reposito
 import { ProjectMemberService } from "../services/project-member.service";
 import { ProjectMemberController } from "../controllers/project-member.controller";
 
-const router = Router();
+const router = Router({
+  mergeParams: true,
+});
 
 const repository =
   new ProjectMemberRepository();

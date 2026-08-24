@@ -1,0 +1,212 @@
+import { prisma } from "../config/prisma";
+
+export class TaskRepository {
+  async create(data: {
+    title: string;
+    description?: string;
+    priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+    dueDate?: Date;
+    projectId: string;
+    createdById: string;
+    assignedToId?: string;
+  }) {
+    return prisma.task.create({
+      data: {
+        title: data.title,
+        description: data.description,
+        priority: data.priority,
+        dueDate: data.dueDate,
+        projectId: data.projectId,
+        createdById: data.createdById,
+        assignedToId: data.assignedToId,
+      },
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findMany(
+    projectId: string,
+    options: {
+      page: number;
+      limit: number;
+      search?: string;
+      status?: "TODO" | "IN_PROGRESS" | "COMPLETED";
+      priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+      assignedToId?: string;
+      sortBy?: "createdAt" | "dueDate" | "priority" | "title";
+      sortOrder?: "asc" | "desc";
+    }
+  ) {
+    const {
+      page,
+      limit,
+      search,
+      status,
+      priority,
+      assignedToId,
+      sortBy = "createdAt",
+      sortOrder = "desc",
+    } = options;
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      projectId,
+
+      ...(search
+        ? {
+            OR: [
+              {
+                title: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+              {
+                description: {
+                  contains: search,
+                  mode: "insensitive" as const,
+                },
+              },
+            ],
+          }
+        : {}),
+
+      ...(status ? { status } : {}),
+
+      ...(priority ? { priority } : {}),
+
+      ...(assignedToId
+        ? { assignedToId }
+        : {}),
+    };
+
+    const [tasks, total] =
+      await Promise.all([
+        prisma.task.findMany({
+          where,
+          skip,
+          take: limit,
+
+          orderBy: {
+            [sortBy]: sortOrder,
+          },
+
+          include: {
+            createdBy: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+
+            assignedTo: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        }),
+
+        prisma.task.count({
+          where,
+        }),
+      ]);
+
+    return {
+      tasks,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async findById(
+    projectId: string,
+    taskId: string
+  ) {
+    return prisma.task.findFirst({
+      where: {
+        id: taskId,
+        projectId,
+      },
+
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async update(
+    taskId: string,
+    data: any
+  ) {
+    return prisma.task.update({
+      where: {
+        id: taskId,
+      },
+      data,
+
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+
+  async delete(taskId: string) {
+    return prisma.task.delete({
+      where: {
+        id: taskId,
+      },
+    });
+  }
+}
