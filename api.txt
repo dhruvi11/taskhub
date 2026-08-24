@@ -206,8 +206,8 @@ curl -i \
 curl -i \
   -H "Authorization: Bearer YOUR_TOKEN" \
   "http://localhost:5050/api/v1/projects/PROJECT_ID/tasks?page=1&limit=10&status=TODO&priority=HIGH&search=API&sortBy=dueDate&sortOrder=asc"
-
-
+  
+  git command 
   git status
-git add src/controllers/auth.controller.ts src/routes/auth.routes.ts src/services/auth.service.ts src/utils/jwt.ts
-git commit -m "feat(auth): add register login and current user APIs"
+  git add.
+  git commit -m "message"

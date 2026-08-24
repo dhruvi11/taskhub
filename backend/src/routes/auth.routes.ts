@@ -12,6 +12,28 @@ import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /api/v1/auth/register:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Register a user
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name, email, password]
+ *             properties:
+ *               name: { type: string, minLength: 2, maxLength: 100, example: Ada Lovelace }
+ *               email: { type: string, format: email, example: ada@example.com }
+ *               password: { type: string, format: password, minLength: 8, example: SecurePass123! }
+ *     responses:
+ *       201: { description: User registered successfully }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ */
 
 // ========================================
 // REGISTER
@@ -27,6 +49,27 @@ router.post(
 // LOGIN
 // ========================================
 
+/**
+ * @swagger
+ * /api/v1/auth/login:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Log in with email and password
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email: { type: string, format: email, example: ada@example.com }
+ *               password: { type: string, format: password, minLength: 8, example: SecurePass123! }
+ *     responses:
+ *       200: { description: Login successful }
+ *       400: { $ref: '#/components/responses/ValidationError' }
+ */
 router.post(
   "/login",
   loginController,
@@ -37,6 +80,16 @@ router.post(
 // CURRENT USER
 // ========================================
 
+/**
+ * @swagger
+ * /api/v1/auth/me:
+ *   get:
+ *     tags: [Authentication]
+ *     summary: Get the authenticated user
+ *     responses:
+ *       200: { description: Current user fetched successfully }
+ *       401: { $ref: '#/components/responses/Unauthorized' }
+ */
 router.get(
   "/me",
   authMiddleware,
@@ -48,6 +101,17 @@ router.get(
 // GOOGLE LOGIN
 // ========================================
 
+/**
+ * @swagger
+ * /api/v1/auth/google:
+ *   get:
+ *     tags: [Authentication]
+ *     summary: Begin Google OAuth sign-in
+ *     description: Redirects to Google for authentication.
+ *     security: []
+ *     responses:
+ *       302: { description: Redirect to Google OAuth consent screen }
+ */
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -64,6 +128,17 @@ router.get(
 // GOOGLE CALLBACK
 // ========================================
 
+/**
+ * @swagger
+ * /api/v1/auth/google/callback:
+ *   get:
+ *     tags: [Authentication]
+ *     summary: Complete Google OAuth sign-in
+ *     security: []
+ *     responses:
+ *       200: { description: Google authentication successful }
+ *       401: { $ref: '#/components/responses/Unauthorized' }
+ */
 router.get(
   "/google/callback",
   passport.authenticate("google", {

@@ -12,6 +12,9 @@ import projectMemberRoutes from "./routes/project-member.routes";
 import taskRoutes from "./routes/task.routes";
 import { errorMiddleware } from "./middleware/error.middleware";
 
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
+
 const app = express();
 
 app.use(helmet());
@@ -24,7 +27,11 @@ app.use(
 );
 
 app.use(express.json());
-
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 app.use(passport.initialize());
 
 
@@ -77,11 +84,18 @@ app.use(
   taskRoutes,
 );
 
-
-// ===============================
-// HEALTH
-// ===============================
-
+/**
+ * @swagger
+ * /api/v1/health:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: Check API health
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: API is running
+ */
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({
     success: true,
