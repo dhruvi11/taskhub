@@ -2,7 +2,7 @@ import api from "./api";
 
 import {
   Project,
-  CreateProjectPayload,
+  CreateProjectRequest,
 } from "@/src/types/project";
 
 export interface ProjectListResponse {
@@ -47,7 +47,7 @@ export const getProject = async (
 };
 
 export const createProject = async (
-  data: CreateProjectPayload,
+  data: CreateProjectRequest,
 ): Promise<Project> => {
   const response =
     await api.post<{
@@ -60,7 +60,7 @@ export const createProject = async (
 
 export const updateProject = async (
   projectId: string,
-  data: Partial<CreateProjectPayload>,
+  data: Partial<CreateProjectRequest>,
 ): Promise<Project> => {
   const response =
     await api.patch<{

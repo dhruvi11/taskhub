@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
 
 import ReduxProvider from "@/src/components/providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "TaskHub",
-  description: "Task and project management platform",
+  description:
+    "TaskHub project and task management",
 };
 
 export default function RootLayout({

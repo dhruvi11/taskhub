@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import {
+  FormEvent,
+  useState,
+} from "react";
+
 import { useRouter } from "next/navigation";
 
 import {
@@ -15,11 +19,13 @@ import {
 import {
   useAppDispatch,
 } from "@/src/store/hooks";
+import { getApiErrorMessage } from "@/src/lib/api-error";
 
 export default function LoginPage() {
   const router = useRouter();
 
-  const dispatch = useAppDispatch();
+  const dispatch =
+    useAppDispatch();
 
   const [
     login,
@@ -47,17 +53,22 @@ export default function LoginPage() {
           password,
         }).unwrap();
 
+      const data =
+        response?.data || response;
+
       dispatch(
         setCredentials({
-          user: response.data.user,
+          user: data.user,
           accessToken:
-            response.data.accessToken,
+            data.accessToken,
           refreshToken:
-            response.data.refreshToken,
+            data.refreshToken,
         }),
       );
 
-      router.push("/dashboard");
+      router.push(
+        "/dashboard",
+      );
     } catch (err) {
       console.error(
         "Login failed:",
@@ -69,7 +80,6 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
       <div className="w-full max-w-md">
-
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-slate-900">
             TaskHub
@@ -81,7 +91,6 @@ export default function LoginPage() {
         </div>
 
         <div className="rounded-2xl bg-white p-8 shadow-lg">
-
           <h2 className="text-2xl font-semibold text-slate-900">
             Welcome back
           </h2>
@@ -94,7 +103,6 @@ export default function LoginPage() {
             onSubmit={handleSubmit}
             className="mt-6 space-y-5"
           >
-
             <div>
               <label
                 htmlFor="email"
@@ -108,7 +116,9 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) =>
-                  setEmail(e.target.value)
+                  setEmail(
+                    e.target.value,
+                  )
                 }
                 placeholder="you@example.com"
                 required
@@ -129,7 +139,9 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={(e) =>
-                  setPassword(e.target.value)
+                  setPassword(
+                    e.target.value,
+                  )
                 }
                 placeholder="••••••••"
                 required
@@ -138,15 +150,15 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <p className="text-sm text-red-600">
-                Invalid email or password.
+              <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+                {getApiErrorMessage(error, "Invalid email or password.")}
               </p>
             )}
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
+              className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isLoading
                 ? "Signing in..."
@@ -155,16 +167,14 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-500">
-            Don't have an account?{" "}
-
+            Don&apos;t have an account?{" "}
             <Link
               href="/signup"
-              className="font-medium text-blue-600"
+              className="font-medium text-blue-600 hover:text-blue-700"
             >
               Create account
             </Link>
           </p>
-
         </div>
       </div>
     </main>
