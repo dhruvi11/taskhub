@@ -5,7 +5,13 @@ import {
   updateUserGoogleId,
   findUserById,
 } from "../repositories/auth.repository";
+import {
+  createPasswordResetToken,
+} from "../utils/password-reset";
 
+import {
+  passwordResetEmail,
+} from "../emails/password-reset.email";
 import {
   hashPassword,
   comparePassword,
@@ -16,6 +22,8 @@ import {
   generateRefreshToken,
 } from "../utils/jwt";
 
+import { emailService } from "./email.service";
+import { welcomeEmail } from "../emails/welcome.email";
 
 // ========================================
 // CREATE AUTH TOKENS
@@ -63,6 +71,17 @@ export const register = async (
     password: hashedPassword,
   });
 
+  const welcome = welcomeEmail({
+  name: user.name,
+});
+
+await emailService.sendSafeEmail({
+  to: user.email,
+  subject: welcome.subject,
+  html: welcome.html,
+  text: welcome.text,
+});
+
   const tokens =
     await createAuthTokens(
       user.id,
@@ -79,6 +98,7 @@ export const register = async (
     ...tokens,
   };
 };
+
 
 
 // ========================================
@@ -245,4 +265,44 @@ export const authenticateGoogleUser =
       },
       ...tokens,
     };
+  };
+export const requestPasswordReset =
+  async (
+    email: string
+  ) => {
+    const user =
+      await findUserByEmail(email);
+
+    // Do not reveal whether an account exists.
+    if (!user) {
+      return;
+    }
+
+    const token =
+      createPasswordResetToken(
+        user.id
+      );
+
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "http://localhost:3000";
+
+    const resetUrl =
+      `${frontendUrl}/reset-password?token=${token}`;
+
+    const emailContent =
+      passwordResetEmail({
+        name: user.name,
+        resetUrl,
+      });
+
+    await emailService.sendSafeEmail({
+      to: user.email,
+      subject:
+        emailContent.subject,
+      html:
+        emailContent.html,
+      text:
+        emailContent.text,
+    });
   };

@@ -1,4 +1,6 @@
 import { prisma } from '../config/prisma';
+import { projectInvitationEmail } from '../emails/project-invitation.email';
+import { emailService } from '../services/email.service';
 
 export class ProjectMemberRepository {
   async findMembers(projectId: string) {
@@ -51,7 +53,15 @@ export class ProjectMemberRepository {
     userId: string,
     role: "MANAGER" | "MEMBER"
   ) {
-    return prisma.projectMember.create({
+    const existing = await this.findMember(projectId, userId);
+
+  if (existing) {
+    throw new Error(
+      "User is already a member of this project"
+    );
+  }
+
+    const member = await prisma.projectMember.create({
       data: {
         projectId,
         userId,
@@ -68,6 +78,46 @@ export class ProjectMemberRepository {
         },
       },
     });
+
+  const [user, project] =
+    await Promise.all([
+      prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          name: true,
+          email: true,
+        },
+      }),
+
+      prisma.project.findUnique({
+        where: {
+          id: projectId,
+        },
+        select: {
+          name: true,
+        },
+      }),
+    ]);
+
+  if (user && project) {
+    const email =
+      projectInvitationEmail({
+        name: user.name,
+        projectName: project.name,
+        role,
+      });
+
+    await emailService.sendSafeEmail({
+      to: user.email,
+      subject: email.subject,
+      html: email.html,
+      text: email.text,
+    });
+  }
+
+    return member;
   }
 
   async updateRole(
