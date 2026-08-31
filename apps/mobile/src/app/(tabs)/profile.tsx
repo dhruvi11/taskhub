@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
 } from "react-native";
 import { router } from "expo-router";
 
@@ -43,7 +44,11 @@ export default function ProfileScreen() {
 
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-          {currentUser.name.charAt(0)}
+         <Image
+  source={{
+    uri: currentUser.avatarUrl,
+  }}
+/>
         </Text>
       </View>
 

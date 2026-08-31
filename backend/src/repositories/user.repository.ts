@@ -41,4 +41,42 @@ export class UserRepository {
       data,
     });
   }
+
+  async updateUserAvatar(userId: string, avatarUrl: string) {
+    return prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        avatarUrl,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatarUrl: true,
+        role: true,
+      },
+    });
+  }
+
+
+
+async findUserById  (
+  userId: string
+) {
+  return prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      avatarUrl: true,
+      role: true,
+    },
+  });
+};
+
 }

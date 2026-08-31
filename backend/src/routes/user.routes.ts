@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import { authMiddleware } from "../middleware/auth";
-import { uploadAvatar } from "../middleware/upload";
 
 import { UserRepository } from "../repositories/user.repository";
 import { UserService } from "../services/user.service";
@@ -58,30 +57,35 @@ router.patch(
 /**
  * @swagger
  * /api/v1/users/me/avatar:
- *   post:
+ *   patch:
  *     tags: [Users]
- *     summary: Upload the current user's avatar
+ *     summary: Save the current user's S3 avatar
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
- *             required: [avatar]
+ *             required:
+ *               - avatarUrl
  *             properties:
- *               avatar:
+ *               avatarUrl:
  *                 type: string
- *                 format: binary
- *                 description: JPEG, PNG, or WEBP image up to 5 MB.
+ *                 example: users/USER_ID/profile/uuid.jpg
  *     responses:
- *       200: { description: Avatar upload prepared successfully }
- *       400: { description: Avatar is missing or invalid }
- *       401: { $ref: '#/components/responses/Unauthorized' }
+ *       200:
+ *         description: Profile image updated successfully
+ *       400:
+ *         description: Invalid avatar key
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
  */
-router.post(
+router.patch(
   "/me/avatar",
-  uploadAvatar.single("avatar"),
-  userController.uploadAvatar
+  userController.updateAvatar
 );
+
 
 export default router;

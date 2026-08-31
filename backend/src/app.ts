@@ -4,7 +4,7 @@ import helmet from "helmet";
 import passport from "passport";
 
 import "./module/auth/google.strategy";
-
+import fileRoutes from "./routes/file.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import projectRoutes from "./routes/project.routes";
@@ -57,6 +57,12 @@ app.use(passport.initialize());
 // ===============================
 
 app.use("/api/v1/auth", authRoutes);
+
+// ===============================
+// FILE
+// ===============================
+
+app.use("/api/v1/files", fileRoutes);
 
 // ===============================
 // USERS

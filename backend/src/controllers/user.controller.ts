@@ -1,22 +1,32 @@
 import { Request, Response } from "express";
+
 import { UserService } from "../services/user.service";
-import { updateProfileSchema } from "../module/user/user.validation";
+
+import {
+  updateProfileSchema,
+} from "../module/user/user.validation";
 
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService
+  ) {}
 
   getCurrentProfile = async (
     req: Request,
     res: Response
   ) => {
-    const userId = req.user!.userId;
+    const userId =
+      req.user!.userId;
 
     const user =
-      await this.userService.getCurrentProfile(userId);
+      await this.userService.getCurrentProfile(
+        userId
+      );
 
     return res.status(200).json({
       success: true,
-      message: "Profile fetched successfully",
+      message:
+        "Profile fetched successfully",
       data: user,
     });
   };
@@ -25,10 +35,13 @@ export class UserController {
     req: Request,
     res: Response
   ) => {
-    const userId = req.user!.userId;
+    const userId =
+      req.user!.userId;
 
     const validatedData =
-      updateProfileSchema.parse(req.body);
+      updateProfileSchema.parse(
+        req.body
+      );
 
     const user =
       await this.userService.updateProfile(
@@ -38,55 +51,41 @@ export class UserController {
 
     return res.status(200).json({
       success: true,
-      message: "Profile updated successfully",
+      message:
+        "Profile updated successfully",
       data: user,
     });
   };
 
-  uploadAvatar = async (
+  updateAvatar = async (
     req: Request,
     res: Response
   ) => {
-    const userId = req.user!.userId;
+    const { avatarUrl } =
+      req.body;
 
-    const file = req.file;
-
-    if (!file) {
+    if (
+      typeof avatarUrl !== "string" ||
+      !avatarUrl.trim()
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Avatar file is required",
+        message:
+          "avatarUrl is required",
       });
     }
 
-    /*
-     * For Milestone 6:
-     * We prepare the upload flow.
-     *
-     * Later this file can be uploaded to:
-     * AWS S3
-     * or
-     * Firebase Storage
-     */
-
-    const avatarUrl = `pending-upload/${file.originalname}`;
-
     const user =
       await this.userService.updateAvatar(
-        userId,
+        req.user!.userId,
         avatarUrl
       );
 
     return res.status(200).json({
       success: true,
-      message: "Avatar upload prepared successfully",
-      data: {
-        user,
-        file: {
-          originalName: file.originalname,
-          mimeType: file.mimetype,
-          size: file.size,
-        },
-      },
+      message:
+        "Profile image updated successfully",
+      data: user,
     });
   };
 }
