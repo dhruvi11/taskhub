@@ -1858,3 +1858,49 @@ Frontend code can be modified or bypassed by users. The backend must independent
 
 Answer:
 The main benefit is separation of concerns with a shared REST backend. Web and mobile clients can evolve independently while using the same authentication, business logic, database, S3 storage, SES email system, and monitoring infrastructure.
+Milestone 21 — AWS CloudWatch
+
+Q: Why did you use CloudWatch?
+A: CloudWatch provides centralized application logs, metrics, monitoring, and operational visibility for the TaskHub backend.
+
+Q: What logs does TaskHub send to CloudWatch?
+A: API request logs and application error logs.
+
+Q: What metrics does TaskHub publish?
+A: Request count, error count, request latency, Node.js heap memory, RSS memory, and process uptime.
+
+Q: How are custom metrics sent to CloudWatch?
+A: Using AWS SDK v3's PutMetricData API.
+
+Q: How are application logs sent?
+A: Using CloudWatch Logs APIs such as CreateLogGroup, CreateLogStream, and PutLogEvents.
+
+Q: Why measure API latency?
+A: To identify slow endpoints and monitor backend performance.
+
+Q: Why monitor memory?
+A: Increasing heap/RSS usage can indicate memory pressure or memory leaks.
+
+Q: What is a CloudWatch namespace?
+A: A logical container used to organize metrics. TaskHub uses TaskHub/Backend.
+
+Q: What is a CloudWatch log group?
+A: A container that organizes related log streams. TaskHub uses /taskhub/backend.
+
+Q: What is a log stream?
+A: A sequence of log events from an application instance or source.
+
+Q: Why should CloudWatch failures not break API requests?
+A: Observability is secondary. A monitoring failure should never make the business API unavailable.
+
+Q: Why should sensitive data not be logged?
+A: Logs can contain sensitive information and are stored centrally. Passwords, tokens, authorization headers, and secrets should never be logged.
+
+Q: What AWS permissions are required?
+A: CloudWatch Logs permissions for creating groups/streams and writing events, plus cloudwatch:PutMetricData for custom metrics.
+
+Q: What is centralized monitoring?
+A: Collecting application activity and performance information in one monitoring system instead of checking individual server logs.
+
+Q: How would you improve this in production?
+A: Use structured logging, batching, correlation/request IDs, alarms, dashboards, retention policies, and platform-native log shipping where appropriate.

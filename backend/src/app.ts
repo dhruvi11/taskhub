@@ -12,11 +12,16 @@ import projectMemberRoutes from "./routes/project-member.routes";
 import taskRoutes from "./routes/task.routes";
 import { errorMiddleware } from "./middleware/error.middleware";
 import { errorHandler } from "./middleware/error-handler";
+import {
+  cloudWatchRequestMiddleware,
+} from "./middleware/cloudwatch.middleware";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 
 const app = express();
+
+app.use(cloudWatchRequestMiddleware);
 
 app.use(helmet());
 

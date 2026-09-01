@@ -3,15 +3,28 @@ import {
   Response,
   NextFunction,
 } from "express";
-
+import {
+  cloudWatchService,
+} from "../services/cloudwatch.service";
 import { ZodError } from "zod";
 
-export const errorHandler = (
-  error: unknown,
+export const errorHandler = async (
+  error: Error,
   _req: Request,
   res: Response,
   _next: NextFunction,
 ) => {
+
+  await cloudWatchService.log(
+  "ERROR",
+  error.message,
+  {
+    method: _req.method,
+    path: _req.path,
+    userId: _req.user?.userId,
+    stack: error.stack,
+  }
+);
   console.error(error);
 
   if (error instanceof ZodError) {

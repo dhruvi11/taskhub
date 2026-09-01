@@ -16,6 +16,8 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.1123.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.1123.0",
     "@aws-sdk/client-sesv2": "^3.1121.0",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
