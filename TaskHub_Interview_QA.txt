@@ -787,3 +787,1074 @@ A. 401 Unauthorized.
 
 Q40. How would you improve the Task module for production?
 A. I would add comprehensive unit and integration tests, centralized permission definitions, audit logging, optimistic concurrency handling, better database indexes, full-text search if required, task activity history, notifications and monitoring with Sentry.
+
+MILESTONE 10 — Advanced REST API
+1. What is pagination?
+
+Answer:
+Pagination means returning data in smaller chunks instead of returning all records at once. In TaskHub I implemented page and limit query parameters.
+
+Example:
+
+GET /api/v1/projects/:projectId/tasks?page=1&limit=10
+
+This improves API performance and reduces the amount of data transferred.
+
+2. Why is pagination important?
+
+Answer:
+If a project has thousands of tasks, returning everything in one response would be slow and consume more memory. Pagination allows the client to load only the required records.
+
+3. What is filtering?
+
+Answer:
+Filtering allows the client to request only records matching specific conditions.
+
+For example:
+
+/tasks?status=TODO
+/tasks?priority=HIGH
+/tasks?assignedToId=USER_ID
+4. What is searching?
+
+Answer:
+Searching allows users to find records based on text.
+
+For example:
+
+/tasks?search=authentication
+
+The backend searches relevant task fields and returns matching tasks.
+
+5. What is sorting?
+
+Answer:
+Sorting controls the order in which records are returned.
+
+For example:
+
+/tasks?sortBy=createdAt&sortOrder=desc
+6. What is a query parameter?
+
+Answer:
+A query parameter is optional information sent after ? in a URL.
+
+Example:
+
+/tasks?page=1&limit=10&priority=HIGH
+
+Here page, limit, and priority are query parameters.
+
+7. What pagination metadata should an API return?
+
+Answer:
+
+{
+  "page": 1,
+  "limit": 10,
+  "total": 45,
+  "totalPages": 5,
+  "hasNextPage": true,
+  "hasPreviousPage": false
+}
+
+This allows the frontend to build pagination controls.
+
+8. Why should API responses be consistent?
+
+Answer:
+Consistent responses make frontend development easier because the client knows what structure to expect from every endpoint.
+
+For example:
+
+{
+  "success": true,
+  "message": "Tasks fetched successfully",
+  "data": {}
+}
+9. What is the difference between 400, 401, 403, 404 and 500?
+
+Answer:
+
+400 → Bad request / invalid input
+401 → Not authenticated
+403 → Authenticated but not authorized
+404 → Resource not found
+500 → Internal server error
+10. What was the main goal of Milestone 10?
+
+Answer:
+To make the REST API production-quality by implementing pagination, filtering, searching, sorting, query parameters, metadata, and predictable API responses.
+
+MILESTONE 11 — Validation + Security
+11. Why do you validate requests?
+
+Answer:
+Request validation ensures that only valid and expected data reaches the business logic and database.
+
+12. Why did you use Zod?
+
+Answer:
+Zod provides runtime validation and integrates well with TypeScript.
+
+Example:
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8)
+});
+13. What happens when Zod validation fails?
+
+Answer:
+The request is rejected before the business logic executes, and the API returns a validation error instead of processing invalid data.
+
+14. What is Helmet?
+
+Answer:
+Helmet is Express middleware that sets security-related HTTP headers to help protect the application from common web vulnerabilities.
+
+15. What is CORS?
+
+Answer:
+CORS stands for Cross-Origin Resource Sharing. It controls which origins are allowed to access our backend from a browser.
+
+16. Why use a CORS whitelist?
+
+Answer:
+Instead of allowing every website to call the API, we allow only trusted frontend origins.
+
+Example:
+
+http://localhost:3000
+production-taskhub-domain
+17. What is rate limiting?
+
+Answer:
+Rate limiting restricts how many requests a client can make within a specific period. It helps protect APIs from abuse, brute-force attacks, and excessive traffic.
+
+18. How do you secure passwords?
+
+Answer:
+Passwords are hashed before storing them in the database. We never store plain-text passwords.
+
+19. Why shouldn't the backend return passwords?
+
+Answer:
+Passwords are sensitive credentials and should never be included in API responses.
+
+20. What is secure error handling?
+
+Answer:
+Secure error handling means returning useful information to the client without exposing internal stack traces, database details, secrets, or implementation information.
+
+21. How do you validate uploaded files?
+
+Answer:
+I validate the file type and file size before accepting the upload.
+
+For example, profile images can be restricted to:
+
+JPEG
+PNG
+WEBP
+
+and a maximum file size such as:
+
+5 MB
+MILESTONE 12 — Swagger / OpenAPI
+22. What is Swagger?
+
+Answer:
+Swagger provides an interactive interface for exploring and testing REST APIs.
+
+In TaskHub, developers can use /api-docs to inspect and test endpoints.
+
+23. What is OpenAPI?
+
+Answer:
+OpenAPI is a standard specification for describing REST APIs, including endpoints, parameters, request bodies, responses, authentication, and schemas.
+
+24. Why use Swagger?
+
+Answer:
+It makes the API easier to understand and test and provides documentation for frontend and other developers.
+
+25. How did you document authentication?
+
+Answer:
+I configured bearer authentication so developers can enter a JWT token in Swagger and test protected endpoints.
+
+26. What is Bearer authentication?
+
+Answer:
+Bearer authentication sends an access token using the HTTP Authorization header.
+
+Authorization: Bearer <JWT>
+27. What APIs should be documented?
+
+Answer:
+For TaskHub:
+
+Auth
+Users
+Projects
+Project Members
+Tasks
+Files
+MILESTONE 13 — Next.js Web Foundation
+28. Why use Next.js?
+
+Answer:
+Next.js provides routing, React-based UI development, server-side capabilities, TypeScript support, and a structured application architecture.
+
+29. What is the App Router?
+
+Answer:
+The App Router is Next.js's file-system-based routing architecture using the app directory.
+
+For example:
+
+src/app/login/page.tsx
+src/app/projects/page.tsx
+src/app/projects/[projectId]/page.tsx
+30. What is a dynamic route?
+
+Answer:
+A dynamic route contains a variable segment.
+
+Example:
+
+/projects/[projectId]
+
+It can represent:
+
+/projects/123
+/projects/456
+31. What is a reusable component?
+
+Answer:
+A reusable component is a UI component that can be used in multiple places.
+
+For example:
+
+AppButton
+AppDialog
+AppSnackbar
+LoadingState
+EmptyState
+32. Why use TypeScript in the frontend?
+
+Answer:
+TypeScript provides static type checking, better autocomplete, safer refactoring, and helps prevent many runtime errors.
+
+MILESTONE 14 — Tailwind + Material UI
+33. Why use Tailwind CSS?
+
+Answer:
+Tailwind allows us to build responsive layouts quickly using utility classes directly in the components.
+
+34. Why use Material UI?
+
+Answer:
+MUI provides ready-made professional components such as buttons, dialogs, forms, tables, pagination, snackbars, and other UI elements.
+
+35. Tailwind vs MUI?
+
+Answer:
+
+Tailwind:
+
+Layout
+Spacing
+Responsive styling
+Custom design
+
+MUI:
+
+Prebuilt components
+Dialogs
+Forms
+Tables
+Snackbar
+Pagination
+
+I can use both together depending on the requirement.
+
+36. What is responsive design?
+
+Answer:
+Responsive design means the UI adapts to different screen sizes such as desktop, tablet, and mobile.
+
+37. What loading states did you implement?
+
+Answer:
+I created reusable loading components so API-driven pages can display a consistent loading state while data is being fetched.
+
+38. What is an empty state?
+
+Answer:
+An empty state is displayed when there is no data.
+
+Example:
+
+No projects found.
+Create your first project.
+39. What is Snackbar?
+
+Answer:
+Snackbar provides short-lived feedback to the user, such as:
+
+Project created successfully.
+Task deleted successfully.
+Login failed.
+40. Why are reusable UI components important?
+
+Answer:
+They reduce duplicated code and ensure consistent UI and behavior throughout the application.
+
+MILESTONE 15 — Redux Toolkit + RTK Query
+41. What is Redux?
+
+Answer:
+Redux is a state management library used to maintain predictable application state.
+
+42. Why Redux Toolkit?
+
+Answer:
+Redux Toolkit is the recommended way to write Redux because it reduces boilerplate and provides utilities for slices, reducers, actions, and store configuration.
+
+43. What is a Redux store?
+
+Answer:
+The Redux store contains the application's centralized client state.
+
+44. What is a slice?
+
+Answer:
+A slice contains state, reducers, and actions for a specific feature.
+
+For example:
+
+authSlice
+projectSlice
+uiSlice
+45. What is a reducer?
+
+Answer:
+A reducer describes how state changes in response to an action.
+
+46. What is an action?
+
+Answer:
+An action describes an event or state change.
+
+For example:
+
+setCredentials(...)
+logout()
+47. What is RTK Query?
+
+Answer:
+RTK Query is Redux Toolkit's data-fetching and caching solution for server state.
+
+48. Redux vs RTK Query?
+
+Answer:
+
+I use Redux slices for client-side state:
+
+Authentication
+UI state
+Local application state
+
+I use RTK Query for server-side state:
+
+Users
+Projects
+Tasks
+Members
+49. What is cache invalidation?
+
+Answer:
+Cache invalidation tells RTK Query that previously fetched data is no longer guaranteed to be current, so it should refetch the data.
+
+Example:
+
+Create Task
+   ↓
+Invalidate Tasks
+   ↓
+Refetch Tasks
+   ↓
+Updated UI
+50. What is a mutation?
+
+Answer:
+A mutation changes server data.
+
+Examples:
+
+POST
+PATCH
+DELETE
+51. What is a query?
+
+Answer:
+A query retrieves server data.
+
+Examples:
+
+GET /projects
+GET /tasks
+GET /users/me
+52. Why is RTK Query useful?
+
+Answer:
+It handles:
+
+API requests
+Loading states
+Error states
+Caching
+Refetching
+Cache invalidation
+
+which reduces the amount of manual API state management.
+
+MILESTONE 16 — Web + API Integration
+53. How does the web application connect to the backend?
+
+Answer:
+
+Next.js
+ ↓
+RTK Query
+ ↓
+REST API
+ ↓
+Express
+ ↓
+Service
+ ↓
+Repository
+ ↓
+PostgreSQL
+54. Explain the login flow.
+
+Answer:
+
+User enters email/password
+        ↓
+Login mutation
+        ↓
+POST /auth/login
+        ↓
+Backend validates credentials
+        ↓
+JWT generated
+        ↓
+Response returned
+        ↓
+Redux auth state updated
+        ↓
+Navigate to dashboard
+55. How does signup work?
+
+Answer:
+The frontend sends user registration data to the Express registration endpoint. The backend validates it, hashes the password, creates the user, generates authentication tokens, and returns the user data.
+
+56. How does logout work?
+
+Answer:
+The frontend clears the authentication state and removes the user's authentication information from the application.
+
+57. How do you handle API loading states?
+
+Answer:
+RTK Query provides loading and fetching states, which are used by the UI to show loading indicators and prevent duplicate submissions.
+
+58. How do you handle API errors?
+
+Answer:
+RTK Query exposes API errors to the UI, where I display user-friendly error messages using components such as Snackbar or inline error states.
+
+59. What CRUD operations are implemented?
+
+Answer:
+
+Projects → Create, Read, Update, Delete
+Tasks → Create, Read, Update, Delete
+Members → Add, Read, Update role, Remove
+Profile → Read, Update
+Authentication → Signup, Login, Logout
+60. What does "same REST backend" mean?
+
+Answer:
+Both the web application and mobile application communicate with the same Express REST API instead of having separate backend implementations.
+
+MILESTONE 17 — React Native Foundation
+61. Why React Native?
+
+Answer:
+React Native allows us to build mobile applications using React and JavaScript/TypeScript while sharing development concepts and API architecture with the web application.
+
+62. Why Expo?
+
+Answer:
+Expo provides tooling and libraries that simplify React Native development, builds, navigation, device functionality, and development workflows.
+
+63. What is Expo Router?
+
+Answer:
+Expo Router provides file-based navigation for React Native applications.
+
+64. What mobile screens did you create?
+
+Answer:
+
+Splash
+Login
+Signup
+Home
+Projects
+Project Details
+Tasks
+Task Details
+Profile
+65. Why use reusable mobile components?
+
+Answer:
+Reusable components keep the mobile UI consistent and reduce duplicated code.
+
+MILESTONE 18 — React Native + Redux + REST
+66. How does mobile communicate with the backend?
+
+Answer:
+
+React Native
+ ↓
+API layer / RTK Query
+ ↓
+Express REST API
+ ↓
+Services
+ ↓
+Repositories
+ ↓
+PostgreSQL
+67. Does mobile use a different backend?
+
+Answer:
+No. The mobile application uses the same TaskHub REST backend used by the web application.
+
+68. How does mobile authentication work?
+
+Answer:
+The user logs in through the REST API. The backend returns authentication tokens, and the mobile application stores the authentication state and uses the token for protected API requests.
+
+69. What happens when the token expires?
+
+Answer:
+The application should use the refresh-token flow to obtain a new access token. If refreshing fails, the user should be logged out and redirected to login.
+
+70. Why is authentication persistence important on mobile?
+
+Answer:
+Without persistence, users would have to log in every time the application restarts. Persistence allows the application to restore the authenticated session.
+
+71. What mobile states should be handled?
+
+Answer:
+
+Loading
+Success
+Empty
+Error
+Authenticated
+Unauthenticated
+Refreshing
+MILESTONE 19 — AWS S3
+72. Why use Amazon S3?
+
+Answer:
+S3 provides scalable cloud object storage for files such as profile images.
+
+73. What is a presigned URL?
+
+Answer:
+A presigned URL is a temporary URL that provides limited access to an S3 object without exposing AWS credentials.
+
+74. Why use presigned URLs?
+
+Answer:
+They allow clients to upload or download files directly from S3 without sending the actual file through the backend.
+
+75. Explain the S3 upload flow.
+
+Answer:
+
+Mobile/Web
+   ↓
+POST /files/upload-url
+   ↓
+Backend validates file
+   ↓
+Generate presigned S3 URL
+   ↓
+Client uploads directly to S3
+   ↓
+S3 stores file
+   ↓
+Backend stores/reference file key
+76. What is the advantage of direct S3 upload?
+
+Answer:
+It reduces backend bandwidth and processing because the backend doesn't need to receive and stream the entire file.
+
+77. How do you secure S3 files?
+
+Answer:
+The bucket should not be publicly writable. Access is controlled through IAM and temporary presigned URLs.
+
+78. How do you validate uploaded files?
+
+Answer:
+I validate:
+
+File type
+File size
+File name/key rules
+
+before generating the upload URL.
+
+79. How does profile avatar integration work?
+
+Answer:
+
+Upload image
+ ↓
+S3
+ ↓
+Generate signed download URL
+ ↓
+Save avatarUrl
+ ↓
+GET /users/me
+ ↓
+Frontend displays avatar
+80. Why shouldn't AWS credentials be sent to the frontend?
+
+Answer:
+AWS credentials provide direct access to AWS resources and must remain private. The backend generates temporary presigned URLs instead.
+
+MILESTONE 20 — AWS SES
+81. What is Amazon SES?
+
+Answer:
+Amazon SES is an AWS service for sending transactional and application emails.
+
+82. What is a transactional email?
+
+Answer:
+A transactional email is triggered by an application event.
+
+Examples:
+
+Welcome email
+Password reset
+Project invitation
+Task assignment
+Task completion
+83. Explain the email architecture.
+
+Answer:
+
+Application event
+      ↓
+Email Service
+      ↓
+AWS SES
+      ↓
+Recipient
+84. Why create a separate EmailService?
+
+Answer:
+It separates email infrastructure from business logic. Controllers and services can request an email without knowing how SES works internally.
+
+85. What happens when a user registers?
+
+Answer:
+
+Register
+ ↓
+Create user
+ ↓
+Generate tokens
+ ↓
+Trigger welcome email
+ ↓
+EmailService
+ ↓
+AWS SES
+86. What email events did you implement?
+
+Answer:
+
+Welcome
+Password reset
+Project invitation
+Task assignment
+Task completion
+87. What is the difference between HTML and text email?
+
+Answer:
+HTML provides rich formatting, while text provides a plain-text alternative for clients that don't support or prefer HTML emails.
+
+88. What happens if SES fails?
+
+Answer:
+The application should handle the email failure safely and log the error without unnecessarily causing the main business operation to fail, depending on the business requirement.
+
+For example, user registration shouldn't necessarily fail just because a welcome email temporarily failed.
+
+89. What is SES sandbox mode?
+
+Answer:
+In SES sandbox mode, sending is restricted and recipient identities generally need to be verified. Production access can be requested from AWS.
+
+90. Why is email verification important?
+
+Answer:
+AWS needs to verify that the sender identity is authorized to send emails through SES. Without verification, SES can reject the request.
+
+MILESTONE 21 — AWS CloudWatch
+91. What is Amazon CloudWatch?
+
+Answer:
+CloudWatch is AWS's monitoring and observability service for logs, metrics, alarms, and operational information.
+
+92. Why use CloudWatch in TaskHub?
+
+Answer:
+It allows us to centrally monitor backend activity instead of relying only on local terminal logs.
+
+93. What are application logs?
+
+Answer:
+Application logs record important events happening inside the backend.
+
+Examples:
+
+User registered
+Login successful
+Database error
+API request
+S3 operation
+Email failure
+94. What are API request logs?
+
+Answer:
+They record information about HTTP requests such as:
+
+HTTP method
+Route
+Status code
+Latency
+User ID
+IP
+95. How did you measure API latency?
+
+Answer:
+The middleware records the start time when the request enters the application and calculates the difference when the response finishes.
+
+Conceptually:
+
+latency = responseTime - requestStartTime
+96. What is a CloudWatch metric?
+
+Answer:
+A metric is a numerical measurement that can be monitored over time.
+
+For TaskHub:
+
+ApiRequests
+ApiLatency
+ApiErrors
+ProcessHeapUsed
+ProcessRSS
+ProcessUptime
+SystemMemoryUsage
+97. What is a CloudWatch Log Group?
+
+Answer:
+A log group is a container used to organize related log streams.
+
+Our example:
+
+/taskhub/backend
+98. What is a Log Stream?
+
+Answer:
+A log stream is a sequence of log events within a CloudWatch log group.
+
+For example:
+
+/taskhub/backend
+    └── backend
+99. What is a custom CloudWatch namespace?
+
+Answer:
+A namespace is a logical grouping for metrics.
+
+For TaskHub:
+
+TaskHub/Backend
+100. What is ApiRequests?
+
+Answer:
+It measures the number of API requests processed by the backend.
+
+101. What is ApiErrors?
+
+Answer:
+It tracks requests that result in error HTTP status codes, such as 4xx and 5xx responses.
+
+102. What is ApiLatency?
+
+Answer:
+It measures how long the backend takes to process an API request.
+
+103. What is process memory monitoring?
+
+Answer:
+It allows us to monitor Node.js resource usage such as:
+
+Heap used
+Heap total
+RSS
+System memory
+104. What is process uptime?
+
+Answer:
+It represents how long the Node.js backend process has been running.
+
+105. Why should monitoring not slow down the API?
+
+Answer:
+Monitoring should be non-blocking whenever possible. The application shouldn't wait for CloudWatch to finish before responding to the user.
+
+IMPORTANT CROSS-MILESTONE QUESTIONS
+
+These are especially useful for a 5–7 year full-stack / React Native interview.
+
+106. Explain the complete TaskHub architecture.
+
+Answer:
+
+                 ┌──────────────┐
+                 │   Next.js    │
+                 │     Web      │
+                 └──────┬───────┘
+                        │
+                 ┌──────▼───────┐
+                 │ React Native │
+                 │    Mobile    │
+                 └──────┬───────┘
+                        │
+                        ▼
+                ┌───────────────┐
+                │ Express REST  │
+                │      API      │
+                └───────┬───────┘
+                        │
+             ┌──────────┼──────────┐
+             ▼          ▼          ▼
+          Routes    Services   Middleware
+                        │
+                        ▼
+                   Repository
+                        │
+                        ▼
+                   PostgreSQL
+
+AWS:
+ ├── S3  → File storage
+ ├── SES → Transactional email
+ └── CloudWatch → Logs & metrics
+107. Explain a request from frontend to database.
+
+Answer:
+
+Frontend
+ ↓
+HTTP request
+ ↓
+Express route
+ ↓
+Authentication middleware
+ ↓
+Authorization middleware
+ ↓
+Controller
+ ↓
+Validation
+ ↓
+Service
+ ↓
+Repository
+ ↓
+Prisma
+ ↓
+PostgreSQL
+ ↓
+Response
+ ↓
+RTK Query
+ ↓
+UI
+108. Why separate Controller, Service and Repository?
+
+Answer:
+It follows separation of concerns.
+
+Controller → HTTP responsibility
+Service    → Business logic
+Repository → Database logic
+
+This makes the application easier to maintain, test and scale.
+
+109. How do you protect a TaskHub API?
+
+Answer:
+
+JWT authentication
+Zod validation
+Authorization
+Helmet
+CORS
+Rate limiting
+Secure error handling
+File validation
+IAM
+Presigned S3 URLs
+110. How does a protected API request work?
+
+Answer:
+
+Authorization: Bearer JWT
+
+Then:
+
+Request
+ ↓
+Auth middleware
+ ↓
+Verify JWT
+ ↓
+Get userId/role
+ ↓
+Authorization check
+ ↓
+Controller
+111. What happens if a user tries to access another project's tasks?
+
+Answer:
+The backend checks project membership and permissions. If the user isn't authorized, the request is rejected with an appropriate authorization response such as 403 Forbidden.
+
+112. How do web and mobile share backend functionality?
+
+Answer:
+Both applications consume the same REST API.
+
+Next.js ───────┐
+               ├──→ Express REST API
+React Native ──┘
+
+This avoids duplicating business logic.
+
+113. How would you improve TaskHub for production?
+
+Answer:
+I would consider:
+
+Redis caching
+Background job queues
+Email retry mechanism
+CloudWatch alarms
+Database indexing
+Automated backups
+CI/CD
+Docker
+Load balancing
+Horizontal scaling
+Sentry/error tracking
+Automated tests
+API versioning
+Refresh-token rotation
+114. What would you monitor in production?
+
+Answer:
+
+API request count
+API latency
+4xx errors
+5xx errors
+CPU usage
+Memory usage
+Database performance
+S3 errors
+SES failures
+Authentication failures
+Application uptime
+115. How would you debug a slow API?
+
+Answer:
+
+Check CloudWatch latency
+ ↓
+Identify slow endpoint
+ ↓
+Check service logic
+ ↓
+Check database query
+ ↓
+Check indexes
+ ↓
+Check external services
+ ↓
+Optimize
+ ↓
+Measure again
+116. How would you debug a production 500 error?
+
+Answer:
+
+I would first check CloudWatch logs to identify the endpoint and error. Then I'd inspect the stack trace and relevant service/repository logic, reproduce the issue if possible, fix it, test it, and deploy the fix.
+
+117. How would you handle a large number of tasks?
+
+Answer:
+I would use database-level pagination rather than loading all tasks into memory. I'd also add appropriate database indexes for commonly filtered and sorted fields.
+
+118. How would you improve API performance?
+
+Answer:
+
+Pagination
+Database indexes
+Efficient Prisma queries
+Selective fields
+Caching
+Compression
+Connection pooling
+Avoid N+1 queries
+Monitoring
+119. Why shouldn't the frontend be responsible for security?
+
+Answer:
+Frontend code can be modified or bypassed by users. The backend must independently authenticate and authorize every protected operation.
+
+120. What is the biggest architectural benefit of your TaskHub project?
+
+Answer:
+The main benefit is separation of concerns with a shared REST backend. Web and mobile clients can evolve independently while using the same authentication, business logic, database, S3 storage, SES email system, and monitoring infrastructure.
