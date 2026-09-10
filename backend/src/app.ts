@@ -3,6 +3,8 @@ import express from "express";
 import helmet from "helmet";
 import passport from "passport";
 
+import notificationRoutes
+  from "./routes/notification.routes";
 import "./module/auth/google.strategy";
 import fileRoutes from "./routes/file.routes";
 import authRoutes from "./routes/auth.routes";
@@ -86,6 +88,14 @@ app.use("/api/v1/projects", projectRoutes);
 // ===============================
 
 app.use("/api/v1/projects/:projectId/members", projectMemberRoutes);
+
+// ===============================
+// FCM Notifications
+// ===============================
+app.use(
+  "/api/v1/notifications",
+  notificationRoutes
+);
 
 // ===============================
 // TASKS

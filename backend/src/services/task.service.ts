@@ -1,9 +1,12 @@
 import { TaskRepository } from "../repositories/task.repository";
 import { UpdateTaskInput } from "../module/task/task.validation";
 import { emailService } from "./email.service";
-import { taskAssignmentEmail } from "../emails/task-assignment.email";
 import { taskCompletionEmail } from "../emails/task-completion.email";
 import { prisma } from "../config/prisma";
+
+import {
+  notificationService,
+} from "./notification.service";
 
 export class TaskService {
   constructor(private readonly repository: TaskRepository) {}
@@ -90,51 +93,79 @@ export class TaskService {
     await this.repository.delete(taskId);
   }
 
-  async assignTask(projectId: string, taskId: string, assignedToId: string) {
-    await this.getTask(projectId, taskId);
+async assignTask(
+  projectId: string,
+  taskId: string,
+  assignedToId: string,
+) {
+  const task =
+    await this.getTask(
+      projectId,
+      taskId
+    );
 
-    const task = await this.repository.update(taskId, {
-      assignedToId,
+  const updatedTask =
+    await this.repository.update(
+      taskId,
+      {
+        assignedToId,
+      }
+    );
+
+  const deviceTokens =
+    await prisma.deviceToken.findMany({
+      where: {
+        userId: assignedToId,
+      },
+
+      select: {
+        token: true,
+      },
     });
 
-    const [user, project] = await Promise.all([
-      prisma.user.findUnique({
-        where: {
-          id: assignedToId,
-        },
-        select: {
-          name: true,
-          email: true,
-        },
-      }),
+  const tokens =
+    deviceTokens.map(
+      item => item.token
+    );
 
-      prisma.project.findUnique({
-        where: {
-          id: projectId,
-        },
-        select: {
-          name: true,
-        },
-      }),
-    ]);
+  if (tokens.length) {
+    try {
+      const result =
+        await notificationService
+          .sendPushNotification({
+            tokens,
 
-    if (user && project) {
-      const email = taskAssignmentEmail({
-        name: user.name,
-        taskTitle: task.title,
-        projectName: project.name,
-      });
+            title:
+              "TaskHub",
 
-      await emailService.sendSafeEmail({
-        to: user.email,
-        subject: email.subject,
-        html: email.html,
-        text: email.text,
-      });
+            body:
+              `You have been assigned: ${task.title}`,
+
+            data: {
+              type:
+                "TASK_ASSIGNED",
+
+              taskId:
+                task.id,
+
+              projectId,
+            },
+          });
+
+      console.log(
+        "Task notification:",
+        result
+      );
+    } catch (error) {
+      console.error(
+        "Task notification failed:",
+        error
+      );
     }
-
-    return task;
   }
+
+  return updatedTask;
+}
   async completeTask(projectId: string, taskId: string) {
     const existingTask = await this.getTask(projectId, taskId);
 

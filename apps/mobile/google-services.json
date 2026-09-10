@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "900340458671",
+    "project_id": "taskhub-4184a",
+    "storage_bucket": "taskhub-4184a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:900340458671:android:53cef14abde49bf83c605a",
+        "android_client_info": {
+          "package_name": "com.taskhub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApFCaYq6cmt8aHW4ZzKdywWt2reL7g878"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

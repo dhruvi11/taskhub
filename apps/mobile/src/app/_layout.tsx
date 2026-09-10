@@ -17,13 +17,9 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" />
-
           <Stack.Screen name="(auth)" />
-
           <Stack.Screen name="(tabs)" />
-
           <Stack.Screen name="projects/[id]" />
-
           <Stack.Screen name="tasks/[id]" />
         </Stack>
       </SafeAreaProvider>

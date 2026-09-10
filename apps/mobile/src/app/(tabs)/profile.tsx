@@ -44,11 +44,11 @@ export default function ProfileScreen() {
 
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-         <Image
+         {/* <Image
   source={{
     uri: currentUser.avatarUrl,
   }}
-/>
+/> */}
         </Text>
       </View>
 

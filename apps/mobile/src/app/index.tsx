@@ -4,16 +4,32 @@ import { router } from "expo-router";
 
 import { COLORS } from "../constants/theme";
 
+import { getFCMToken } from "../services/firebase.service";
+
 export default function Index() {
   useEffect(() => {
+    getFCMToken()
+      .then((token) => {
+        console.log(
+          "Firebase FCM token:",
+          token
+        );
+      })
+      .catch((error) => {
+        console.error(
+          "Firebase initialization error:",
+          error
+        );
+      });
+  }, []);
+ useEffect(() => {
     const timer = setTimeout(() => {
       router.replace("/(auth)/login");
     }, 1200);
 
     return () => clearTimeout(timer);
   }, []);
-
-  return (
+return (
     <View style={styles.container}>
       <View style={styles.logo}>
         <Text style={styles.logoText}>T</Text>
