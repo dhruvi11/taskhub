@@ -2493,3 +2493,682 @@ Firebase provides mobile cloud services such as FCM, Analytics, and Crashlytics.
 
 Together they provide a complete monitoring and mobile-cloud solution for TaskHub.
 
+Milestone 24 Interview Questions & Answers
+Jest + Supertest — Backend Automated Testing
+
+This is copy-paste ready for your interview notes.
+
+1. What did you implement in Milestone 24?
+
+Answer:
+
+In Milestone 24, I added automated backend testing to the TaskHub Express and TypeScript API using Jest and Supertest.
+
+I created tests for:
+
+Authentication
+Projects
+Tasks
+Validation
+Authorization
+HTTP endpoints
+Integration flows
+
+I also configured Jest with TypeScript support and added test and coverage scripts.
+
+The goal was to make sure the core backend functionality is automatically verified instead of testing everything manually through Postman.
+
+2. What is Jest?
+
+Answer:
+
+Jest is a JavaScript and TypeScript testing framework used to write and execute automated tests.
+
+It provides features such as:
+
+Test suites
+Test cases
+Assertions
+Mocking
+Code coverage
+Setup and teardown
+
+In TaskHub, I use Jest as the main test runner.
+
+3. What is Supertest?
+
+Answer:
+
+Supertest is a library used to test HTTP APIs.
+
+It allows us to send HTTP requests directly to an Express application without manually opening Postman.
+
+For example:
+
+const response = await request(app)
+  .post("/api/v1/auth/login")
+  .send({
+    email,
+    password,
+  });
+
+Then I can verify:
+
+expect(response.status).toBe(200);
+4. Why did you use both Jest and Supertest?
+
+Answer:
+
+Jest is responsible for running the tests and providing assertions.
+
+Supertest is responsible for making HTTP requests to the Express application.
+
+So:
+
+Jest
+→ Test runner + assertions
+
+Supertest
+→ HTTP/API testing
+
+Together they allow me to automate backend API testing.
+
+5. What is unit testing?
+
+Answer:
+
+Unit testing tests a small and isolated piece of code independently.
+
+For example, I could test:
+
+Password hashing
+JWT utility
+Validation function
+Date utility
+
+The goal is to verify that one unit behaves correctly for different inputs.
+
+6. What is integration testing?
+
+Answer:
+
+Integration testing verifies that multiple parts of the application work correctly together.
+
+For example:
+
+HTTP Request
+     ↓
+Route
+     ↓
+Controller
+     ↓
+Service
+     ↓
+Prisma
+     ↓
+PostgreSQL
+
+Instead of testing only one function, integration testing verifies that the components work together.
+
+7. What is HTTP endpoint testing?
+
+Answer:
+
+HTTP endpoint testing verifies that an API endpoint behaves correctly when receiving an HTTP request.
+
+For example:
+
+const response = await request(app)
+  .get("/api/v1/projects");
+
+expect(response.status).toBe(401);
+
+This verifies the actual HTTP behavior of the endpoint.
+
+8. Why don't you import server.ts in your tests?
+
+Answer:
+
+The application separates the Express app from the server startup.
+
+app.ts
+→ Creates/configures Express application
+
+server.ts
+→ Starts the HTTP server
+
+Tests should import:
+
+import app from "../../src/app";
+
+rather than starting another HTTP server.
+
+This makes the tests faster and avoids port conflicts.
+
+9. What is an assertion?
+
+Answer:
+
+An assertion verifies that the actual result matches the expected result.
+
+For example:
+
+expect(response.status).toBe(401);
+
+This means I expect the API to return HTTP status 401.
+
+If it returns something else, Jest marks the test as failed.
+
+10. What is describe() in Jest?
+
+Answer:
+
+describe() groups related tests together.
+
+For example:
+
+describe("Auth API", () => {
+  // authentication tests
+});
+
+It makes the test suite easier to organize and understand.
+
+11. What is it() or test()?
+
+Answer:
+
+it() or test() defines an individual test case.
+
+Example:
+
+it("should reject unauthenticated requests", async () => {
+  const response = await request(app)
+    .get("/api/v1/projects");
+
+  expect(response.status).toBe(401);
+});
+
+It describes one expected behavior.
+
+12. How did you test authentication?
+
+Answer:
+
+I created tests around the authentication endpoints, including:
+
+Register
+Login
+Invalid credentials
+Unauthenticated /me request
+Validation errors
+
+For example, I verify that an unauthenticated request to:
+
+GET /api/v1/auth/me
+
+returns:
+
+401 Unauthorized
+13. How did you test project APIs?
+
+Answer:
+
+I tested the project endpoints to verify authentication protection and project functionality.
+
+Examples include:
+
+GET    /api/v1/projects
+POST   /api/v1/projects
+GET    /api/v1/projects/:id
+PATCH  /api/v1/projects/:id
+DELETE /api/v1/projects/:id
+
+I also verify that unauthenticated users cannot access protected project endpoints.
+
+14. How did you test task APIs?
+
+Answer:
+
+I created tests for TaskHub task endpoints.
+
+The tests cover operations such as:
+
+Create task
+Get tasks
+Get task by ID
+Update task
+Delete task
+
+I also test unauthorized access and invalid requests.
+
+15. How did you test validation?
+
+Answer:
+
+I sent invalid request payloads to the API and verified that the API returns a validation error.
+
+For example:
+
+const response = await request(app)
+  .post("/api/v1/auth/login")
+  .send({
+    email: "invalid-email",
+    password: "",
+  });
+
+expect(response.status).toBe(400);
+
+This ensures invalid data is rejected by the backend.
+
+16. What is authentication testing?
+
+Answer:
+
+Authentication testing verifies whether the user is properly identified.
+
+For example:
+
+No token
+→ 401
+
+Invalid token
+→ 401
+
+Valid token
+→ Request allowed
+
+It verifies that protected endpoints cannot be accessed anonymously.
+
+17. What is authorization testing?
+
+Answer:
+
+Authorization testing verifies whether an authenticated user has permission to perform an action.
+
+Authentication answers:
+
+Who are you?
+
+Authorization answers:
+
+Are you allowed to do this?
+
+For example:
+
+Authenticated User
+       ↓
+Attempts to modify another user's resource
+       ↓
+Authorization check
+       ↓
+403 Forbidden
+18. What is the difference between 401 and 403?
+
+Answer:
+
+401 Unauthorized generally means the user has not been properly authenticated.
+
+Example:
+
+No valid authentication token
+
+403 Forbidden means the user is authenticated but doesn't have permission to perform the requested operation.
+
+Example:
+
+Logged-in user
++
+Insufficient permissions
+=
+403
+19. How do you test an authenticated endpoint?
+
+Answer:
+
+First, I authenticate a test user and obtain the authentication token.
+
+Then I send that token in the request.
+
+Conceptually:
+
+const response = await request(app)
+  .get("/api/v1/projects")
+  .set(
+    "Authorization",
+    `Bearer ${token}`,
+  );
+
+expect(response.status).toBe(200);
+
+This allows the test to verify the complete authentication flow.
+
+20. What is an integration test in your TaskHub project?
+
+Answer:
+
+A good TaskHub integration test follows a real business flow.
+
+For example:
+
+Register User
+      ↓
+Login
+      ↓
+Receive JWT
+      ↓
+Create Project
+      ↓
+Create Task
+      ↓
+Update Task
+      ↓
+Verify Task
+
+This verifies that authentication, routing, controllers, services, database operations and authorization work together.
+
+21. Why is automated testing better than only using Postman?
+
+Answer:
+
+Postman is useful for manual API testing, but manual testing becomes repetitive.
+
+Automated tests can be run every time code changes.
+
+For example:
+
+npm test
+
+can test many API behaviors automatically.
+
+This helps catch regressions quickly and is especially useful in CI/CD.
+
+22. What is regression testing?
+
+Answer:
+
+Regression testing verifies that a new code change has not broken existing functionality.
+
+For example, if I change the authentication service, I can run the existing test suite to verify:
+
+Register still works
+Login still works
+/me still works
+Project APIs still work
+Task APIs still work
+
+This protects previously working functionality.
+
+23. What is test coverage?
+
+Answer:
+
+Test coverage measures how much of the code is executed by the automated tests.
+
+Jest can generate a coverage report using:
+
+npm run test:coverage
+
+Coverage can include:
+
+Statements
+Branches
+Functions
+Lines
+
+Higher coverage can indicate better test coverage, but high coverage alone does not guarantee good tests.
+
+24. Is 100% test coverage necessary?
+
+Answer:
+
+Not necessarily.
+
+100% coverage is not always the goal.
+
+The important thing is to cover critical business functionality and important edge cases.
+
+For TaskHub, I prioritize:
+
+Authentication
+Authorization
+Projects
+Tasks
+Validation
+Critical services
+25. What is mocking?
+
+Answer:
+
+Mocking means replacing a real dependency with a controlled fake implementation during a test.
+
+For example, instead of calling a real external email service, I can mock it and verify that it was called correctly.
+
+This makes unit tests:
+
+faster
+predictable
+isolated
+26. When would you mock Prisma?
+
+Answer:
+
+I would mock Prisma when writing isolated unit tests for services.
+
+For example:
+
+TaskService
+    ↓
+Mock Prisma
+
+This allows me to test the business logic without depending on PostgreSQL.
+
+For integration tests, however, I would prefer using a dedicated test database when database behavior itself needs to be verified.
+
+27. Why should tests use a separate database?
+
+Answer:
+
+Tests can create, update and delete data.
+
+Using the development or production database could accidentally destroy real data.
+
+Therefore, a separate test database is safer:
+
+Development
+→ taskhub
+
+Testing
+→ taskhub_test
+
+Production
+→ taskhub_production
+28. What is beforeEach()?
+
+Answer:
+
+beforeEach() runs before every test.
+
+It is useful when each test requires the same setup.
+
+Example:
+
+beforeEach(() => {
+  // setup
+});
+
+It helps keep tests independent.
+
+29. What is afterEach()?
+
+Answer:
+
+afterEach() runs after every test.
+
+It can be used for cleanup, such as:
+
+Reset mocks
+Clear temporary data
+Close resources
+30. What is beforeAll()?
+
+Answer:
+
+beforeAll() runs once before all tests in a test suite.
+
+It can be used for expensive setup such as:
+
+Connect to test database
+Create shared test resources
+31. What is afterAll()?
+
+Answer:
+
+afterAll() runs after all tests finish.
+
+It is useful for cleanup such as:
+
+Close database connection
+Clean test data
+Release resources
+32. What happens if a Jest test fails?
+
+Answer:
+
+Jest reports:
+
+the failed test
+expected result
+received result
+test file
+line number
+stack trace
+
+This helps identify exactly what behavior is broken.
+
+33. How do you run your TaskHub tests?
+
+Answer:
+
+I added an npm test script:
+
+npm test
+
+For coverage:
+
+npm run test:coverage
+
+For watch mode:
+
+npm run test:watch
+
+Watch mode is useful during development because Jest automatically reruns tests when files change.
+
+34. Why did you use --runInBand?
+
+Answer:
+
+--runInBand tells Jest to execute tests sequentially in the same process instead of running them in parallel workers.
+
+It is useful for backend integration tests because multiple tests may access the same test database or shared resources.
+
+For example:
+
+jest --runInBand
+
+reduces the chance of database/resource conflicts.
+
+35. What is a good backend testing strategy?
+
+Answer:
+
+I use multiple layers:
+
+             Automated Tests
+                   │
+       ┌───────────┼───────────┐
+       │           │           │
+      Unit     Integration   HTTP/API
+       │           │           │
+   Functions   Services + DB  Endpoints
+
+Unit tests are fast and isolated.
+
+Integration tests verify components working together.
+
+HTTP tests verify the actual API behavior.
+
+36. How would you test a protected Task API?
+
+Answer:
+
+I would test at least these scenarios:
+
+1. No token
+   → 401
+
+2. Invalid token
+   → 401
+
+3. Valid token
+   → 200/201
+
+4. Valid user but insufficient permission
+   → 403
+
+5. Invalid task ID
+   → Appropriate error
+
+6. Valid task ID
+   → Correct task returned
+
+This gives better confidence than testing only the successful case.
+
+37. What edge cases should you test?
+
+Answer:
+
+For TaskHub, I would test:
+
+Empty request body
+Invalid email
+Weak password
+Duplicate email
+Missing authentication
+Invalid JWT
+Expired JWT
+Non-existent project
+Non-existent task
+Unauthorized project access
+Unauthorized task access
+Invalid task status
+Invalid task priority
+Missing required fields
+38. What is the biggest benefit of Jest + Supertest in TaskHub?
+
+Answer:
+
+The biggest benefit is that I can verify the backend automatically after code changes.
+
+Instead of manually testing APIs through Postman every time, I can run:
+
+npm test
+
+and quickly know whether core backend functionality is still working.
+
+39. Explain Milestone 24 in 30 seconds.
+
+Answer:
+
+In Milestone 24, I added automated backend testing to TaskHub using Jest and Supertest. Jest is used as the test runner and assertion framework, while Supertest is used for HTTP endpoint testing. I added tests for authentication, projects, tasks, validation and authorization. I also configured TypeScript testing, test scripts and coverage reporting. The objective was to automatically verify the core backend functionality and catch regressions early.
+
+40. Explain M22, M23 and M24 together
+
+This is a very good interview answer because these three milestones demonstrate production-level development.
+
+In M22, I added Firebase mobile cloud services including FCM for push notifications, Analytics for application events, and Crashlytics for mobile crash reporting.
+
+In M23, I added Sentry across the Next.js web app, Express backend and React Native mobile app for centralized error and performance monitoring, including release and request/user context.
+
+In M24, I added automated backend testing using Jest and Supertest, covering authentication, projects, tasks, validation and authorization.
+
+Together, these milestones improved TaskHub's production readiness through notifications, observability and automated quality checks.

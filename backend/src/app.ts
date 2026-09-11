@@ -12,7 +12,6 @@ import userRoutes from "./routes/user.routes";
 import projectRoutes from "./routes/project.routes";
 import projectMemberRoutes from "./routes/project-member.routes";
 import taskRoutes from "./routes/task.routes";
-import { errorMiddleware } from "./middleware/error.middleware";
 import { errorHandler } from "./middleware/error-handler";
 import {
   cloudWatchRequestMiddleware,

@@ -11,6 +11,7 @@ import {
 } from "../services/cloudwatch.service";
 
 import { Sentry } from "../config/sentry";
+import { HttpError } from "../utils/http-error";
 
 export const errorHandler = async (
   error: unknown,
@@ -96,14 +97,56 @@ export const errorHandler = async (
       code: "CORS_ERROR",
     });
   }
+// ============================================
+// ZOD VALIDATION ERROR
+// ============================================
 
-  // ============================================
-  // DEFAULT ERROR
-  // ============================================
-
-  return res.status(500).json({
+if (error instanceof ZodError) {
+  return res.status(400).json({
     success: false,
-    message: "Internal server error",
-    code: "INTERNAL_SERVER_ERROR",
+    message: "Validation failed",
+    code: "VALIDATION_ERROR",
+    errors: error.issues.map((issue) => ({
+      field: issue.path.join("."),
+      message: issue.message,
+    })),
   });
+}
+
+// ============================================
+// CORS ERROR
+// ============================================
+
+if (err.message === "CORS origin not allowed") {
+  return res.status(403).json({
+    success: false,
+    message: "Origin is not allowed",
+    code: "CORS_ERROR",
+  });
+}
+
+// ============================================
+// HTTP ERROR
+// ============================================
+
+if (err instanceof HttpError) {
+  return res.status(err.statusCode).json({
+    success: false,
+    message: err.message,
+    code:
+      err.statusCode === 401
+        ? "UNAUTHORIZED"
+        : "HTTP_ERROR",
+  });
+}
+
+// ============================================
+// DEFAULT ERROR
+// ============================================
+
+return res.status(500).json({
+  success: false,
+  message: "Internal server error",
+  code: "INTERNAL_SERVER_ERROR",
+});
 };

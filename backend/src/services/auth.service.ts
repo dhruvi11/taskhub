@@ -24,6 +24,7 @@ import {
 
 import { emailService } from "./email.service";
 import { welcomeEmail } from "../emails/welcome.email";
+import { UnauthorizedError } from "../utils/http-error";
 
 // ========================================
 // CREATE AUTH TOKENS
@@ -112,30 +113,29 @@ export const login = async (
   const user =
     await findUserByEmail(email);
 
-  if (!user) {
-    throw new Error(
-      "Invalid email or password",
-    );
-  }
+ if (!user) {
+  throw new UnauthorizedError(
+    "Invalid email or password",
+  );
+}
 
-  if (!user.password) {
-    throw new Error(
-      "This account does not have a password. Please use Google login.",
-    );
-  }
+if (!user.password) {
+  throw new UnauthorizedError(
+    "This account does not have a password. Please use Google login.",
+  );
+}
 
-  const isPasswordValid =
-    await comparePassword(
-      password,
-      user.password,
-    );
+const isPasswordValid =
+  await comparePassword(
+    password,
+    user.password,
+  );
 
-  if (!isPasswordValid) {
-    throw new Error(
-      "Invalid email or password",
-    );
-  }
-
+if (!isPasswordValid) {
+  throw new UnauthorizedError(
+    "Invalid email or password",
+  );
+}
   const tokens =
     await createAuthTokens(
       user.id,
