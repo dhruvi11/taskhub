@@ -1,9 +1,7 @@
 import { ProjectMemberRepository } from "../repositories/project-member.repository";
 
 export class ProjectMemberService {
-  constructor(
-    private readonly repository: ProjectMemberRepository
-  ) {}
+  constructor(private readonly repository: ProjectMemberRepository) {}
 
   async listMembers(projectId: string) {
     return this.repository.findMembers(projectId);
@@ -12,79 +10,47 @@ export class ProjectMemberService {
   async addMember(
     projectId: string,
     userId: string,
-    role: "MANAGER" | "MEMBER"
+    role: "MANAGER" | "MEMBER",
   ) {
-    const existing =
-      await this.repository.findMember(
-        projectId,
-        userId
-      );
+    const existing = await this.repository.findMember(projectId, userId);
 
     if (existing) {
-      throw new Error(
-        "User is already a member of this project"
-      );
+      throw new Error("User is already a member of this project");
     }
 
-    return this.repository.addMember(
-      projectId,
-      userId,
-      role
-    );
+    return this.repository.addMember(projectId, userId, role);
   }
 
   async updateMemberRole(
     projectId: string,
     userId: string,
-    role: "MANAGER" | "MEMBER"
+    role: "MANAGER" | "MEMBER",
   ) {
-    const member =
-      await this.repository.findMember(
-        projectId,
-        userId
-      );
+    const member = await this.repository.findMember(projectId, userId);
 
     if (!member) {
       throw new Error("Project member not found");
     }
 
     if (member.role === "OWNER") {
-      throw new Error(
-        "Project owner role cannot be changed"
-      );
+      throw new Error("Project owner role cannot be changed");
     }
 
-    return this.repository.updateRole(
-      projectId,
-      userId,
-      role
-    );
+    return this.repository.updateRole(projectId, userId, role);
   }
 
-  async removeMember(
-    projectId: string,
-    userId: string
-  ) {
-    const member =
-      await this.repository.findMember(
-        projectId,
-        userId
-      );
+  async removeMember(projectId: string, userId: string) {
+    const member = await this.repository.findMember(projectId, userId);
 
     if (!member) {
       throw new Error("Project member not found");
     }
 
     if (member.role === "OWNER") {
-      throw new Error(
-        "Project owner cannot be removed"
-      );
+      throw new Error("Project owner cannot be removed");
     }
 
-    await this.repository.removeMember(
-      projectId,
-      userId
-    );
+    await this.repository.removeMember(projectId, userId);
 
     return {
       userId,

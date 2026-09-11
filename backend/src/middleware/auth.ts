@@ -11,7 +11,7 @@ export interface AuthenticatedRequest extends Omit<Request, "user"> {
 export const authMiddleware = (
   req: AuthenticatedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const authHeader = req.headers.authorization;
 
@@ -32,10 +32,7 @@ export const authMiddleware = (
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_ACCESS_SECRET!
-    ) as {
+    const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as {
       userId: string;
       role: string;
     };

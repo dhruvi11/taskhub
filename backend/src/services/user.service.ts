@@ -5,15 +5,12 @@ import { S3Service } from "./s3.service";
 export class UserService {
   private readonly s3Service: S3Service;
 
-  constructor(
-    private readonly userRepository: UserRepository
-  ) {
+  constructor(private readonly userRepository: UserRepository) {
     this.s3Service = new S3Service();
   }
 
   async getCurrentProfile(userId: string) {
-    const user =
-      await this.userRepository.findById(userId);
+    const user = await this.userRepository.findById(userId);
 
     if (!user) {
       throw new Error("User not found");
@@ -22,41 +19,22 @@ export class UserService {
     return this.sanitizeUser(user);
   }
 
-  async updateProfile(
-    userId: string,
-    data: UpdateProfileInput
-  ) {
-    const existingUser =
-      await this.userRepository.findById(userId);
+  async updateProfile(userId: string, data: UpdateProfileInput) {
+    const existingUser = await this.userRepository.findById(userId);
 
     if (!existingUser) {
       throw new Error("User not found");
     }
 
-    if (
-      data.email &&
-      data.email !== existingUser.email
-    ) {
-      const emailUser =
-        await this.userRepository.findByEmail(
-          data.email
-        );
+    if (data.email && data.email !== existingUser.email) {
+      const emailUser = await this.userRepository.findByEmail(data.email);
 
-      if (
-        emailUser &&
-        emailUser.id !== userId
-      ) {
-        throw new Error(
-          "Email already exists"
-        );
+      if (emailUser && emailUser.id !== userId) {
+        throw new Error("Email already exists");
       }
     }
 
-    const updatedUser =
-      await this.userRepository.updateById(
-        userId,
-        data
-      );
+    const updatedUser = await this.userRepository.updateById(userId, data);
 
     return this.sanitizeUser(updatedUser);
   }
@@ -67,57 +45,34 @@ export class UserService {
    * Example:
    * users/{userId}/profile/{uuid}.jpg
    */
-  async updateAvatar(
-    userId: string,
-    avatarKey: string
-  ) {
-    const existingUser =
-      await this.userRepository.findById(
-        userId
-      );
+  async updateAvatar(userId: string, avatarKey: string) {
+    const existingUser = await this.userRepository.findById(userId);
 
     if (!existingUser) {
       throw new Error("User not found");
     }
 
-    if (
-      !avatarKey.startsWith(
-        `users/${userId}/profile/`
-      )
-    ) {
-      throw new Error(
-        "Invalid avatar file"
-      );
+    if (!avatarKey.startsWith(`users/${userId}/profile/`)) {
+      throw new Error("Invalid avatar file");
     }
 
-    const updatedUser =
-      await this.userRepository.updateById(
-        userId,
-        {
-          avatarUrl: avatarKey,
-        }
-      );
+    const updatedUser = await this.userRepository.updateById(userId, {
+      avatarUrl: avatarKey,
+    });
 
-    return this.sanitizeUser(
-      updatedUser
-    );
+    return this.sanitizeUser(updatedUser);
   }
 
-  private async sanitizeUser(
-    user: any
-  ) {
-    let avatarUrl =
-      user.avatarUrl ?? null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async sanitizeUser(user: any) {
+    let avatarUrl = user.avatarUrl ?? null;
 
     /**
      * avatarUrl in DB is the S3 key.
      * Return a temporary signed URL to clients.
      */
     if (user.avatarUrl) {
-      avatarUrl =
-        await this.s3Service.createDownloadUrl(
-          user.avatarUrl
-        );
+      avatarUrl = await this.s3Service.createDownloadUrl(user.avatarUrl);
     }
 
     return {

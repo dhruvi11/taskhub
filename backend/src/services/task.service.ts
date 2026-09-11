@@ -4,9 +4,7 @@ import { emailService } from "./email.service";
 import { taskCompletionEmail } from "../emails/task-completion.email";
 import { prisma } from "../config/prisma";
 
-import {
-  notificationService,
-} from "./notification.service";
+import { notificationService } from "./notification.service";
 
 export class TaskService {
   constructor(private readonly repository: TaskRepository) {}
@@ -93,79 +91,52 @@ export class TaskService {
     await this.repository.delete(taskId);
   }
 
-async assignTask(
-  projectId: string,
-  taskId: string,
-  assignedToId: string,
-) {
-  const task =
-    await this.getTask(
-      projectId,
-      taskId
-    );
+  async assignTask(projectId: string, taskId: string, assignedToId: string) {
+    const task = await this.getTask(projectId, taskId);
 
-  const updatedTask =
-    await this.repository.update(
-      taskId,
-      {
-        assignedToId,
-      }
-    );
-
-  const deviceTokens: Array<{ token: string }> =
-    await prisma.deviceToken.findMany({
-      where: {
-        userId: assignedToId,
-      },
-
-      select: {
-        token: true,
-      },
+    const updatedTask = await this.repository.update(taskId, {
+      assignedToId,
     });
 
-  const tokens =
-    deviceTokens.map(
-      (item: { token: string }) => item.token,
-    );
+    const deviceTokens: Array<{ token: string }> =
+      await prisma.deviceToken.findMany({
+        where: {
+          userId: assignedToId,
+        },
 
-  if (tokens.length) {
-    try {
-      const result =
-        await notificationService
-          .sendPushNotification({
-            tokens,
+        select: {
+          token: true,
+        },
+      });
 
-            title:
-              "TaskHub",
+    const tokens = deviceTokens.map((item: { token: string }) => item.token);
 
-            body:
-              `You have been assigned: ${task.title}`,
+    if (tokens.length) {
+      try {
+        const result = await notificationService.sendPushNotification({
+          tokens,
 
-            data: {
-              type:
-                "TASK_ASSIGNED",
+          title: "TaskHub",
 
-              taskId:
-                task.id,
+          body: `You have been assigned: ${task.title}`,
 
-              projectId,
-            },
-          });
+          data: {
+            type: "TASK_ASSIGNED",
 
-      console.log(
-        "Task notification:",
-        result
-      );
-    } catch (error) {
-      console.error(
-        "Task notification failed:",
-        error
-      );
+            taskId: task.id,
+
+            projectId,
+          },
+        });
+
+        console.log("Task notification:", result);
+      } catch (error) {
+        console.error("Task notification failed:", error);
+      }
     }
-  }
 
-  return updatedTask;
-}
+    return updatedTask;
+  }
   async completeTask(projectId: string, taskId: string) {
     const existingTask = await this.getTask(projectId, taskId);
 

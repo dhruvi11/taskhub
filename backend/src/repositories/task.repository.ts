@@ -58,14 +58,9 @@ export class TaskRepository {
       priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
       assignedToId?: string;
       sortBy?:
-        | "createdAt"
-        | "updatedAt"
-        | "dueDate"
-        | "title"
-        | "priority"
-        | "status";
+        "createdAt" | "updatedAt" | "dueDate" | "title" | "priority" | "status";
       sortOrder?: "asc" | "desc";
-    }
+    },
   ) {
     const {
       page,
@@ -161,10 +156,7 @@ export class TaskRepository {
     };
   }
 
-  async findById(
-    projectId: string,
-    taskId: string
-  ) {
+  async findById(projectId: string, taskId: string) {
     return prisma.task.findFirst({
       where: {
         id: taskId,
@@ -191,10 +183,7 @@ export class TaskRepository {
     });
   }
 
-  async update(
-    taskId: string,
-    data: TaskUpdateData
-  ) {
+  async update(taskId: string, data: TaskUpdateData) {
     return prisma.task.update({
       where: {
         id: taskId,

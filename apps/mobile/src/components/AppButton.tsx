@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
 
 import { COLORS, RADIUS, SPACING } from "../constants/theme";
 
@@ -28,8 +23,7 @@ export default function AppButton({
         ? COLORS.surface
         : COLORS.primary;
 
-  const textColor =
-    variant === "secondary" ? COLORS.primary : COLORS.surface;
+  const textColor = variant === "secondary" ? COLORS.primary : COLORS.surface;
 
   return (
     <Pressable
@@ -47,9 +41,7 @@ export default function AppButton({
       {loading ? (
         <ActivityIndicator color={textColor} />
       ) : (
-        <Text style={[styles.text, { color: textColor }]}>
-          {title}
-        </Text>
+        <Text style={[styles.text, { color: textColor }]}>{title}</Text>
       )}
     </Pressable>
   );

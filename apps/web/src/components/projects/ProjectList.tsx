@@ -8,15 +8,11 @@ interface ProjectListProps {
   projects: Project[];
 }
 
-export default function ProjectList({
-  projects,
-}: ProjectListProps) {
+export default function ProjectList({ projects }: ProjectListProps) {
   if (!projects.length) {
     return (
       <div className="rounded-xl border border-dashed border-gray-300 bg-white p-12 text-center">
-        <p className="font-medium text-gray-700">
-          No projects found
-        </p>
+        <p className="font-medium text-gray-700">No projects found</p>
 
         <p className="mt-2 text-sm text-gray-500">
           Create your first project to get started.
@@ -36,10 +32,7 @@ export default function ProjectList({
       "
     >
       {projects.map((project) => (
-        <ProjectCard
-          key={project.id}
-          project={project}
-        />
+        <ProjectCard key={project.id} project={project} />
       ))}
     </div>
   );

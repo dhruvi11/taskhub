@@ -8,10 +8,7 @@ export const updateProfileSchema = z.object({
     .max(100, "Name cannot exceed 100 characters")
     .optional(),
 
-  email: z
-    .string()
-    .email("Invalid email address")
-    .optional(),
+  email: z.string().email("Invalid email address").optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

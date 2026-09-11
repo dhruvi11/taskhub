@@ -1,8 +1,4 @@
-import {
-  Request,
-  Response,
-  NextFunction,
-} from "express";
+import { Request, Response, NextFunction } from "express";
 
 import { ZodError } from "zod";
 
@@ -10,7 +6,7 @@ export const errorMiddleware = (
   error: unknown,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
   console.error(error);
 
@@ -23,10 +19,7 @@ export const errorMiddleware = (
     });
   }
 
-  if (
-    error instanceof Error &&
-    error.message === "Task not found"
-  ) {
+  if (error instanceof Error && error.message === "Task not found") {
     return res.status(404).json({
       success: false,
       code: "TASK_NOT_FOUND",

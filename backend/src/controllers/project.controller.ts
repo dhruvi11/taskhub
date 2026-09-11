@@ -9,24 +9,14 @@ import {
 } from "../module/project/project.validation";
 
 export class ProjectController {
-  constructor(
-    private readonly projectService: ProjectService
-  ) {}
+  constructor(private readonly projectService: ProjectService) {}
 
-  createProject = async (
-    req: Request,
-    res: Response
-  ) => {
+  createProject = async (req: Request, res: Response) => {
     const userId = req.user!.userId;
 
-    const data =
-      createProjectSchema.parse(req.body);
+    const data = createProjectSchema.parse(req.body);
 
-    const project =
-      await this.projectService.createProject(
-        userId,
-        data
-      );
+    const project = await this.projectService.createProject(userId, data);
 
     return res.status(201).json({
       success: true,
@@ -35,20 +25,12 @@ export class ProjectController {
     });
   };
 
-  getProjects = async (
-    req: Request,
-    res: Response
-  ) => {
+  getProjects = async (req: Request, res: Response) => {
     const userId = req.user!.userId;
 
-    const query =
-      projectListQuerySchema.parse(req.query);
+    const query = projectListQuerySchema.parse(req.query);
 
-    const result =
-      await this.projectService.getProjects(
-        userId,
-        query
-      );
+    const result = await this.projectService.getProjects(userId, query);
 
     return res.status(200).json({
       success: true,
@@ -57,17 +39,10 @@ export class ProjectController {
     });
   };
 
-  getProject = async (
-    req: Request<{ id: string }>,
-    res: Response
-  ) => {
+  getProject = async (req: Request<{ id: string }>, res: Response) => {
     const userId = req.user!.userId;
 
-    const project =
-      await this.projectService.getProject(
-        userId,
-        req.params.id
-      );
+    const project = await this.projectService.getProject(userId, req.params.id);
 
     return res.status(200).json({
       success: true,
@@ -76,21 +51,16 @@ export class ProjectController {
     });
   };
 
-  updateProject = async (
-    req: Request<{ id: string }>,
-    res: Response
-  ) => {
+  updateProject = async (req: Request<{ id: string }>, res: Response) => {
     const userId = req.user!.userId;
 
-    const data =
-      updateProjectSchema.parse(req.body);
+    const data = updateProjectSchema.parse(req.body);
 
-    const project =
-      await this.projectService.updateProject(
-        userId,
-        req.params.id,
-        data
-      );
+    const project = await this.projectService.updateProject(
+      userId,
+      req.params.id,
+      data,
+    );
 
     return res.status(200).json({
       success: true,
@@ -99,17 +69,13 @@ export class ProjectController {
     });
   };
 
-  deleteProject = async (
-    req: Request<{ id: string }>,
-    res: Response
-  ) => {
+  deleteProject = async (req: Request<{ id: string }>, res: Response) => {
     const userId = req.user!.userId;
 
-    const result =
-      await this.projectService.deleteProject(
-        userId,
-        req.params.id
-      );
+    const result = await this.projectService.deleteProject(
+      userId,
+      req.params.id,
+    );
 
     return res.status(200).json({
       success: true,

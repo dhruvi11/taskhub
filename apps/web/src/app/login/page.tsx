@@ -1,80 +1,50 @@
-
 "use client";
 
 import Link from "next/link";
-import {
-  FormEvent,
-  useState,
-} from "react";
+import { FormEvent, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import {
-  useLoginMutation,
-} from "@/src/store/api";
+import { useLoginMutation } from "@/src/store/api";
 
-import {
-  setCredentials,
-} from "@/src/store/slices/authSlice";
+import { setCredentials } from "@/src/store/slices/authSlice";
 
-import {
-  useAppDispatch,
-} from "@/src/store/hooks";
+import { useAppDispatch } from "@/src/store/hooks";
 import { getApiErrorMessage } from "@/src/lib/api-error";
 
 export default function LoginPage() {
   const router = useRouter();
 
-  const dispatch =
-    useAppDispatch();
+  const dispatch = useAppDispatch();
 
-  const [
-    login,
-    {
-      isLoading,
-      error,
-    },
-  ] = useLoginMutation();
+  const [login, { isLoading, error }] = useLoginMutation();
 
-  const [email, setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
 
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = async (
-    e: FormEvent<HTMLFormElement>,
-  ) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const response =
-        await login({
-          email,
-          password,
-        }).unwrap();
+      const response = await login({
+        email,
+        password,
+      }).unwrap();
 
-      const data =
-        response?.data || response;
+      const data = response?.data || response;
 
       dispatch(
         setCredentials({
           user: data.user,
-          accessToken:
-            data.accessToken,
-          refreshToken:
-            data.refreshToken,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
         }),
       );
 
-      router.push(
-        "/dashboard",
-      );
+      router.push("/dashboard");
     } catch (err) {
-      console.error(
-        "Login failed:",
-        err,
-      );
+      console.error("Login failed:", err);
     }
   };
 
@@ -82,9 +52,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900">
-            TaskHub
-          </h1>
+          <h1 className="text-3xl font-bold text-slate-900">TaskHub</h1>
 
           <p className="mt-2 text-sm text-slate-500">
             Manage your projects and tasks
@@ -100,10 +68,7 @@ export default function LoginPage() {
             Sign in to your TaskHub account
           </p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="mt-6 space-y-5"
-          >
+          <form onSubmit={handleSubmit} className="mt-6 space-y-5">
             <div>
               <label
                 htmlFor="email"
@@ -116,11 +81,7 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) =>
-                  setEmail(
-                    e.target.value,
-                  )
-                }
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 required
                 className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -139,11 +100,7 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) =>
-                  setPassword(
-                    e.target.value,
-                  )
-                }
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
                 className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -161,9 +118,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isLoading
-                ? "Signing in..."
-                : "Sign in"}
+              {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 

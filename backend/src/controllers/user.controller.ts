@@ -2,89 +2,55 @@ import { Request, Response } from "express";
 
 import { UserService } from "../services/user.service";
 
-import {
-  updateProfileSchema,
-} from "../module/user/user.validation";
+import { updateProfileSchema } from "../module/user/user.validation";
 
 export class UserController {
-  constructor(
-    private readonly userService: UserService
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
-  getCurrentProfile = async (
-    req: Request,
-    res: Response
-  ) => {
-    const userId =
-      req.user!.userId;
+  getCurrentProfile = async (req: Request, res: Response) => {
+    const userId = req.user!.userId;
 
-    const user =
-      await this.userService.getCurrentProfile(
-        userId
-      );
+    const user = await this.userService.getCurrentProfile(userId);
 
     return res.status(200).json({
       success: true,
-      message:
-        "Profile fetched successfully",
+      message: "Profile fetched successfully",
       data: user,
     });
   };
 
-  updateProfile = async (
-    req: Request,
-    res: Response
-  ) => {
-    const userId =
-      req.user!.userId;
+  updateProfile = async (req: Request, res: Response) => {
+    const userId = req.user!.userId;
 
-    const validatedData =
-      updateProfileSchema.parse(
-        req.body
-      );
+    const validatedData = updateProfileSchema.parse(req.body);
 
-    const user =
-      await this.userService.updateProfile(
-        userId,
-        validatedData
-      );
+    const user = await this.userService.updateProfile(userId, validatedData);
 
     return res.status(200).json({
       success: true,
-      message:
-        "Profile updated successfully",
+      message: "Profile updated successfully",
       data: user,
     });
   };
 
-  updateAvatar = async (
-    req: Request,
-    res: Response
-  ) => {
-    const { avatarUrl } =
-      req.body;
+  updateAvatar = async (req: Request, res: Response) => {
+    const { avatarUrl } = req.body;
 
-    if (
-      typeof avatarUrl !== "string" ||
-      !avatarUrl.trim()
-    ) {
+    if (typeof avatarUrl !== "string" || !avatarUrl.trim()) {
       return res.status(400).json({
         success: false,
-        message:
-          "avatarUrl is required",
+        message: "avatarUrl is required",
       });
     }
 
-    const user =
-      await this.userService.updateAvatar(
-        req.user!.userId,
-        avatarUrl
-      );
+    const user = await this.userService.updateAvatar(
+      req.user!.userId,
+      avatarUrl,
+    );
 
     return res.status(200).json({
       success: true,
-      message:
-        "Profile image updated successfully",
+      message: "Profile image updated successfully",
       data: user,
     });
   };

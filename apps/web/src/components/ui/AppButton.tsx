@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  Button,
-  ButtonProps,
-} from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
 
-export default function AppButton({
-  children,
-  ...props
-}: ButtonProps) {
+export default function AppButton({ children, ...props }: ButtonProps) {
   return (
     <Button
       variant="contained"

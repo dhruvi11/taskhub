@@ -1,7 +1,4 @@
-import {
-  SESv2Client,
-  SendEmailCommand,
-} from "@aws-sdk/client-sesv2";
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 const region = process.env.AWS_REGION;
 const fromEmail = process.env.SES_FROM_EMAIL;
@@ -26,12 +23,7 @@ export interface SendEmailInput {
 }
 
 export class EmailService {
-  async sendEmail({
-    to,
-    subject,
-    html,
-    text,
-  }: SendEmailInput) {
+  async sendEmail({ to, subject, html, text }: SendEmailInput) {
     const command = new SendEmailCommand({
       FromEmailAddress: fromEmail,
 
@@ -68,16 +60,11 @@ export class EmailService {
     try {
       const result = await this.sendEmail(input);
 
-      console.log(
-        `Email sent successfully to ${input.to}`
-      );
+      console.log(`Email sent successfully to ${input.to}`);
 
       return result;
     } catch (error) {
-      console.error(
-        `Failed to send email to ${input.to}:`,
-        error
-      );
+      console.error(`Failed to send email to ${input.to}:`, error);
 
       return null;
     }

@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-} from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 
 import Screen from "../../components/Screen";
@@ -17,34 +11,26 @@ import { currentUser } from "../../constants/mockData";
 
 export default function ProfileScreen() {
   const handleLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          style: "destructive",
-          onPress: () =>
-            router.replace("/(auth)/login"),
-        },
-      ]
-    );
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: () => router.replace("/(auth)/login"),
+      },
+    ]);
   };
 
   return (
     <Screen>
-      <AppHeader
-        title="Profile"
-        subtitle="Manage your account."
-      />
+      <AppHeader title="Profile" subtitle="Manage your account." />
 
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>
-         {/* <Image
+          {/* <Image
   source={{
     uri: currentUser.avatarUrl,
   }}
@@ -52,42 +38,22 @@ export default function ProfileScreen() {
         </Text>
       </View>
 
-      <Text style={styles.name}>
-        {currentUser.name}
-      </Text>
+      <Text style={styles.name}>{currentUser.name}</Text>
 
-      <Text style={styles.email}>
-        {currentUser.email}
-      </Text>
+      <Text style={styles.email}>{currentUser.email}</Text>
 
       <AppCard>
-        <InfoRow
-          label="Name"
-          value={currentUser.name}
-        />
+        <InfoRow label="Name" value={currentUser.name} />
 
-        <InfoRow
-          label="Email"
-          value={currentUser.email}
-        />
+        <InfoRow label="Email" value={currentUser.email} />
       </AppCard>
 
-      <AppButton
-        title="Logout"
-        variant="danger"
-        onPress={handleLogout}
-      />
+      <AppButton title="Logout" variant="danger" onPress={handleLogout} />
     </Screen>
   );
 }
 
-function InfoRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
       <Text style={styles.label}>{label}</Text>

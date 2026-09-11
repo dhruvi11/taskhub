@@ -5,11 +5,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
-  TextField,
+  Button
 } from "@mui/material";
 
-import { useState } from "react";
 
 interface AppDialogProps {
   open: boolean;
@@ -29,38 +27,21 @@ export default function AppDialog({
   confirmText = "Save",
 }: AppDialogProps) {
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="sm"
-    >
-      <DialogTitle>
-        {title}
-      </DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>{title}</DialogTitle>
 
-      <DialogContent>
-        {children}
-      </DialogContent>
+      <DialogContent>{children}</DialogContent>
 
       <DialogActions className="px-6 pb-5">
-
-        <Button
-          onClick={onClose}
-          color="inherit"
-        >
+        <Button onClick={onClose} color="inherit">
           Cancel
         </Button>
 
         {onConfirm && (
-          <Button
-            variant="contained"
-            onClick={onConfirm}
-          >
+          <Button variant="contained" onClick={onConfirm}>
             {confirmText}
           </Button>
         )}
-
       </DialogActions>
     </Dialog>
   );

@@ -34,9 +34,7 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar({
-  open = true,
-}: SidebarProps) {
+export default function Sidebar({ open = true }: SidebarProps) {
   return (
     <aside
       className={`
@@ -55,13 +53,11 @@ export default function Sidebar({
       `}
     >
       <nav className="p-4">
-
         <p className="mb-4 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
           Main Menu
         </p>
 
         <div className="space-y-1">
-
           {menuItems.map((item) => {
             const Icon = item.icon;
 
@@ -86,15 +82,11 @@ export default function Sidebar({
               >
                 <Icon fontSize="small" />
 
-                <span>
-                  {item.label}
-                </span>
+                <span>{item.label}</span>
               </Link>
             );
           })}
-
         </div>
-
       </nav>
     </aside>
   );

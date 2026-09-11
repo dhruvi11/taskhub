@@ -1,8 +1,6 @@
-import { prisma } from '../config/prisma';
+import { prisma } from "../config/prisma";
 
-export const findUserByEmail = async (
-  email: string,
-) => {
+export const findUserByEmail = async (email: string) => {
   return prisma.user.findUnique({
     where: {
       email,
@@ -10,9 +8,7 @@ export const findUserByEmail = async (
   });
 };
 
-export const findUserById = async (
-  userId: string,
-) => {
+export const findUserById = async (userId: string) => {
   return prisma.user.findUnique({
     where: {
       id: userId,
@@ -20,21 +16,17 @@ export const findUserById = async (
   });
 };
 
-export const createRefreshToken = async (
-  data: {
-    token: string;
-    userId: string;
-    expiresAt: Date;
-  },
-) => {
+export const createRefreshToken = async (data: {
+  token: string;
+  userId: string;
+  expiresAt: Date;
+}) => {
   return prisma.refreshToken.create({
     data,
   });
 };
 
-export const findUserByGoogleId = async (
-  googleId: string,
-) => {
+export const findUserByGoogleId = async (googleId: string) => {
   return prisma.user.findUnique({
     where: {
       googleId,
@@ -42,10 +34,7 @@ export const findUserByGoogleId = async (
   });
 };
 
-export const updateUserGoogleId = async (
-  userId: string,
-  googleId: string,
-) => {
+export const updateUserGoogleId = async (userId: string, googleId: string) => {
   return prisma.user.update({
     where: {
       id: userId,

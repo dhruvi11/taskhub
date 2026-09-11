@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 
 import Screen from "../../components/Screen";
@@ -16,43 +11,28 @@ import { projects } from "../../constants/mockData";
 export default function ProjectsScreen() {
   return (
     <Screen>
-      <AppHeader
-        title="Projects"
-        subtitle="Manage your projects."
-      />
+      <AppHeader title="Projects" subtitle="Manage your projects." />
 
       {projects.map((project) => (
         <Pressable
           key={project.id}
-          onPress={() =>
-            router.push(`/projects/${project.id}`)
-          }
+          onPress={() => router.push(`/projects/${project.id}`)}
         >
           <AppCard>
             <View style={styles.header}>
-              <Text style={styles.name}>
-                {project.name}
-              </Text>
+              <Text style={styles.name}>{project.name}</Text>
 
               <View style={styles.status}>
-                <Text style={styles.statusText}>
-                  {project.status}
-                </Text>
+                <Text style={styles.statusText}>{project.status}</Text>
               </View>
             </View>
 
-            <Text style={styles.description}>
-              {project.description}
-            </Text>
+            <Text style={styles.description}>{project.description}</Text>
 
             <View style={styles.footer}>
-              <Text style={styles.meta}>
-                {project.tasksCount} tasks
-              </Text>
+              <Text style={styles.meta}>{project.tasksCount} tasks</Text>
 
-              <Text style={styles.meta}>
-                {project.membersCount} members
-              </Text>
+              <Text style={styles.meta}>{project.membersCount} members</Text>
             </View>
           </AppCard>
         </Pressable>

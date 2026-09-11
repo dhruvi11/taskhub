@@ -24,10 +24,7 @@ router.use(authMiddleware);
  *       200: { description: Profile fetched successfully }
  *       401: { $ref: '#/components/responses/Unauthorized' }
  */
-router.get(
-  "/me",
-  userController.getCurrentProfile
-);
+router.get("/me", userController.getCurrentProfile);
 
 /**
  * @swagger
@@ -49,10 +46,7 @@ router.get(
  *       400: { $ref: '#/components/responses/ValidationError' }
  *       401: { $ref: '#/components/responses/Unauthorized' }
  */
-router.patch(
-  "/me",
-  userController.updateProfile
-);
+router.patch("/me", userController.updateProfile);
 
 /**
  * @swagger
@@ -82,10 +76,6 @@ router.patch(
  *       401:
  *         $ref: '#/components/responses/Unauthorized'
  */
-router.patch(
-  "/me/avatar",
-  userController.updateAvatar
-);
-
+router.patch("/me/avatar", userController.updateAvatar);
 
 export default router;

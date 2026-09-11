@@ -1,13 +1,6 @@
-export type TaskPriority =
-  | "LOW"
-  | "MEDIUM"
-  | "HIGH"
-  | "URGENT";
+export type TaskPriority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
-export type TaskStatus =
-  | "TODO"
-  | "IN_PROGRESS"
-  | "COMPLETED";
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "COMPLETED";
 
 export interface TaskUser {
   id: string;

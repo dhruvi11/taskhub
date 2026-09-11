@@ -1,9 +1,7 @@
 import { Router } from "express";
 
 import { authMiddleware } from "../middleware/auth";
-import {
-  requireProjectRole,
-} from "../middleware/project-permission.middleware";
+import { requireProjectRole } from "../middleware/project-permission.middleware";
 
 import { ProjectMemberRepository } from "../repositories/project-member.repository";
 import { ProjectMemberService } from "../services/project-member.service";
@@ -13,14 +11,11 @@ const router = Router({
   mergeParams: true,
 });
 
-const repository =
-  new ProjectMemberRepository();
+const repository = new ProjectMemberRepository();
 
-const service =
-  new ProjectMemberService(repository);
+const service = new ProjectMemberService(repository);
 
-const controller =
-  new ProjectMemberController(service);
+const controller = new ProjectMemberController(service);
 
 router.use(authMiddleware);
 
@@ -59,21 +54,14 @@ router.use(authMiddleware);
  */
 router.get(
   "/",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-    "MEMBER",
-  ]),
-  controller.listMembers
+  requireProjectRole(["OWNER", "MANAGER", "MEMBER"]),
+  controller.listMembers,
 );
 
 router.post(
   "/",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-  ]),
-  controller.addMember
+  requireProjectRole(["OWNER", "MANAGER"]),
+  controller.addMember,
 );
 
 /**
@@ -112,20 +100,14 @@ router.post(
  */
 router.patch(
   "/:userId",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-  ]),
-  controller.updateMemberRole
+  requireProjectRole(["OWNER", "MANAGER"]),
+  controller.updateMemberRole,
 );
 
 router.delete(
   "/:userId",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-  ]),
-  controller.removeMember
+  requireProjectRole(["OWNER", "MANAGER"]),
+  controller.removeMember,
 );
 
 export default router;

@@ -51,7 +51,6 @@ passport.use(
           accessToken: result.accessToken,
           refreshToken: result.refreshToken,
         });
-     
       } catch (error) {
         return done(error as Error, undefined);
       }

@@ -6,13 +6,11 @@ export async function registerTestUser(
   email = `test-${Date.now()}@example.com`,
   password = "Test@12345",
 ) {
-  const response = await request(app)
-    .post("/api/v1/auth/register")
-    .send({
-      name,
-      email,
-      password,
-    });
+  const response = await request(app).post("/api/v1/auth/register").send({
+    name,
+    email,
+    password,
+  });
 
   return {
     response,
@@ -21,16 +19,11 @@ export async function registerTestUser(
   };
 }
 
-export async function loginTestUser(
-  email: string,
-  password: string,
-) {
-  const response = await request(app)
-    .post("/api/v1/auth/login")
-    .send({
-      email,
-      password,
-    });
+export async function loginTestUser(email: string, password: string) {
+  const response = await request(app).post("/api/v1/auth/login").send({
+    email,
+    password,
+  });
 
   return response;
 }

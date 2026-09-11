@@ -3,8 +3,7 @@ import express from "express";
 import helmet from "helmet";
 import passport from "passport";
 
-import notificationRoutes
-  from "./routes/notification.routes";
+import notificationRoutes from "./routes/notification.routes";
 import "./module/auth/google.strategy";
 import fileRoutes from "./routes/file.routes";
 import authRoutes from "./routes/auth.routes";
@@ -13,9 +12,7 @@ import projectRoutes from "./routes/project.routes";
 import projectMemberRoutes from "./routes/project-member.routes";
 import taskRoutes from "./routes/task.routes";
 import { errorHandler } from "./middleware/error-handler";
-import {
-  cloudWatchRequestMiddleware,
-} from "./middleware/cloudwatch.middleware";
+import { cloudWatchRequestMiddleware } from "./middleware/cloudwatch.middleware";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
@@ -25,7 +22,6 @@ const app = express();
 app.use(cloudWatchRequestMiddleware);
 
 app.use(helmet());
-
 
 const allowedOrigins =
   process.env.CORS_ORIGINS?.split(",")
@@ -87,10 +83,7 @@ app.use("/api/v1/projects/:projectId/members", projectMemberRoutes);
 // ===============================
 // FCM Notifications
 // ===============================
-app.use(
-  "/api/v1/notifications",
-  notificationRoutes
-);
+app.use("/api/v1/notifications", notificationRoutes);
 
 // ===============================
 // TASKS
@@ -117,7 +110,6 @@ app.get("/api/v1/health", (_req, res) => {
   });
 });
 
-
 /**
  * @swagger
  * /api/v1/test/sentry:
@@ -131,9 +123,7 @@ app.get("/api/v1/health", (_req, res) => {
  *         description: Sentry test error thrown
  */
 app.get("/api/v1/test/sentry", () => {
-  throw new Error(
-    "TaskHub Sentry test error"
-  );
+  throw new Error("TaskHub Sentry test error");
 });
 
 // app.use(errorMiddleware);

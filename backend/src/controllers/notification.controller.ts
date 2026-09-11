@@ -1,90 +1,61 @@
-import {
-  Request,
-  Response,
-} from "express";
+import { Request, Response } from "express";
 
-import {
-  prisma,
-} from "../config/prisma";
+import { prisma } from "../config/prisma";
 
 export class NotificationController {
-  registerDeviceToken = async (
-    req: Request,
-    res: Response
-  ) => {
-    const userId =
-      req.user!.userId;
+  registerDeviceToken = async (req: Request, res: Response) => {
+    const userId = req.user!.userId;
 
-    const {
-      token,
-      platform,
-    } = req.body;
+    const { token, platform } = req.body;
 
-    if (
-      !token ||
-      typeof token !== "string"
-    ) {
+    if (!token || typeof token !== "string") {
       return res.status(400).json({
         success: false,
-        message:
-          "FCM token is required",
+        message: "FCM token is required",
       });
     }
 
-    if (
-      !["android", "ios"].includes(
-        platform
-      )
-    ) {
+    if (!["android", "ios"].includes(platform)) {
       return res.status(400).json({
         success: false,
-        message:
-          "Platform must be android or ios",
+        message: "Platform must be android or ios",
       });
     }
 
-    const deviceToken =
-      await prisma.deviceToken.upsert({
-        where: {
-          token,
-        },
+    const deviceToken = await prisma.deviceToken.upsert({
+      where: {
+        token,
+      },
 
-        update: {
-          userId,
-          platform,
-          updatedAt: new Date(),
-        },
+      update: {
+        userId,
+        platform,
+        updatedAt: new Date(),
+      },
 
-        create: {
-          token,
-          userId,
-          platform,
-        },
-      });
+      create: {
+        token,
+        userId,
+        platform,
+      },
+    });
 
     return res.status(200).json({
       success: true,
-      message:
-        "Device token registered successfully",
+      message: "Device token registered successfully",
       data: deviceToken,
     });
   };
 
-  removeDeviceToken = async (
-    req: Request,
-    res: Response
-  ) => {
-    const userId =
-      req.user!.userId;
+  removeDeviceToken = async (req: Request, res: Response) => {
+    const userId = req.user!.userId;
 
-    const { token } =
-      req.body;
+    const { token } = req.body;
 
     if (!token) {
       return res.status(400).json({
         success: false,
-        message:
-          "FCM token is required",
+        message: "FCM token is required",
       });
     }
 
@@ -97,8 +68,7 @@ export class NotificationController {
 
     return res.status(200).json({
       success: true,
-      message:
-        "Device token removed successfully",
+      message: "Device token removed successfully",
     });
   };
 }

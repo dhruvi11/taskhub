@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
 import Screen from "../../components/Screen";
@@ -24,9 +19,7 @@ export default function TaskDetailsScreen() {
         <AppHeader title="Task" />
 
         <AppCard>
-          <Text style={styles.error}>
-            Task not found.
-          </Text>
+          <Text style={styles.error}>Task not found.</Text>
         </AppCard>
       </Screen>
     );
@@ -34,64 +27,34 @@ export default function TaskDetailsScreen() {
 
   return (
     <Screen>
-      <Pressable
-        onPress={() => router.back()}
-        style={styles.back}
-      >
+      <Pressable onPress={() => router.back()} style={styles.back}>
         <Text style={styles.backText}>← Back</Text>
       </Pressable>
 
-      <AppHeader
-        title={task.title}
-        subtitle={task.projectName}
-      />
+      <AppHeader title={task.title} subtitle={task.projectName} />
 
       <AppCard>
-        <Text style={styles.sectionTitle}>
-          Description
-        </Text>
+        <Text style={styles.sectionTitle}>Description</Text>
 
-        <Text style={styles.description}>
-          {task.description}
-        </Text>
+        <Text style={styles.description}>{task.description}</Text>
       </AppCard>
 
       <AppCard>
-        <Text style={styles.sectionTitle}>
-          Task Information
-        </Text>
+        <Text style={styles.sectionTitle}>Task Information</Text>
 
-        <InfoRow
-          label="Status"
-          value={task.status.replace("_", " ")}
-        />
+        <InfoRow label="Status" value={task.status.replace("_", " ")} />
 
-        <InfoRow
-          label="Priority"
-          value={task.priority}
-        />
+        <InfoRow label="Priority" value={task.priority} />
 
-        <InfoRow
-          label="Assignee"
-          value={task.assignee}
-        />
+        <InfoRow label="Assignee" value={task.assignee} />
 
-        <InfoRow
-          label="Due Date"
-          value={task.dueDate}
-        />
+        <InfoRow label="Due Date" value={task.dueDate} />
       </AppCard>
     </Screen>
   );
 }
 
-function InfoRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
       <Text style={styles.label}>{label}</Text>

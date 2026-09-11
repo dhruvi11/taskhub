@@ -1,6 +1,6 @@
-import { prisma } from '../config/prisma';
-import { projectInvitationEmail } from '../emails/project-invitation.email';
-import { emailService } from '../services/email.service';
+import { prisma } from "../config/prisma";
+import { projectInvitationEmail } from "../emails/project-invitation.email";
+import { emailService } from "../services/email.service";
 
 export class ProjectMemberRepository {
   async findMembers(projectId: string) {
@@ -24,10 +24,7 @@ export class ProjectMemberRepository {
     });
   }
 
-  async findMember(
-    projectId: string,
-    userId: string
-  ) {
+  async findMember(projectId: string, userId: string) {
     return prisma.projectMember.findUnique({
       where: {
         projectId_userId: {
@@ -51,15 +48,13 @@ export class ProjectMemberRepository {
   async addMember(
     projectId: string,
     userId: string,
-    role: "MANAGER" | "MEMBER"
+    role: "MANAGER" | "MEMBER",
   ) {
     const existing = await this.findMember(projectId, userId);
 
-  if (existing) {
-    throw new Error(
-      "User is already a member of this project"
-    );
-  }
+    if (existing) {
+      throw new Error("User is already a member of this project");
+    }
 
     const member = await prisma.projectMember.create({
       data: {
@@ -79,8 +74,7 @@ export class ProjectMemberRepository {
       },
     });
 
-  const [user, project] =
-    await Promise.all([
+    const [user, project] = await Promise.all([
       prisma.user.findUnique({
         where: {
           id: userId,
@@ -101,21 +95,20 @@ export class ProjectMemberRepository {
       }),
     ]);
 
-  if (user && project) {
-    const email =
-      projectInvitationEmail({
+    if (user && project) {
+      const email = projectInvitationEmail({
         name: user.name,
         projectName: project.name,
         role,
       });
 
-    await emailService.sendSafeEmail({
-      to: user.email,
-      subject: email.subject,
-      html: email.html,
-      text: email.text,
-    });
-  }
+      await emailService.sendSafeEmail({
+        to: user.email,
+        subject: email.subject,
+        html: email.html,
+        text: email.text,
+      });
+    }
 
     return member;
   }
@@ -123,7 +116,7 @@ export class ProjectMemberRepository {
   async updateRole(
     projectId: string,
     userId: string,
-    role: "MANAGER" | "MEMBER"
+    role: "MANAGER" | "MEMBER",
   ) {
     return prisma.projectMember.update({
       where: {
@@ -138,10 +131,7 @@ export class ProjectMemberRepository {
     });
   }
 
-  async removeMember(
-    projectId: string,
-    userId: string
-  ) {
+  async removeMember(projectId: string, userId: string) {
     return prisma.projectMember.delete({
       where: {
         projectId_userId: {

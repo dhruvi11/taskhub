@@ -6,8 +6,7 @@ import ReduxProvider from "@/src/components/providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "TaskHub",
-  description:
-    "TaskHub project and task management",
+  description: "TaskHub project and task management",
 };
 
 export default function RootLayout({
@@ -18,9 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ReduxProvider>
-          {children}
-        </ReduxProvider>
+        <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>
   );

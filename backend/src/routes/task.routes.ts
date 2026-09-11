@@ -1,11 +1,8 @@
-
 import { Router } from "express";
 
 import { authMiddleware } from "../middleware/auth";
 
-import {
-  requireProjectRole,
-} from "../middleware/project-permission.middleware";
+import { requireProjectRole } from "../middleware/project-permission.middleware";
 
 import { TaskRepository } from "../repositories/task.repository";
 import { TaskService } from "../services/task.service";
@@ -15,14 +12,11 @@ const router = Router({
   mergeParams: true,
 });
 
-const repository =
-  new TaskRepository();
+const repository = new TaskRepository();
 
-const service =
-  new TaskService(repository);
+const service = new TaskService(repository);
 
-const controller =
-  new TaskController(service);
+const controller = new TaskController(service);
 
 router.use(authMiddleware);
 
@@ -125,14 +119,9 @@ router.use(authMiddleware);
 
 router.get(
   "/",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-    "MEMBER",
-  ]),
-  controller.listTasks
+  requireProjectRole(["OWNER", "MANAGER", "MEMBER"]),
+  controller.listTasks,
 );
-
 
 /**
  * @swagger
@@ -199,12 +188,8 @@ router.get(
  */
 router.post(
   "/",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-    "MEMBER",
-  ]),
-  controller.createTask
+  requireProjectRole(["OWNER", "MANAGER", "MEMBER"]),
+  controller.createTask,
 );
 
 /**
@@ -247,12 +232,8 @@ router.post(
  */
 router.get(
   "/:taskId",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-    "MEMBER",
-  ]),
-  controller.getTask
+  requireProjectRole(["OWNER", "MANAGER", "MEMBER"]),
+  controller.getTask,
 );
 
 /**
@@ -316,11 +297,8 @@ router.get(
  */
 router.patch(
   "/:taskId",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-  ]),
-  controller.updateTask
+  requireProjectRole(["OWNER", "MANAGER"]),
+  controller.updateTask,
 );
 
 /**
@@ -363,11 +341,8 @@ router.patch(
  */
 router.delete(
   "/:taskId",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-  ]),
-  controller.deleteTask
+  requireProjectRole(["OWNER", "MANAGER"]),
+  controller.deleteTask,
 );
 
 /**
@@ -399,11 +374,8 @@ router.delete(
  */
 router.patch(
   "/:taskId/assign",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-  ]),
-  controller.assignTask
+  requireProjectRole(["OWNER", "MANAGER"]),
+  controller.assignTask,
 );
 
 /**
@@ -425,12 +397,8 @@ router.patch(
  */
 router.patch(
   "/:taskId/complete",
-  requireProjectRole([
-    "OWNER",
-    "MANAGER",
-    "MEMBER",
-  ]),
-  controller.completeTask
+  requireProjectRole(["OWNER", "MANAGER", "MEMBER"]),
+  controller.completeTask,
 );
 
 export default router;

@@ -15,23 +15,16 @@ type TaskParams = {
 };
 
 export class TaskController {
-  constructor(
-    private readonly service: TaskService
-  ) {}
+  constructor(private readonly service: TaskService) {}
 
-  createTask = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
-    const data =
-      createTaskSchema.parse(req.body);
+  createTask = async (req: Request<TaskParams>, res: Response) => {
+    const data = createTaskSchema.parse(req.body);
 
-    const task =
-      await this.service.createTask({
-        ...data,
-        projectId: req.params.projectId,
-        createdById: req.user!.userId,
-      });
+    const task = await this.service.createTask({
+      ...data,
+      projectId: req.params.projectId,
+      createdById: req.user!.userId,
+    });
 
     return res.status(201).json({
       success: true,
@@ -40,17 +33,10 @@ export class TaskController {
     });
   };
 
-  listTasks = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
+  listTasks = async (req: Request<TaskParams>, res: Response) => {
     const query = taskQuerySchema.parse(req.query);
 
-    const result =
-      await this.service.listTasks(
-        req.params.projectId,
-        query
-      );
+    const result = await this.service.listTasks(req.params.projectId, query);
 
     return res.status(200).json({
       success: true,
@@ -59,15 +45,11 @@ export class TaskController {
     });
   };
 
-  getTask = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
-    const task =
-      await this.service.getTask(
-        req.params.projectId,
-        req.params.taskId
-      );
+  getTask = async (req: Request<TaskParams>, res: Response) => {
+    const task = await this.service.getTask(
+      req.params.projectId,
+      req.params.taskId,
+    );
 
     return res.status(200).json({
       success: true,
@@ -76,19 +58,14 @@ export class TaskController {
     });
   };
 
-  updateTask = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
-    const data =
-      updateTaskSchema.parse(req.body);
+  updateTask = async (req: Request<TaskParams>, res: Response) => {
+    const data = updateTaskSchema.parse(req.body);
 
-    const task =
-      await this.service.updateTask(
-        req.params.projectId,
-        req.params.taskId,
-        data
-      );
+    const task = await this.service.updateTask(
+      req.params.projectId,
+      req.params.taskId,
+      data,
+    );
 
     return res.status(200).json({
       success: true,
@@ -97,14 +74,8 @@ export class TaskController {
     });
   };
 
-  deleteTask = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
-    await this.service.deleteTask(
-      req.params.projectId,
-      req.params.taskId
-    );
+  deleteTask = async (req: Request<TaskParams>, res: Response) => {
+    await this.service.deleteTask(req.params.projectId, req.params.taskId);
 
     return res.status(200).json({
       success: true,
@@ -112,19 +83,14 @@ export class TaskController {
     });
   };
 
-  assignTask = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
-    const data =
-      assignTaskSchema.parse(req.body);
+  assignTask = async (req: Request<TaskParams>, res: Response) => {
+    const data = assignTaskSchema.parse(req.body);
 
-    const task =
-      await this.service.assignTask(
-        req.params.projectId,
-        req.params.taskId,
-        data.assignedToId
-      );
+    const task = await this.service.assignTask(
+      req.params.projectId,
+      req.params.taskId,
+      data.assignedToId,
+    );
 
     return res.status(200).json({
       success: true,
@@ -133,15 +99,11 @@ export class TaskController {
     });
   };
 
-  completeTask = async (
-    req: Request<TaskParams>,
-    res: Response
-  ) => {
-    const task =
-      await this.service.completeTask(
-        req.params.projectId,
-        req.params.taskId
-      );
+  completeTask = async (req: Request<TaskParams>, res: Response) => {
+    const task = await this.service.completeTask(
+      req.params.projectId,
+      req.params.taskId,
+    );
 
     return res.status(200).json({
       success: true,

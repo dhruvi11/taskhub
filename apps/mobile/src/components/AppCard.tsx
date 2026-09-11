@@ -3,11 +3,7 @@ import { StyleSheet, View } from "react-native";
 
 import { COLORS, RADIUS, SPACING } from "../constants/theme";
 
-export default function AppCard({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function AppCard({ children }: { children: ReactNode }) {
   return <View style={styles.card}>{children}</View>;
 }
 

@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  use,
-  useState,
-} from "react";
+import { use, useState } from "react";
 
 import {
   useGetTasksQuery,
@@ -23,99 +20,60 @@ export default function TasksPage({
     projectId: string;
   }>;
 }) {
-  const { projectId } =
-    use(params);
+  const { projectId } = use(params);
 
-  const [page, setPage] =
-    useState(1);
+  const [page, setPage] = useState(1);
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    error,
-  } =
-    useGetTasksQuery({
+  const { data, isLoading, isFetching, error } = useGetTasksQuery({
+    projectId,
+    page,
+    limit: 10,
+  });
+
+  const [createTask, { isLoading: creating }] = useCreateTaskMutation();
+
+  const [deleteTask] = useDeleteTaskMutation();
+
+  const [completeTask] = useCompleteTaskMutation();
+
+  const tasks = data?.data?.tasks || [];
+
+  const pagination = data?.data?.pagination;
+
+  const handleCreate = async () => {
+    const title = window.prompt("Task title");
+
+    if (!title) {
+      return;
+    }
+
+    await createTask({
       projectId,
-      page,
-      limit: 10,
-    });
+      title,
+      priority: "MEDIUM",
+    }).unwrap();
+  };
 
-  const [
-    createTask,
-    {
-      isLoading:
-        creating,
-    },
-  ] =
-    useCreateTaskMutation();
+  const handleDelete = async (taskId: string) => {
+    if (!window.confirm("Delete this task?")) {
+      return;
+    }
 
-  const [
-    deleteTask,
-  ] =
-    useDeleteTaskMutation();
+    await deleteTask({
+      projectId,
+      taskId,
+    }).unwrap();
+  };
 
-  const [
-    completeTask,
-  ] =
-    useCompleteTaskMutation();
-
-  const tasks =
-    data?.data?.tasks || [];
-
-  const pagination =
-    data?.data?.pagination;
-
-  const handleCreate =
-    async () => {
-      const title =
-        window.prompt(
-          "Task title",
-        );
-
-      if (!title) {
-        return;
-      }
-
-      await createTask({
-        projectId,
-        title,
-        priority: "MEDIUM",
-      }).unwrap();
-    };
-
-  const handleDelete =
-    async (
-      taskId: string,
-    ) => {
-      if (
-        !window.confirm(
-          "Delete this task?",
-        )
-      ) {
-        return;
-      }
-
-      await deleteTask({
-        projectId,
-        taskId,
-      }).unwrap();
-    };
-
-  const handleComplete =
-    async (
-      taskId: string,
-    ) => {
-      await completeTask({
-        projectId,
-        taskId,
-      }).unwrap();
-    };
+  const handleComplete = async (taskId: string) => {
+    await completeTask({
+      projectId,
+      taskId,
+    }).unwrap();
+  };
 
   if (isLoading) {
-    return (
-      <LoadingState />
-    );
+    return <LoadingState />;
   }
 
   if (error) {
@@ -132,13 +90,9 @@ export default function TasksPage({
     <main className="min-h-screen bg-slate-50 p-6 md:p-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">
-            Tasks
-          </h1>
+          <h1 className="text-3xl font-bold">Tasks</h1>
 
-          <p className="mt-2 text-slate-500">
-            Manage project tasks
-          </p>
+          <p className="mt-2 text-slate-500">Manage project tasks</p>
         </div>
 
         <button
@@ -146,87 +100,66 @@ export default function TasksPage({
           disabled={creating}
           className="rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white disabled:opacity-50"
         >
-          {creating
-            ? "Creating..."
-            : "Create Task"}
+          {creating ? "Creating..." : "Create Task"}
         </button>
       </div>
 
       {isFetching && (
-        <p className="mt-4 text-sm text-slate-400">
-          Updating tasks...
-        </p>
+        <p className="mt-4 text-sm text-slate-400">Updating tasks...</p>
       )}
 
       {tasks.length === 0 ? (
         <div className="mt-8">
-          <EmptyState title="No tasks yet" description="Create a task to begin tracking this project." />
+          <EmptyState
+            title="No tasks yet"
+            description="Create a task to begin tracking this project."
+          />
         </div>
       ) : (
         <div className="mt-8 space-y-4">
-          {tasks.map(
-            (task: Task) => (
-              <div
-                key={task.id}
-                className="rounded-xl border bg-white p-5 shadow-sm"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h2 className="font-semibold text-slate-900">
-                      {task.title}
-                    </h2>
+          {tasks.map((task: Task) => (
+            <div
+              key={task.id}
+              className="rounded-xl border bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <h2 className="font-semibold text-slate-900">{task.title}</h2>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      {task.description ||
-                        "No description"}
-                    </p>
-                  </div>
-
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs">
-                    {task.priority}
-                  </span>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {task.description || "No description"}
+                  </p>
                 </div>
 
-                <div className="mt-4 flex gap-3">
-                  <button
-                    onClick={() =>
-                      handleComplete(
-                        task.id,
-                      )
-                    }
-                    className="rounded-lg bg-green-600 px-4 py-2 text-sm text-white"
-                  >
-                    Complete
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      handleDelete(
-                        task.id,
-                      )
-                    }
-                    className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600"
-                  >
-                    Delete
-                  </button>
-                </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs">
+                  {task.priority}
+                </span>
               </div>
-            ),
-          )}
+
+              <div className="mt-4 flex gap-3">
+                <button
+                  onClick={() => handleComplete(task.id)}
+                  className="rounded-lg bg-green-600 px-4 py-2 text-sm text-white"
+                >
+                  Complete
+                </button>
+
+                <button
+                  onClick={() => handleDelete(task.id)}
+                  className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
       <div className="mt-8 flex justify-between">
         <button
-          disabled={
-            page <= 1 ||
-            isFetching
-          }
-          onClick={() =>
-            setPage(
-              (p) => p - 1,
-            )
-          }
+          disabled={page <= 1 || isFetching}
+          onClick={() => setPage((p) => p - 1)}
           className="rounded-lg border bg-white px-4 py-2 disabled:opacity-40"
         >
           Previous
@@ -237,17 +170,8 @@ export default function TasksPage({
         </span>
 
         <button
-          disabled={
-            page >=
-              (pagination?.totalPages ||
-                1) ||
-            isFetching
-          }
-          onClick={() =>
-            setPage(
-              (p) => p + 1,
-            )
-          }
+          disabled={page >= (pagination?.totalPages || 1) || isFetching}
+          onClick={() => setPage((p) => p + 1)}
           className="rounded-lg border bg-white px-4 py-2 disabled:opacity-40"
         >
           Next

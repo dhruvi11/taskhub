@@ -6,21 +6,13 @@ const config: Config = {
 
   roots: ["<rootDir>/tests"],
 
-  testMatch: [
-    "**/*.test.ts",
-  ],
+  testMatch: ["**/*.test.ts"],
 
-  moduleFileExtensions: [
-    "ts",
-    "js",
-    "json",
-  ],
+  moduleFileExtensions: ["ts", "js", "json"],
 
   clearMocks: true,
 
-  setupFilesAfterEnv: [
-    "<rootDir>/tests/setup.ts",
-  ],
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
 
   testTimeout: 30000,
 };

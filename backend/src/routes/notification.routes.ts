@@ -1,31 +1,17 @@
-import {
-  Router,
-} from "express";
+import { Router } from "express";
 
-import {
-  authMiddleware,
-} from "../middleware/auth";
+import { authMiddleware } from "../middleware/auth";
 
-import {
-  NotificationController,
-} from "../controllers/notification.controller";
+import { NotificationController } from "../controllers/notification.controller";
 
-const router =
-  Router();
+const router = Router();
 
-const controller =
-  new NotificationController();
+const controller = new NotificationController();
 
 router.use(authMiddleware);
 
-router.post(
-  "/device-token",
-  controller.registerDeviceToken
-);
+router.post("/device-token", controller.registerDeviceToken);
 
-router.delete(
-  "/device-token",
-  controller.removeDeviceToken
-);
+router.delete("/device-token", controller.removeDeviceToken);
 
 export default router;

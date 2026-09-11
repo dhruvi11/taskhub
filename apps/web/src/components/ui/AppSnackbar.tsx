@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Alert,
-  Snackbar,
-} from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 
 interface AppSnackbarProps {
   open: boolean;
@@ -28,11 +25,7 @@ export default function AppSnackbar({
         horizontal: "right",
       }}
     >
-      <Alert
-        onClose={onClose}
-        severity={severity}
-        variant="filled"
-      >
+      <Alert onClose={onClose} severity={severity} variant="filled">
         {message}
       </Alert>
     </Snackbar>

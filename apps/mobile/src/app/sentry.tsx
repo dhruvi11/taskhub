@@ -16,8 +16,7 @@ export function initializeSentry() {
 
   Sentry.init({
     dsn,
-    environment:
-      process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT ?? "development",
+    environment: process.env.EXPO_PUBLIC_SENTRY_ENVIRONMENT ?? "development",
   });
 
   initialized = true;

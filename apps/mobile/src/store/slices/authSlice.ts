@@ -1,7 +1,4 @@
-import {
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import type { User } from "../../types/auth";
 
@@ -31,14 +28,12 @@ const authSlice = createSlice({
         user: User;
         accessToken: string;
         refreshToken?: string;
-      }>
+      }>,
     ) => {
       state.user = action.payload.user;
-      state.accessToken =
-        action.payload.accessToken;
+      state.accessToken = action.payload.accessToken;
 
-      state.refreshToken =
-        action.payload.refreshToken || null;
+      state.refreshToken = action.payload.refreshToken || null;
 
       state.isAuthenticated = true;
     },
@@ -52,9 +47,6 @@ const authSlice = createSlice({
   },
 });
 
-export const {
-  setCredentials,
-  logout,
-} = authSlice.actions;
+export const { setCredentials, logout } = authSlice.actions;
 
 export default authSlice.reducer;

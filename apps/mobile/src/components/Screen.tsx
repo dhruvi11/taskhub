@@ -15,10 +15,7 @@ type ScreenProps = {
   scroll?: boolean;
 };
 
-export default function Screen({
-  children,
-  scroll = true,
-}: ScreenProps) {
+export default function Screen({ children, scroll = true }: ScreenProps) {
   const content = scroll ? (
     <ScrollView
       contentContainerStyle={styles.scrollContent}

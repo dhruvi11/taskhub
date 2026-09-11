@@ -11,9 +11,7 @@ import { getApp } from "@react-native-firebase/app";
 
 export async function initializeNotifications() {
   if (Platform.OS === "web") {
-    console.log(
-      "Firebase notifications are not available on web"
-    );
+    console.log("Firebase notifications are not available on web");
 
     return null;
   }
@@ -22,28 +20,21 @@ export async function initializeNotifications() {
 
   const messaging = getMessaging(firebaseApp);
 
-  const authStatus =
-    await requestPermission(messaging);
+  const authStatus = await requestPermission(messaging);
 
   const enabled =
     authStatus === AuthorizationStatus.AUTHORIZED ||
     authStatus === AuthorizationStatus.PROVISIONAL;
 
   if (!enabled) {
-    console.log(
-      "Notification permission not granted"
-    );
+    console.log("Notification permission not granted");
 
     return null;
   }
 
-  const token =
-    await getToken(messaging);
+  const token = await getToken(messaging);
 
-  console.log(
-    "🔥 FCM TOKEN:",
-    token
-  );
+  console.log("🔥 FCM TOKEN:", token);
 
   return token;
 }

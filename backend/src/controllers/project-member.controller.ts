@@ -8,18 +8,10 @@ import {
 } from "../module/project/project-member.validation";
 
 export class ProjectMemberController {
-  constructor(
-    private readonly service: ProjectMemberService
-  ) {}
+  constructor(private readonly service: ProjectMemberService) {}
 
-  listMembers = async (
-    req: Request<{ projectId: string }>,
-    res: Response
-  ) => {
-    const members =
-      await this.service.listMembers(
-        req.params.projectId
-      );
+  listMembers = async (req: Request<{ projectId: string }>, res: Response) => {
+    const members = await this.service.listMembers(req.params.projectId);
 
     return res.status(200).json({
       success: true,
@@ -28,19 +20,14 @@ export class ProjectMemberController {
     });
   };
 
-  addMember = async (
-    req: Request<{ projectId: string }>,
-    res: Response
-  ) => {
-    const data =
-      addMemberSchema.parse(req.body);
+  addMember = async (req: Request<{ projectId: string }>, res: Response) => {
+    const data = addMemberSchema.parse(req.body);
 
-    const member =
-      await this.service.addMember(
-        req.params.projectId,
-        data.userId,
-        data.role
-      );
+    const member = await this.service.addMember(
+      req.params.projectId,
+      data.userId,
+      data.role,
+    );
 
     return res.status(201).json({
       success: true,
@@ -51,17 +38,15 @@ export class ProjectMemberController {
 
   updateMemberRole = async (
     req: Request<{ projectId: string; userId: string }>,
-    res: Response
+    res: Response,
   ) => {
-    const data =
-      updateMemberRoleSchema.parse(req.body);
+    const data = updateMemberRoleSchema.parse(req.body);
 
-    const member =
-      await this.service.updateMemberRole(
-        req.params.projectId,
-        req.params.userId,
-        data.role
-      );
+    const member = await this.service.updateMemberRole(
+      req.params.projectId,
+      req.params.userId,
+      data.role,
+    );
 
     return res.status(200).json({
       success: true,
@@ -72,13 +57,12 @@ export class ProjectMemberController {
 
   removeMember = async (
     req: Request<{ projectId: string; userId: string }>,
-    res: Response
+    res: Response,
   ) => {
-    const result =
-      await this.service.removeMember(
-        req.params.projectId,
-        req.params.userId
-      );
+    const result = await this.service.removeMember(
+      req.params.projectId,
+      req.params.userId,
+    );
 
     return res.status(200).json({
       success: true,

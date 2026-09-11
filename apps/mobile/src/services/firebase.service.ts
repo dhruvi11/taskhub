@@ -11,10 +11,7 @@ import {
   AuthorizationStatus,
 } from "@react-native-firebase/messaging";
 
-import {
-  getAnalytics,
-  logEvent,
-} from "@react-native-firebase/analytics";
+import { getAnalytics, logEvent } from "@react-native-firebase/analytics";
 
 import {
   getCrashlytics,
@@ -75,9 +72,7 @@ export async function getFCMToken() {
   return token;
 }
 
-export function listenForMessages(
-  callback: (message: any) => void
-) {
+export function listenForMessages(callback: (message: any) => void) {
   if (!isFirebaseNative) {
     return () => {};
   }
@@ -93,9 +88,7 @@ export function listenForMessages(
   return onMessage(messaging, callback);
 }
 
-export function listenForTokenRefresh(
-  callback: (token: string) => void
-) {
+export function listenForTokenRefresh(callback: (token: string) => void) {
   if (!isFirebaseNative) {
     return () => {};
   }
@@ -115,9 +108,7 @@ export function listenForTokenRefresh(
 // ANALYTICS
 // =====================================================
 
-export async function trackLogin(
-  method = "email"
-) {
+export async function trackLogin(method = "email") {
   if (!isFirebaseNative) {
     return;
   }
@@ -135,9 +126,7 @@ export async function trackLogin(
   });
 }
 
-export async function trackSignup(
-  method = "email"
-) {
+export async function trackSignup(method = "email") {
   if (!isFirebaseNative) {
     return;
   }
@@ -155,9 +144,7 @@ export async function trackSignup(
   });
 }
 
-export async function trackTaskCreated(
-  taskId: string
-) {
+export async function trackTaskCreated(taskId: string) {
   if (!isFirebaseNative) {
     return;
   }
@@ -175,9 +162,7 @@ export async function trackTaskCreated(
   });
 }
 
-export async function trackTaskAssigned(
-  taskId: string
-) {
+export async function trackTaskAssigned(taskId: string) {
   if (!isFirebaseNative) {
     return;
   }
@@ -195,9 +180,7 @@ export async function trackTaskAssigned(
   });
 }
 
-export async function trackTaskCompleted(
-  taskId: string
-) {
+export async function trackTaskCompleted(taskId: string) {
   if (!isFirebaseNative) {
     return;
   }
@@ -219,9 +202,7 @@ export async function trackTaskCompleted(
 // CRASHLYTICS
 // =====================================================
 
-export async function identifyUser(
-  userId: string
-) {
+export async function identifyUser(userId: string) {
   if (!isFirebaseNative) {
     return;
   }
@@ -237,9 +218,7 @@ export async function identifyUser(
   await setUserId(crashlytics, userId);
 }
 
-export function logCrashlytics(
-  message: string
-) {
+export function logCrashlytics(message: string) {
   if (!isFirebaseNative) {
     return;
   }
@@ -255,9 +234,7 @@ export function logCrashlytics(
   log(crashlytics, message);
 }
 
-export function recordCrashlyticsError(
-  error: unknown
-) {
+export function recordCrashlyticsError(error: unknown) {
   if (!isFirebaseNative) {
     return;
   }
@@ -273,9 +250,6 @@ export function recordCrashlyticsError(
   if (error instanceof Error) {
     recordError(crashlytics, error);
   } else {
-    recordError(
-      crashlytics,
-      new Error(String(error))
-    );
+    recordError(crashlytics, new Error(String(error)));
   }
 }

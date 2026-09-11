@@ -7,6 +7,7 @@ export function getApiErrorMessage(error: unknown, fallback: string) {
 
   if (apiError?.data?.message) return apiError.data.message;
   if (apiError?.data?.error) return apiError.data.error;
-  if (apiError?.status === "FETCH_ERROR") return "Unable to reach the API. Check that the backend is running.";
+  if (apiError?.status === "FETCH_ERROR")
+    return "Unable to reach the API. Check that the backend is running.";
   return fallback;
 }

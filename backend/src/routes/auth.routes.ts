@@ -40,11 +40,7 @@ const router = Router();
 // REGISTER
 // ========================================
 
-router.post(
-  "/register",
-  registerController,
-);
-
+router.post("/register", registerController);
 
 // ========================================
 // LOGIN
@@ -71,11 +67,7 @@ router.post(
  *       200: { description: Login successful }
  *       400: { $ref: '#/components/responses/ValidationError' }
  */
-router.post(
-  "/login",
-  loginController,
-);
-
+router.post("/login", loginController);
 
 // ========================================
 // CURRENT USER
@@ -91,12 +83,7 @@ router.post(
  *       200: { description: Current user fetched successfully }
  *       401: { $ref: '#/components/responses/Unauthorized' }
  */
-router.get(
-  "/me",
-  authMiddleware,
-  meController,
-);
-
+router.get("/me", authMiddleware, meController);
 
 // ========================================
 // GOOGLE LOGIN
@@ -120,8 +107,6 @@ router.get(
     scope: ["openid", "profile", "email"],
   }),
 );
-
-
 
 // ========================================
 // GOOGLE CALLBACK

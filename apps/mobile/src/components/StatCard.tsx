@@ -1,11 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-import {
-  COLORS,
-  RADIUS,
-  SPACING,
-} from "../constants/theme";
+import { COLORS, RADIUS, SPACING } from "../constants/theme";
 
 type Props = {
   title: string;
@@ -13,11 +9,7 @@ type Props = {
   subtitle: string;
 };
 
-export default function StatCard({
-  title,
-  value,
-  subtitle,
-}: Props) {
+export default function StatCard({ title, value, subtitle }: Props) {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>

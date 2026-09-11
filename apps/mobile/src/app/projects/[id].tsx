@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
 import Screen from "../../components/Screen";
@@ -18,9 +13,7 @@ import { projects } from "../../constants/mockData";
 export default function ProjectDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const project = projects.find(
-    (item) => item.id === id
-  );
+  const project = projects.find((item) => item.id === id);
 
   if (!project) {
     return (
@@ -28,37 +21,24 @@ export default function ProjectDetailsScreen() {
         <AppHeader title="Project" />
 
         <AppCard>
-          <Text style={styles.error}>
-            Project not found.
-          </Text>
+          <Text style={styles.error}>Project not found.</Text>
         </AppCard>
       </Screen>
     );
   }
 
-  const pending =
-    project.tasksCount - project.completedTasks;
+  const pending = project.tasksCount - project.completedTasks;
 
   return (
     <Screen>
-      <Pressable
-        onPress={() => router.back()}
-        style={styles.back}
-      >
+      <Pressable onPress={() => router.back()} style={styles.back}>
         <Text style={styles.backText}>← Back</Text>
       </Pressable>
 
-      <AppHeader
-        title={project.name}
-        subtitle={project.description}
-      />
+      <AppHeader title={project.name} subtitle={project.description} />
 
       <View style={styles.row}>
-        <StatCard
-          title="Tasks"
-          value={project.tasksCount}
-          subtitle="Total"
-        />
+        <StatCard title="Tasks" value={project.tasksCount} subtitle="Total" />
 
         <View style={styles.gap} />
 
@@ -70,11 +50,7 @@ export default function ProjectDetailsScreen() {
       </View>
 
       <View style={styles.row}>
-        <StatCard
-          title="Pending"
-          value={pending}
-          subtitle="Remaining"
-        />
+        <StatCard title="Pending" value={pending} subtitle="Remaining" />
 
         <View style={styles.gap} />
 
@@ -86,19 +62,11 @@ export default function ProjectDetailsScreen() {
       </View>
 
       <AppCard>
-        <Text style={styles.sectionTitle}>
-          Project Information
-        </Text>
+        <Text style={styles.sectionTitle}>Project Information</Text>
 
-        <InfoRow
-          label="Owner"
-          value={project.ownerName}
-        />
+        <InfoRow label="Owner" value={project.ownerName} />
 
-        <InfoRow
-          label="Status"
-          value={project.status}
-        />
+        <InfoRow label="Status" value={project.status} />
       </AppCard>
 
       <AppButton
@@ -116,13 +84,7 @@ export default function ProjectDetailsScreen() {
   );
 }
 
-function InfoRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
       <Text style={styles.label}>{label}</Text>

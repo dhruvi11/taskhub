@@ -8,13 +8,11 @@ describe("Auth API", () => {
 
   describe("POST /api/v1/auth/register", () => {
     it("should register a new user", async () => {
-      const response = await request(app)
-        .post("/api/v1/auth/register")
-        .send({
-          name: "Test User",
-          email,
-          password,
-        });
+      const response = await request(app).post("/api/v1/auth/register").send({
+        name: "Test User",
+        email,
+        password,
+      });
 
       expect(response.status).toBe(201);
 
@@ -22,13 +20,11 @@ describe("Auth API", () => {
     });
 
     it("should reject invalid registration data", async () => {
-      const response = await request(app)
-        .post("/api/v1/auth/register")
-        .send({
-          name: "",
-          email: "invalid-email",
-          password: "123",
-        });
+      const response = await request(app).post("/api/v1/auth/register").send({
+        name: "",
+        email: "invalid-email",
+        password: "123",
+      });
 
       expect(response.status).toBe(400);
     });
@@ -36,12 +32,10 @@ describe("Auth API", () => {
 
   describe("POST /api/v1/auth/login", () => {
     it("should login with valid credentials", async () => {
-      const response = await request(app)
-        .post("/api/v1/auth/login")
-        .send({
-          email,
-          password,
-        });
+      const response = await request(app).post("/api/v1/auth/login").send({
+        email,
+        password,
+      });
 
       expect([200, 201]).toContain(response.status);
 
@@ -49,12 +43,10 @@ describe("Auth API", () => {
     });
 
     it("should reject invalid credentials", async () => {
-      const response = await request(app)
-        .post("/api/v1/auth/login")
-        .send({
-          email,
-          password: "WrongPassword@123",
-        });
+      const response = await request(app).post("/api/v1/auth/login").send({
+        email,
+        password: "WrongPassword@123",
+      });
 
       expect(response.status).toBe(401);
     });
@@ -62,8 +54,7 @@ describe("Auth API", () => {
 
   describe("GET /api/v1/auth/me", () => {
     it("should reject unauthenticated requests", async () => {
-      const response = await request(app)
-        .get("/api/v1/auth/me");
+      const response = await request(app).get("/api/v1/auth/me");
 
       expect(response.status).toBe(401);
     });

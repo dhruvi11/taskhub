@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 
 import Screen from "../../components/Screen";
@@ -24,53 +19,36 @@ export default function TasksScreen() {
 
   return (
     <Screen>
-      <AppHeader
-        title="Tasks"
-        subtitle="Track and manage your work."
-      />
+      <AppHeader title="Tasks" subtitle="Track and manage your work." />
 
       {visibleTasks.map((task) => (
         <Pressable
           key={task.id}
-          onPress={() =>
-            router.push(`/tasks/${task.id}`)
-          }
+          onPress={() => router.push(`/tasks/${task.id}`)}
         >
           <AppCard>
             <View style={styles.header}>
-              <Text style={styles.title}>
-                {task.title}
-              </Text>
+              <Text style={styles.title}>{task.title}</Text>
 
               <Text
                 style={[
                   styles.priority,
-                  task.priority === "HIGH" &&
-                    styles.high,
-                  task.priority === "MEDIUM" &&
-                    styles.medium,
+                  task.priority === "HIGH" && styles.high,
+                  task.priority === "MEDIUM" && styles.medium,
                 ]}
               >
                 {task.priority}
               </Text>
             </View>
 
-            <Text style={styles.project}>
-              {task.projectName}
-            </Text>
+            <Text style={styles.project}>{task.projectName}</Text>
 
-            <Text style={styles.description}>
-              {task.description}
-            </Text>
+            <Text style={styles.description}>{task.description}</Text>
 
             <View style={styles.footer}>
-              <Text style={styles.status}>
-                {task.status.replace("_", " ")}
-              </Text>
+              <Text style={styles.status}>{task.status.replace("_", " ")}</Text>
 
-              <Text style={styles.date}>
-                Due {task.dueDate}
-              </Text>
+              <Text style={styles.date}>Due {task.dueDate}</Text>
             </View>
           </AppCard>
         </Pressable>
@@ -78,9 +56,7 @@ export default function TasksScreen() {
 
       {visibleTasks.length === 0 && (
         <AppCard>
-          <Text style={styles.empty}>
-            No tasks found.
-          </Text>
+          <Text style={styles.empty}>No tasks found.</Text>
         </AppCard>
       )}
     </Screen>

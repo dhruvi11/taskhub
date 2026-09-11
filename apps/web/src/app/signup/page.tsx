@@ -111,7 +111,10 @@ export default function SignupPage() {
 
             {error && (
               <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">
-                {getApiErrorMessage(error, "Unable to create account. Please check your details.")}
+                {getApiErrorMessage(
+                  error,
+                  "Unable to create account. Please check your details.",
+                )}
               </p>
             )}
 

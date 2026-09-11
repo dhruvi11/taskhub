@@ -9,7 +9,7 @@ export class ProjectRepository {
   async create(
     data: CreateProjectInput & {
       ownerId: string;
-    }
+    },
   ) {
     return prisma.project.create({
       data: {
@@ -37,10 +37,7 @@ export class ProjectRepository {
     });
   }
 
-  async update(
-    id: string,
-    data: UpdateProjectInput
-  ) {
+  async update(id: string, data: UpdateProjectInput) {
     return prisma.project.update({
       where: {
         id,
@@ -57,18 +54,8 @@ export class ProjectRepository {
     });
   }
 
-  async findMany(
-    ownerId: string,
-    query: ProjectListQuery
-  ) {
-    const {
-      page,
-      limit,
-      search,
-      status,
-      sortBy,
-      sortOrder,
-    } = query;
+  async findMany(ownerId: string, query: ProjectListQuery) {
+    const { page, limit, search, status, sortBy, sortOrder } = query;
 
     const skip = (page - 1) * limit;
 
@@ -97,30 +84,29 @@ export class ProjectRepository {
       }),
     };
 
-    const [projects, total] =
-      await prisma.$transaction([
-        prisma.project.findMany({
-          where,
-          skip,
-          take: limit,
-          orderBy: {
-            [sortBy]: sortOrder,
-          },
-          include: {
-            owner: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
+    const [projects, total] = await prisma.$transaction([
+      prisma.project.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+        include: {
+          owner: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
             },
           },
-        }),
+        },
+      }),
 
-        prisma.project.count({
-          where,
-        }),
-      ]);
+      prisma.project.count({
+        where,
+      }),
+    ]);
 
     return {
       projects,

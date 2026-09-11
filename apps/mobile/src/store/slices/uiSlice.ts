@@ -30,10 +30,6 @@ const uiSlice = createSlice({
   },
 });
 
-export const {
-  setLoading,
-  setError,
-  clearError,
-} = uiSlice.actions;
+export const { setLoading, setError, clearError } = uiSlice.actions;
 
 export default uiSlice.reducer;

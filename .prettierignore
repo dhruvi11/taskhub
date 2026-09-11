@@ -1,5 +1,11 @@
 node_modules
-dist
 .next
 .expo
+dist
+build
 coverage
+ios
+android
+.git
+*.lock
+package-lock.json

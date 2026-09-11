@@ -9,19 +9,12 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export default function DashboardLayout({
-  children,
-}: DashboardLayoutProps) {
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
-
-      <Navbar
-        onMenuClick={() =>
-          setSidebarOpen((value) => !value)
-        }
-      />
+      <Navbar onMenuClick={() => setSidebarOpen((value) => !value)} />
 
       <Sidebar open={sidebarOpen} />
 
@@ -32,11 +25,8 @@ export default function DashboardLayout({
           lg:ml-64
         "
       >
-        <div className="p-4 sm:p-6 lg:p-8">
-          {children}
-        </div>
+        <div className="p-4 sm:p-6 lg:p-8">{children}</div>
       </main>
-
     </div>
   );
 }

@@ -1,15 +1,12 @@
 import * as Sentry from "@sentry/node";
 
-const environment =
-  process.env.NODE_ENV || "development";
+const environment = process.env.NODE_ENV || "development";
 
 export function initializeSentry() {
   const dsn = process.env.SENTRY_DSN;
 
   if (!dsn) {
-    console.warn(
-      "SENTRY_DSN is not configured. Sentry disabled."
-    );
+    console.warn("SENTRY_DSN is not configured. Sentry disabled.");
 
     return;
   }
@@ -18,8 +15,7 @@ export function initializeSentry() {
     dsn,
     environment,
 
-    tracesSampleRate:
-      environment === "production" ? 0.2 : 1.0,
+    tracesSampleRate: environment === "production" ? 0.2 : 1.0,
 
     sendDefaultPii: false,
 
@@ -29,9 +25,7 @@ export function initializeSentry() {
       "taskhub-api@dev",
   });
 
-  console.log(
-    `Sentry initialized: ${environment}`
-  );
+  console.log(`Sentry initialized: ${environment}`);
 }
 
 export { Sentry };

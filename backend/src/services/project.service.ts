@@ -7,29 +7,20 @@ import {
 import { ProjectRepository } from "../repositories/project.repository";
 
 export class ProjectService {
-  constructor(
-    private readonly projectRepository: ProjectRepository
-  ) {}
+  constructor(private readonly projectRepository: ProjectRepository) {}
 
-  async createProject(
-    ownerId: string,
-    data: CreateProjectInput
-  ) {
+  async createProject(ownerId: string, data: CreateProjectInput) {
     return this.projectRepository.create({
       ...data,
       ownerId,
     });
   }
 
-  async getProjects(
-    ownerId: string,
-    query: ProjectListQuery
-  ) {
-    const { projects, total } =
-      await this.projectRepository.findMany(
-        ownerId,
-        query
-      );
+  async getProjects(ownerId: string, query: ProjectListQuery) {
+    const { projects, total } = await this.projectRepository.findMany(
+      ownerId,
+      query,
+    );
 
     return {
       projects,
@@ -37,21 +28,13 @@ export class ProjectService {
         page: query.page,
         limit: query.limit,
         total,
-        totalPages: Math.ceil(
-          total / query.limit
-        ),
+        totalPages: Math.ceil(total / query.limit),
       },
     };
   }
 
-  async getProject(
-    userId: string,
-    projectId: string
-  ) {
-    const project =
-      await this.projectRepository.findById(
-        projectId
-      );
+  async getProject(userId: string, projectId: string) {
+    const project = await this.projectRepository.findById(projectId);
 
     if (!project) {
       throw new Error("Project not found");
@@ -65,12 +48,9 @@ export class ProjectService {
   async updateProject(
     userId: string,
     projectId: string,
-    data: UpdateProjectInput
+    data: UpdateProjectInput,
   ) {
-    const project =
-      await this.projectRepository.findById(
-        projectId
-      );
+    const project = await this.projectRepository.findById(projectId);
 
     if (!project) {
       throw new Error("Project not found");
@@ -78,20 +58,11 @@ export class ProjectService {
 
     this.checkOwnership(project.ownerId, userId);
 
-    return this.projectRepository.update(
-      projectId,
-      data
-    );
+    return this.projectRepository.update(projectId, data);
   }
 
-  async deleteProject(
-    userId: string,
-    projectId: string
-  ) {
-    const project =
-      await this.projectRepository.findById(
-        projectId
-      );
+  async deleteProject(userId: string, projectId: string) {
+    const project = await this.projectRepository.findById(projectId);
 
     if (!project) {
       throw new Error("Project not found");
@@ -99,23 +70,16 @@ export class ProjectService {
 
     this.checkOwnership(project.ownerId, userId);
 
-    await this.projectRepository.delete(
-      projectId
-    );
+    await this.projectRepository.delete(projectId);
 
     return {
       id: projectId,
     };
   }
 
-  private checkOwnership(
-    ownerId: string,
-    userId: string
-  ) {
+  private checkOwnership(ownerId: string, userId: string) {
     if (ownerId !== userId) {
-      throw new Error(
-        "You are not authorized to manage this project"
-      );
+      throw new Error("You are not authorized to manage this project");
     }
   }
 }

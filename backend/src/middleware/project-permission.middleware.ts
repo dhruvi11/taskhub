@@ -2,19 +2,10 @@ import { Request, Response, NextFunction } from "express";
 
 import { prisma } from "../config/prisma";
 
-type ProjectRole =
-  | "OWNER"
-  | "MANAGER"
-  | "MEMBER";
+type ProjectRole = "OWNER" | "MANAGER" | "MEMBER";
 
-export const requireProjectRole = (
-  allowedRoles: ProjectRole[]
-) => {
-  return async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
+export const requireProjectRole = (allowedRoles: ProjectRole[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.userId;
       const projectId = req.params.projectId;
@@ -26,10 +17,7 @@ export const requireProjectRole = (
         });
       }
 
-      if (
-        !projectId ||
-        typeof projectId !== "string"
-      ) {
+      if (!projectId || typeof projectId !== "string") {
         return res.status(400).json({
           success: false,
           message: "Invalid project ID",
@@ -40,16 +28,15 @@ export const requireProjectRole = (
       // Check if project exists
       // --------------------------------
 
-      const project =
-        await prisma.project.findUnique({
-          where: {
-            id: projectId,
-          },
-          select: {
-            id: true,
-            ownerId: true,
-          },
-        });
+      const project = await prisma.project.findUnique({
+        where: {
+          id: projectId,
+        },
+        select: {
+          id: true,
+          ownerId: true,
+        },
+      });
 
       if (!project) {
         return res.status(404).json({
@@ -66,8 +53,7 @@ export const requireProjectRole = (
         if (!allowedRoles.includes("OWNER")) {
           return res.status(403).json({
             success: false,
-            message:
-              "You do not have permission to perform this action",
+            message: "You do not have permission to perform this action",
           });
         }
 
@@ -84,21 +70,19 @@ export const requireProjectRole = (
       // Project Member
       // --------------------------------
 
-      const membership =
-        await prisma.projectMember.findUnique({
-          where: {
-            projectId_userId: {
-              projectId,
-              userId,
-            },
+      const membership = await prisma.projectMember.findUnique({
+        where: {
+          projectId_userId: {
+            projectId,
+            userId,
           },
-        });
+        },
+      });
 
       if (!membership) {
         return res.status(403).json({
           success: false,
-          message:
-            "You are not a member of this project",
+          message: "You are not a member of this project",
         });
       }
 
@@ -106,14 +90,12 @@ export const requireProjectRole = (
       // Role Permission
       // --------------------------------
 
-      const role =
-        membership.role as ProjectRole;
+      const role = membership.role as ProjectRole;
 
       if (!allowedRoles.includes(role)) {
         return res.status(403).json({
           success: false,
-          message:
-            "You do not have permission to perform this action",
+          message: "You do not have permission to perform this action",
         });
       }
 

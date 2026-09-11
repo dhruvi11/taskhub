@@ -14,11 +14,7 @@ type Props = TextInputProps & {
   error?: string;
 };
 
-export default function AppInput({
-  label,
-  error,
-  ...props
-}: Props) {
+export default function AppInput({ label, error, ...props }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>

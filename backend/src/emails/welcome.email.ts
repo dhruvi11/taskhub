@@ -1,8 +1,4 @@
-export const welcomeEmail = ({
-  name,
-}: {
-  name: string;
-}) => ({
+export const welcomeEmail = ({ name }: { name: string }) => ({
   subject: "Welcome to TaskHub",
 
   text: `

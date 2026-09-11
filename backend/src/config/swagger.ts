@@ -69,15 +69,28 @@ const swaggerDefinition = {
     responses: {
       Unauthorized: {
         description: "Authentication is required or the token is invalid.",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
       Forbidden: {
-        description: "The authenticated user does not have permission for this action.",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        description:
+          "The authenticated user does not have permission for this action.",
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
       ValidationError: {
         description: "The request data failed validation.",
-        content: { "application/json": { schema: { $ref: "#/components/schemas/Error" } } },
+        content: {
+          "application/json": {
+            schema: { $ref: "#/components/schemas/Error" },
+          },
+        },
       },
     },
 
@@ -180,21 +193,12 @@ const swaggerDefinition = {
 
           status: {
             type: "string",
-            enum: [
-              "TODO",
-              "IN_PROGRESS",
-              "COMPLETED",
-            ],
+            enum: ["TODO", "IN_PROGRESS", "COMPLETED"],
           },
 
           priority: {
             type: "string",
-            enum: [
-              "LOW",
-              "MEDIUM",
-              "HIGH",
-              "URGENT",
-            ],
+            enum: ["LOW", "MEDIUM", "HIGH", "URGENT"],
           },
 
           dueDate: {
@@ -261,12 +265,8 @@ const swaggerDefinition = {
   ],
 };
 
-export const swaggerSpec =
-  swaggerJSDoc({
-    definition: swaggerDefinition,
+export const swaggerSpec = swaggerJSDoc({
+  definition: swaggerDefinition,
 
-    apis: [
-      "./src/app.ts",
-      "./src/routes/*.ts",
-    ],
-  });
+  apis: ["./src/app.ts", "./src/routes/*.ts"],
+});

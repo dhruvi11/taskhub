@@ -8,17 +8,12 @@ type Props = {
   subtitle?: string;
 };
 
-export default function AppHeader({
-  title,
-  subtitle,
-}: Props) {
+export default function AppHeader({ title, subtitle }: Props) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
 
-      {subtitle ? (
-        <Text style={styles.subtitle}>{subtitle}</Text>
-      ) : null}
+      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
   );
 }

@@ -12,14 +12,9 @@ export const store = configureStore({
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      api.middleware
-    ),
+    getDefaultMiddleware().concat(api.middleware),
 });
 
-export type RootState = ReturnType<
-  typeof store.getState
->;
+export type RootState = ReturnType<typeof store.getState>;
 
-export type AppDispatch =
-  typeof store.dispatch;
+export type AppDispatch = typeof store.dispatch;

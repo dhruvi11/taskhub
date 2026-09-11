@@ -1,7 +1,4 @@
-import {
-  createSlice,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import type { Project } from "@/src/types/project";
 
@@ -17,17 +14,12 @@ const projectSlice = createSlice({
   name: "projects",
   initialState,
   reducers: {
-    setSelectedProject: (
-      state,
-      action: PayloadAction<Project | null>,
-    ) => {
+    setSelectedProject: (state, action: PayloadAction<Project | null>) => {
       state.selectedProject = action.payload;
     },
   },
 });
 
-export const {
-  setSelectedProject,
-} = projectSlice.actions;
+export const { setSelectedProject } = projectSlice.actions;
 
 export default projectSlice.reducer;

@@ -1,10 +1,6 @@
 export type ProjectStatus = "ACTIVE" | "COMPLETED" | "ARCHIVED";
 
-export type TaskStatus =
-  | "TODO"
-  | "IN_PROGRESS"
-  | "COMPLETED"
-  | "CANCELLED";
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 
 export type Project = {
   id: string;

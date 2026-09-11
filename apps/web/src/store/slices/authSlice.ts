@@ -1,7 +1,4 @@
-import {
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface User {
   id: string;
@@ -39,71 +36,40 @@ const authSlice = createSlice({
       }>,
     ) => {
       state.user = action.payload.user;
-      state.accessToken =
-        action.payload.accessToken;
+      state.accessToken = action.payload.accessToken;
 
-      state.refreshToken =
-        action.payload.refreshToken ||
-        null;
+      state.refreshToken = action.payload.refreshToken || null;
 
       state.isAuthenticated = true;
 
-      if (
-        typeof window !== "undefined"
-      ) {
-        localStorage.setItem(
-          "accessToken",
-          action.payload.accessToken,
-        );
+      if (typeof window !== "undefined") {
+        localStorage.setItem("accessToken", action.payload.accessToken);
 
-        if (
-          action.payload.refreshToken
-        ) {
-          localStorage.setItem(
-            "refreshToken",
-            action.payload.refreshToken,
-          );
+        if (action.payload.refreshToken) {
+          localStorage.setItem("refreshToken", action.payload.refreshToken);
         }
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify(
-            action.payload.user,
-          ),
-        );
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
       }
     },
 
     hydrateAuth: (state) => {
-      if (
-        typeof window === "undefined"
-      ) {
+      if (typeof window === "undefined") {
         return;
       }
 
-      const accessToken =
-        localStorage.getItem(
-          "accessToken",
-        );
+      const accessToken = localStorage.getItem("accessToken");
 
-      const refreshToken =
-        localStorage.getItem(
-          "refreshToken",
-        );
+      const refreshToken = localStorage.getItem("refreshToken");
 
-      const userString =
-        localStorage.getItem("user");
+      const userString = localStorage.getItem("user");
 
       if (accessToken) {
-        state.accessToken =
-          accessToken;
+        state.accessToken = accessToken;
 
-        state.refreshToken =
-          refreshToken;
+        state.refreshToken = refreshToken;
 
-        state.user = userString
-          ? JSON.parse(userString)
-          : null;
+        state.user = userString ? JSON.parse(userString) : null;
 
         state.isAuthenticated = true;
       }
@@ -118,38 +84,24 @@ const authSlice = createSlice({
       }
     },
 
-    clearCredentials: (
-      state,
-    ) => {
+    clearCredentials: (state) => {
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
 
-      if (
-        typeof window !== "undefined"
-      ) {
-        localStorage.removeItem(
-          "accessToken",
-        );
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
 
-        localStorage.removeItem(
-          "refreshToken",
-        );
+        localStorage.removeItem("refreshToken");
 
-        localStorage.removeItem(
-          "user",
-        );
+        localStorage.removeItem("user");
       }
     },
   },
 });
 
-export const {
-  setCredentials,
-  hydrateAuth,
-  setUser,
-  clearCredentials,
-} = authSlice.actions;
+export const { setCredentials, hydrateAuth, setUser, clearCredentials } =
+  authSlice.actions;
 
 export default authSlice.reducer;

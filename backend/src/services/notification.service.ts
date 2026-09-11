@@ -1,10 +1,6 @@
-import {
-  MulticastMessage,
-} from "firebase-admin/messaging";
+import { MulticastMessage } from "firebase-admin/messaging";
 
-import {
-  firebaseMessaging,
-} from "../config/firebase";
+import { firebaseMessaging } from "../config/firebase";
 
 export class NotificationService {
   async sendPushNotification({
@@ -36,20 +32,14 @@ export class NotificationService {
       data,
     };
 
-    const response =
-      await firebaseMessaging.sendEachForMulticast(
-        message
-      );
+    const response = await firebaseMessaging.sendEachForMulticast(message);
 
     return {
-      successCount:
-        response.successCount,
+      successCount: response.successCount,
 
-      failureCount:
-        response.failureCount,
+      failureCount: response.failureCount,
     };
   }
 }
 
-export const notificationService =
-  new NotificationService();
+export const notificationService = new NotificationService();

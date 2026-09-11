@@ -1,7 +1,4 @@
-import {
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import type {
   LoginRequest,
@@ -10,15 +7,9 @@ import type {
   User,
 } from "../types/auth";
 
-import type {
-  Project,
-  ProjectListResponse,
-} from "../types/project";
+import type { Project, ProjectListResponse } from "../types/project";
 
-import type {
-  Task,
-  TaskListResponse,
-} from "../types/task";
+import type { Task, TaskListResponse } from "../types/task";
 
 import { API_BASE_URL } from "../services/api";
 
@@ -28,42 +19,25 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
 
-    prepareHeaders: (
-      headers,
-      { getState }
-    ) => {
+    prepareHeaders: (headers, { getState }) => {
       const state = getState() as any;
 
-      const token =
-        state.auth?.accessToken;
+      const token = state.auth?.accessToken;
 
       if (token) {
-        headers.set(
-          "Authorization",
-          `Bearer ${token}`
-        );
+        headers.set("Authorization", `Bearer ${token}`);
       }
 
-      headers.set(
-        "Content-Type",
-        "application/json"
-      );
+      headers.set("Content-Type", "application/json");
 
       return headers;
     },
   }),
 
-  tagTypes: [
-    "User",
-    "Project",
-    "Task",
-  ],
+  tagTypes: ["User", "Project", "Task"],
 
   endpoints: (builder) => ({
-    login: builder.mutation<
-      AuthResponse,
-      LoginRequest
-    >({
+    login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({
         url: "/auth/login",
         method: "POST",
@@ -71,10 +45,7 @@ export const api = createApi({
       }),
     }),
 
-    signup: builder.mutation<
-      AuthResponse,
-      SignupRequest
-    >({
+    signup: builder.mutation<AuthResponse, SignupRequest>({
       query: (body) => ({
         url: "/auth/register",
         method: "POST",
@@ -82,34 +53,20 @@ export const api = createApi({
       }),
     }),
 
-    getCurrentUser: builder.query<
-      { success: boolean; data: User },
-      void
-    >({
+    getCurrentUser: builder.query<{ success: boolean; data: User }, void>({
       query: () => "/users/me",
       providesTags: ["User"],
     }),
 
-    getProjects: builder.query<
-      ProjectListResponse,
-      void
-    >({
+    getProjects: builder.query<ProjectListResponse, void>({
       query: () => "/projects",
       providesTags: ["Project"],
     }),
 
-    getProject: builder.query<
-      { success: boolean; data: Project },
-      string
-    >({
-      query: (projectId) =>
-        `/projects/${projectId}`,
+    getProject: builder.query<{ success: boolean; data: Project }, string>({
+      query: (projectId) => `/projects/${projectId}`,
 
-      providesTags: (
-        result,
-        error,
-        projectId
-      ) => [
+      providesTags: (result, error, projectId) => [
         {
           type: "Project",
           id: projectId,
@@ -117,18 +74,10 @@ export const api = createApi({
       ],
     }),
 
-    getTasks: builder.query<
-      TaskListResponse,
-      string
-    >({
-      query: (projectId) =>
-        `/projects/${projectId}/tasks`,
+    getTasks: builder.query<TaskListResponse, string>({
+      query: (projectId) => `/projects/${projectId}/tasks`,
 
-      providesTags: (
-        result,
-        error,
-        projectId
-      ) => [
+      providesTags: (result, error, projectId) => [
         {
           type: "Task",
           id: projectId,
@@ -143,17 +92,10 @@ export const api = createApi({
         taskId: string;
       }
     >({
-      query: ({
-        projectId,
-        taskId,
-      }) =>
+      query: ({ projectId, taskId }) =>
         `/projects/${projectId}/tasks/${taskId}`,
 
-      providesTags: (
-        result,
-        error,
-        { taskId }
-      ) => [
+      providesTags: (result, error, { taskId }) => [
         {
           type: "Task",
           id: taskId,

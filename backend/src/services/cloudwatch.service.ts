@@ -7,9 +7,7 @@ import {
   PutRetentionPolicyCommand,
 } from "@aws-sdk/client-cloudwatch-logs";
 
-import {
-  PutMetricDataCommand,
-} from "@aws-sdk/client-cloudwatch";
+import { PutMetricDataCommand } from "@aws-sdk/client-cloudwatch";
 
 import {
   cloudWatchClient,
@@ -25,39 +23,27 @@ class CloudWatchService {
 
   private async ensureLogGroup() {
     try {
-      const result =
-        await cloudWatchLogsClient.send(
-          new DescribeLogGroupsCommand({
-            logGroupNamePrefix:
-              CLOUDWATCH_LOG_GROUP,
-          })
-        );
+      const result = await cloudWatchLogsClient.send(
+        new DescribeLogGroupsCommand({
+          logGroupNamePrefix: CLOUDWATCH_LOG_GROUP,
+        }),
+      );
 
-      const exists =
-        result.logGroups?.some(
-          (group) =>
-            group.logGroupName ===
-            CLOUDWATCH_LOG_GROUP
-        );
+      const exists = result.logGroups?.some(
+        (group) => group.logGroupName === CLOUDWATCH_LOG_GROUP,
+      );
 
       if (!exists) {
         await cloudWatchLogsClient.send(
           new CreateLogGroupCommand({
-            logGroupName:
-              CLOUDWATCH_LOG_GROUP,
-          })
+            logGroupName: CLOUDWATCH_LOG_GROUP,
+          }),
         );
       }
     } catch (error) {
-      const name =
-        error instanceof Error
-          ? error.name
-          : "";
+      const name = error instanceof Error ? error.name : "";
 
-      if (
-        name !==
-        "ResourceAlreadyExistsException"
-      ) {
+      if (name !== "ResourceAlreadyExistsException") {
         throw error;
       }
     }
@@ -65,43 +51,29 @@ class CloudWatchService {
 
   private async ensureLogStream() {
     try {
-      const result =
-        await cloudWatchLogsClient.send(
-          new DescribeLogStreamsCommand({
-            logGroupName:
-              CLOUDWATCH_LOG_GROUP,
-            logStreamNamePrefix:
-              CLOUDWATCH_LOG_STREAM,
-          })
-        );
+      const result = await cloudWatchLogsClient.send(
+        new DescribeLogStreamsCommand({
+          logGroupName: CLOUDWATCH_LOG_GROUP,
+          logStreamNamePrefix: CLOUDWATCH_LOG_STREAM,
+        }),
+      );
 
-      const exists =
-        result.logStreams?.some(
-          (stream) =>
-            stream.logStreamName ===
-            CLOUDWATCH_LOG_STREAM
-        );
+      const exists = result.logStreams?.some(
+        (stream) => stream.logStreamName === CLOUDWATCH_LOG_STREAM,
+      );
 
       if (!exists) {
         await cloudWatchLogsClient.send(
           new CreateLogStreamCommand({
-            logGroupName:
-              CLOUDWATCH_LOG_GROUP,
-            logStreamName:
-              CLOUDWATCH_LOG_STREAM,
-          })
+            logGroupName: CLOUDWATCH_LOG_GROUP,
+            logStreamName: CLOUDWATCH_LOG_STREAM,
+          }),
         );
       }
     } catch (error) {
-      const name =
-        error instanceof Error
-          ? error.name
-          : "";
+      const name = error instanceof Error ? error.name : "";
 
-      if (
-        name !==
-        "ResourceAlreadyExistsException"
-      ) {
+      if (name !== "ResourceAlreadyExistsException") {
         throw error;
       }
     }
@@ -119,40 +91,31 @@ class CloudWatchService {
       try {
         await cloudWatchLogsClient.send(
           new PutRetentionPolicyCommand({
-            logGroupName:
-              CLOUDWATCH_LOG_GROUP,
-            retentionInDays:
-              CLOUDWATCH_LOG_RETENTION_DAYS,
-          })
+            logGroupName: CLOUDWATCH_LOG_GROUP,
+            retentionInDays: CLOUDWATCH_LOG_RETENTION_DAYS,
+          }),
         );
       } catch (error) {
-        console.error(
-          "CloudWatch retention setup failed:",
-          error
-        );
+        console.error("CloudWatch retention setup failed:", error);
       }
 
       this.initialized = true;
 
       console.log(
-        `[CloudWatch] Initialized: ${CLOUDWATCH_LOG_GROUP}/${CLOUDWATCH_LOG_STREAM}`
+        `[CloudWatch] Initialized: ${CLOUDWATCH_LOG_GROUP}/${CLOUDWATCH_LOG_STREAM}`,
       );
     } catch (error) {
-      console.error(
-        "[CloudWatch] Initialization failed:",
-        error
-      );
+      console.error("[CloudWatch] Initialization failed:", error);
     }
   }
 
   async log(
     level: "INFO" | "WARN" | "ERROR",
     message: string,
-    metadata: Record<string, unknown> = {}
+    metadata: Record<string, unknown> = {},
   ) {
     const payload = {
-      timestamp:
-        new Date().toISOString(),
+      timestamp: new Date().toISOString(),
       level,
       service: "taskhub-backend",
       message,
@@ -161,17 +124,11 @@ class CloudWatchService {
 
     // Always keep local logs too.
     if (level === "ERROR") {
-      console.error(
-        JSON.stringify(payload)
-      );
+      console.error(JSON.stringify(payload));
     } else if (level === "WARN") {
-      console.warn(
-        JSON.stringify(payload)
-      );
+      console.warn(JSON.stringify(payload));
     } else {
-      console.log(
-        JSON.stringify(payload)
-      );
+      console.log(JSON.stringify(payload));
     }
 
     try {
@@ -179,49 +136,34 @@ class CloudWatchService {
 
       await cloudWatchLogsClient.send(
         new PutLogEventsCommand({
-          logGroupName:
-            CLOUDWATCH_LOG_GROUP,
+          logGroupName: CLOUDWATCH_LOG_GROUP,
 
-          logStreamName:
-            CLOUDWATCH_LOG_STREAM,
+          logStreamName: CLOUDWATCH_LOG_STREAM,
 
           logEvents: [
             {
               timestamp: Date.now(),
-              message:
-                JSON.stringify(payload),
+              message: JSON.stringify(payload),
             },
           ],
-        })
+        }),
       );
     } catch (error) {
       // Observability must never break the API.
-      console.error(
-        "[CloudWatch] Log delivery failed:",
-        error
-      );
+      console.error("[CloudWatch] Log delivery failed:", error);
     }
   }
 
   async metric(
     metricName: string,
     value: number,
-    unit:
-      | "Count"
-      | "Milliseconds"
-      | "Bytes"
-      | "Percent"
-      | "None" = "None",
-    dimensions: Record<
-      string,
-      string
-    > = {}
+    unit: "Count" | "Milliseconds" | "Bytes" | "Percent" | "None" = "None",
+    dimensions: Record<string, string> = {},
   ) {
     try {
       await cloudWatchClient.send(
         new PutMetricDataCommand({
-          Namespace:
-            CLOUDWATCH_METRIC_NAMESPACE,
+          Namespace: CLOUDWATCH_METRIC_NAMESPACE,
 
           MetricData: [
             {
@@ -233,27 +175,18 @@ class CloudWatchService {
 
               Timestamp: new Date(),
 
-              Dimensions:
-                Object.entries(
-                  dimensions
-                ).map(
-                  ([Name, Value]) => ({
-                    Name,
-                    Value,
-                  })
-                ),
+              Dimensions: Object.entries(dimensions).map(([Name, Value]) => ({
+                Name,
+                Value,
+              })),
             },
           ],
-        })
+        }),
       );
     } catch (error) {
-      console.error(
-        `[CloudWatch] Metric ${metricName} failed:`,
-        error
-      );
+      console.error(`[CloudWatch] Metric ${metricName} failed:`, error);
     }
   }
 }
 
-export const cloudWatchService =
-  new CloudWatchService();
+export const cloudWatchService = new CloudWatchService();

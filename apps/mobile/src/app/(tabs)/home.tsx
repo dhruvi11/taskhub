@@ -11,17 +11,14 @@ import { projects, tasks } from "../../constants/mockData";
 export default function HomeScreen() {
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter(
-    (task) => task.status === "COMPLETED"
+    (task) => task.status === "COMPLETED",
   ).length;
 
   const pendingTasks = totalTasks - completedTasks;
 
   return (
     <Screen>
-      <AppHeader
-        title="Dashboard"
-        subtitle="Welcome back to TaskHub."
-      />
+      <AppHeader title="Dashboard" subtitle="Welcome back to TaskHub." />
 
       <View style={styles.row}>
         <StatCard
@@ -32,11 +29,7 @@ export default function HomeScreen() {
 
         <View style={styles.gap} />
 
-        <StatCard
-          title="Tasks"
-          value={totalTasks}
-          subtitle="Across projects"
-        />
+        <StatCard title="Tasks" value={totalTasks} subtitle="Across projects" />
       </View>
 
       <View style={styles.row}>
@@ -56,18 +49,14 @@ export default function HomeScreen() {
       </View>
 
       <AppCard>
-        <Text style={styles.sectionTitle}>
-          Recent Projects
-        </Text>
+        <Text style={styles.sectionTitle}>Recent Projects</Text>
 
         {projects.slice(0, 3).map((project) => (
           <View key={project.id} style={styles.projectRow}>
             <View style={styles.projectDot} />
 
             <View style={styles.projectContent}>
-              <Text style={styles.projectName}>
-                {project.name}
-              </Text>
+              <Text style={styles.projectName}>{project.name}</Text>
 
               <Text style={styles.projectDescription}>
                 {project.description}

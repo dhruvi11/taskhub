@@ -8,14 +8,11 @@ import { ProjectController } from "../controllers/project.controller";
 
 const router = Router();
 
-const projectRepository =
-  new ProjectRepository();
+const projectRepository = new ProjectRepository();
 
-const projectService =
-  new ProjectService(projectRepository);
+const projectService = new ProjectService(projectRepository);
 
-const projectController =
-  new ProjectController(projectService);
+const projectController = new ProjectController(projectService);
 
 router.use(authMiddleware);
 
@@ -53,15 +50,9 @@ router.use(authMiddleware);
  *       200: { description: Projects fetched successfully }
  *       401: { $ref: '#/components/responses/Unauthorized' }
  */
-router.post(
-  "/",
-  projectController.createProject
-);
+router.post("/", projectController.createProject);
 
-router.get(
-  "/",
-  projectController.getProjects
-);
+router.get("/", projectController.getProjects);
 
 /**
  * @swagger
@@ -105,19 +96,10 @@ router.get(
  *       401: { $ref: '#/components/responses/Unauthorized' }
  *       404: { description: Project not found }
  */
-router.get(
-  "/:id",
-  projectController.getProject
-);
+router.get("/:id", projectController.getProject);
 
-router.patch(
-  "/:id",
-  projectController.updateProject
-);
+router.patch("/:id", projectController.updateProject);
 
-router.delete(
-  "/:id",
-  projectController.deleteProject
-);
+router.delete("/:id", projectController.deleteProject);
 
 export default router;
