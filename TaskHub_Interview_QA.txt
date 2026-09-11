@@ -1858,6 +1858,7 @@ Frontend code can be modified or bypassed by users. The backend must independent
 
 Answer:
 The main benefit is separation of concerns with a shared REST backend. Web and mobile clients can evolve independently while using the same authentication, business logic, database, S3 storage, SES email system, and monitoring infrastructure.
+
 Milestone 21 — AWS CloudWatch
 
 Q: Why did you use CloudWatch?
@@ -1904,3 +1905,5 @@ A: Collecting application activity and performance information in one monitoring
 
 Q: How would you improve this in production?
 A: Use structured logging, batching, correlation/request IDs, alarms, dashboards, retention policies, and platform-native log shipping where appropriate.
+
+Milestone 22

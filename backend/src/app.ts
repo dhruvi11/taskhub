@@ -122,6 +122,25 @@ app.get("/api/v1/health", (_req, res) => {
   });
 });
 
+
+/**
+ * @swagger
+ * /api/v1/test/sentry:
+ *   get:
+ *     tags:
+ *       - Test
+ *     summary: Test Sentry error reporting
+ *     security: []
+ *     responses:
+ *       500:
+ *         description: Sentry test error thrown
+ */
+app.get("/api/v1/test/sentry", () => {
+  throw new Error(
+    "TaskHub Sentry test error"
+  );
+});
+
 app.use(errorMiddleware);
 app.use(errorHandler);
 export default app;

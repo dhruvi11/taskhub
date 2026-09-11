@@ -10,6 +10,9 @@ import {
   resourceMonitor,
 } from "./services/resource-monitor.service";
 
+import { initializeSentry } from "./config/sentry";
+initializeSentry();
+
 const PORT = process.env.PORT || 5050;
 
 const startServer = async () => {

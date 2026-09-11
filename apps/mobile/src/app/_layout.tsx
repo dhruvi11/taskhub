@@ -3,8 +3,16 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import ReduxProvider from "../components/providers/ReduxProvider";
+import {
+  initializeSentry,
+} from "../services/sentry.service";
+import { useEffect } from "react";
 
 export default function RootLayout() {
+  useEffect(() => {
+    initializeSentry();
+  }, []);
+
   return (
     <ReduxProvider>
       <SafeAreaProvider>
