@@ -1906,4 +1906,590 @@ A: Collecting application activity and performance information in one monitoring
 Q: How would you improve this in production?
 A: Use structured logging, batching, correlation/request IDs, alarms, dashboards, retention policies, and platform-native log shipping where appropriate.
 
-Milestone 22
+Milestone 22 — Firebase Mobile Cloud Services
+1. What did you implement in Milestone 22?
+
+Answer:
+
+In Milestone 22, I integrated Firebase into the TaskHub React Native mobile application to provide cloud services.
+
+I implemented:
+
+Firebase Cloud Messaging (FCM)
+Firebase Analytics
+Firebase Crashlytics
+Task assignment push notifications
+Login and signup analytics
+Task-related analytics events
+Mobile crash reporting
+
+The checkpoint was to make sure mobile users receive relevant notifications and important mobile events are observable.
+
+2. Why did you use Firebase in TaskHub?
+
+Answer:
+
+I used Firebase because it provides several mobile-focused services in one ecosystem.
+
+For TaskHub:
+
+FCM handles push notifications.
+Analytics tracks user and application events.
+Crashlytics reports mobile crashes and provides debugging information.
+
+This gives us better visibility into how the mobile application is being used and whether it is stable.
+
+3. What is Firebase Cloud Messaging?
+
+Answer:
+
+Firebase Cloud Messaging, or FCM, is a service used to send push notifications to mobile devices.
+
+In TaskHub, when a user receives a task assignment, the backend can send a notification to the user's registered mobile device.
+
+The basic flow is:
+
+Task Assignment
+      ↓
+TaskHub Backend
+      ↓
+User's Device Token
+      ↓
+Firebase Cloud Messaging
+      ↓
+Mobile Device
+      ↓
+Push Notification
+4. What is an FCM device token?
+
+Answer:
+
+An FCM device token is a unique token that identifies an application installation on a device for Firebase Cloud Messaging.
+
+The mobile application gets the token from Firebase and sends it to the TaskHub backend.
+
+The backend stores the token against the user so that notifications can be sent to the correct device.
+
+5. Why do you store the FCM token in the backend?
+
+Answer:
+
+The backend needs to know which devices belong to which users.
+
+For example:
+
+User
+ ├── Android device token
+ └── iOS device token
+
+When a task is assigned to that user, the backend can find their device tokens and send the appropriate notification.
+
+6. What happens when a user logs into the mobile application?
+
+Answer:
+
+After login, the mobile application can obtain the FCM token and register it with the TaskHub backend.
+
+The backend associates the token with the authenticated user.
+
+This allows future notifications to be sent to that user's device.
+
+7. How did you implement task assignment notifications?
+
+Answer:
+
+When a task is assigned to a user, the backend identifies the assigned user and their registered device token.
+
+The notification is then sent through Firebase Cloud Messaging.
+
+The flow is:
+
+Admin/User assigns task
+        ↓
+Task API
+        ↓
+Find assigned user
+        ↓
+Find device token
+        ↓
+Send FCM notification
+        ↓
+User receives notification
+8. What is Firebase Analytics?
+
+Answer:
+
+Firebase Analytics is used to track application events and understand how users interact with the application.
+
+In TaskHub, I used analytics for events such as:
+
+login
+signup
+task_created
+task_completed
+
+These events help understand application usage and user activity.
+
+9. Why track login and signup events?
+
+Answer:
+
+Login and signup are important user lifecycle events.
+
+Tracking them helps us understand:
+
+how many users are registering
+how many users are logging in
+user engagement
+authentication flow usage
+
+It can also help identify problems in the onboarding process.
+
+10. What task events did you track?
+
+Answer:
+
+I tracked important task-related events such as task creation and task completion.
+
+For example:
+
+task_created
+task_completed
+
+This helps understand how users interact with the core TaskHub functionality.
+
+11. What is Firebase Crashlytics?
+
+Answer:
+
+Firebase Crashlytics is a crash-reporting service for mobile applications.
+
+It collects crash information such as:
+
+stack traces
+application version
+device information
+crash frequency
+affected users
+
+This helps developers identify and fix mobile crashes.
+
+12. What is the difference between Firebase Analytics and Crashlytics?
+
+Answer:
+
+Analytics is primarily used to understand application usage and events, while Crashlytics is used to understand application crashes.
+
+Firebase Analytics
+→ What are users doing?
+
+Crashlytics
+→ What is crashing?
+13. Why can't React Native Firebase simply run in Expo Go?
+
+Answer:
+
+React Native Firebase uses native iOS and Android modules.
+
+Expo Go has a predefined native runtime and does not contain every custom native module.
+
+Therefore, when using React Native Firebase, I need a custom development build that includes the required native Firebase modules.
+
+14. What problem did you face with Firebase?
+
+Answer:
+
+I encountered a native module error:
+
+Native module NativeRNFBTurboApp is not registered.
+
+The issue was related to running React Native Firebase functionality without the required native Firebase module being available in the runtime.
+
+I resolved this by configuring the native Firebase setup and using a custom development build instead of relying on Expo Go.
+
+15. What is the complete Firebase architecture in TaskHub?
+
+Answer:
+
+              TaskHub Mobile
+                    │
+          ┌─────────┼─────────┐
+          │         │         │
+         FCM    Analytics  Crashlytics
+          │         │         │
+          ↓         ↓         ↓
+     Push alerts  Events   Crash reports
+          │         │         │
+          └─────────┼─────────┘
+                    ↓
+                 Firebase
+16. What was the Milestone 22 checkpoint?
+
+Answer:
+
+The checkpoint was:
+
+Mobile users receive relevant notifications and mobile events are observable.
+
+I verified the Firebase services and implemented the required mobile cloud functionality.
+
+Milestone 23 — Sentry
+17. What did you implement in Milestone 23?
+
+Answer:
+
+In Milestone 23, I added application-wide error monitoring using Sentry.
+
+I integrated Sentry into:
+
+Next.js web application
+Express backend
+React Native mobile application
+
+I also implemented:
+
+error tracking
+performance monitoring
+release context
+user/context metadata
+API exception reporting
+
+The goal was to make important production errors visible in Sentry.
+
+18. Why did you add Sentry to TaskHub?
+
+Answer:
+
+Sentry provides centralized application error monitoring.
+
+TaskHub has three major applications:
+
+Web
+Backend API
+Mobile
+
+Instead of checking logs manually, Sentry provides a centralized place to identify application errors, stack traces, request context, and performance issues.
+
+19. What are your three Sentry projects?
+
+Answer:
+
+I created separate Sentry projects for:
+
+taskhub-web
+taskhub-api
+taskhub-mobile
+
+This separates monitoring for each application and makes it easier to identify where an issue originated.
+
+20. What is error tracking?
+
+Answer:
+
+Error tracking means automatically capturing application exceptions and providing useful information for debugging.
+
+For example:
+
+Error
+ ↓
+Stack trace
+ ↓
+Application
+ ↓
+Release
+ ↓
+Environment
+ ↓
+User/context
+
+This allows developers to identify the cause and impact of an error.
+
+21. How did you integrate Sentry with Express?
+
+Answer:
+
+I initialized Sentry when the backend starts and integrated Sentry with the centralized Express error handler.
+
+When an exception reaches the error handler, it is captured using Sentry.
+
+The flow is:
+
+Express Request
+      ↓
+Controller/Service
+      ↓
+Exception
+      ↓
+Central Error Handler
+      ↓
+Sentry.captureException()
+      ↓
+CloudWatch Logging
+      ↓
+HTTP 500 Response
+22. Why do you need a centralized error handler?
+
+Answer:
+
+A centralized error handler gives us one consistent place to process unexpected errors.
+
+It allows us to:
+
+capture errors in Sentry
+log errors to CloudWatch
+return consistent API responses
+avoid duplicate error-handling logic
+23. What response does the backend return for an unexpected error?
+
+Answer:
+
+The API returns a standard 500 response:
+
+{
+  "success": false,
+  "message": "Internal server error",
+  "code": "INTERNAL_SERVER_ERROR"
+}
+
+The detailed technical error is logged and captured in monitoring systems rather than exposed to the client.
+
+24. How did you test backend Sentry?
+
+Answer:
+
+I created a temporary test endpoint that intentionally throws an error.
+
+I tested it using:
+
+curl -i http://localhost:5050/api/v1/test/sentry
+
+The API returned:
+
+HTTP/1.1 500 Internal Server Error
+
+and:
+
+{
+  "success": false,
+  "message": "Internal server error",
+  "code": "INTERNAL_SERVER_ERROR"
+}
+
+The backend also logged:
+
+TaskHub Sentry test error
+
+This confirmed that the exception reached the centralized error handler and was captured for monitoring.
+
+25. What is performance monitoring in Sentry?
+
+Answer:
+
+Performance monitoring tracks application transactions and helps identify slow operations.
+
+For example, we can monitor:
+
+API request
+   ↓
+Database query
+   ↓
+External service
+   ↓
+Response
+
+This helps identify performance bottlenecks instead of only looking at crashes.
+
+26. What is tracesSampleRate?
+
+Answer:
+
+tracesSampleRate determines the percentage of performance transactions that Sentry collects.
+
+For example:
+
+tracesSampleRate: 1.0
+
+means approximately 100% of transactions are sampled.
+
+For production, a lower value such as:
+
+tracesSampleRate: 0.2
+
+can be used to collect approximately 20% and reduce monitoring volume.
+
+27. What is release context in Sentry?
+
+Answer:
+
+A release identifies a particular version of the application.
+
+For example:
+
+taskhub-api@1.0.0
+taskhub-web@1.0.0
+taskhub-mobile@1.0.0
+
+It allows errors to be associated with a specific application release and helps determine whether an issue was introduced in a particular version.
+
+28. What is user/context metadata?
+
+Answer:
+
+Context metadata provides additional information around an error.
+
+For example:
+
+User ID
+HTTP method
+Request path
+URL
+Environment
+Service
+Component
+Release
+
+This makes errors easier to investigate.
+
+29. What sensitive information should NOT be sent to Sentry?
+
+Answer:
+
+I should avoid sending sensitive information such as:
+
+Passwords
+Access tokens
+Refresh tokens
+Authorization headers
+Private credentials
+API secrets
+
+Monitoring data should contain enough context for debugging without exposing sensitive user information.
+
+30. How does Sentry work with the backend and CloudWatch?
+
+Answer:
+
+They have different responsibilities.
+
+Sentry
+→ Application exceptions
+→ Stack traces
+→ Performance
+→ User/request context
+
+CloudWatch
+→ Backend logs
+→ AWS infrastructure
+→ Metrics
+→ Operational monitoring
+
+Using both gives better observability.
+
+31. What is the difference between Sentry and Crashlytics?
+
+Answer:
+
+Crashlytics is focused primarily on mobile crash reporting.
+
+Sentry provides broader application monitoring across web, backend, and mobile, including errors and performance.
+
+For TaskHub:
+
+Crashlytics
+→ Mobile crash diagnostics
+
+Sentry
+→ Web + API + Mobile
+→ Errors + Performance + Context
+
+They complement each other.
+
+32. How did you integrate Sentry with Next.js?
+
+Answer:
+
+I integrated the Sentry Next.js SDK into the web application.
+
+The purpose is to capture frontend and server-side application errors and provide release and performance context.
+
+The web application uses its own Sentry project:
+
+taskhub-web
+33. How did you integrate Sentry with React Native?
+
+Answer:
+
+I used the React Native Sentry SDK and initialized it in the mobile application.
+
+The mobile application uses:
+
+taskhub-mobile
+
+for mobile error and performance monitoring.
+
+Because Sentry React Native contains native functionality, the application needs the appropriate native development/build configuration.
+
+34. What happens when an unexpected API error occurs?
+
+Answer:
+
+The flow is:
+
+Client
+  ↓
+Express API
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Error
+  ↓
+Central Error Handler
+  ├── Sentry
+  ├── CloudWatch
+  └── API response
+
+The client receives a safe error response while developers get detailed monitoring information.
+
+35. What was the Milestone 23 checkpoint?
+
+Answer:
+
+The checkpoint was:
+
+Important production errors are visible in Sentry.
+
+I verified the Sentry integration and tested the backend exception flow to confirm that errors can be captured and monitored.
+
+Most Important Interview Question
+36. Explain Firebase + Sentry + CloudWatch together in TaskHub.
+
+Answer:
+
+TaskHub uses these services for different observability requirements.
+
+                    TASKHUB
+                       │
+       ┌───────────────┼────────────────┐
+       │               │                │
+      Web            Backend          Mobile
+       │               │                │
+       │          ┌────┴────┐           │
+       │          │         │           │
+       │       Sentry   CloudWatch     Firebase
+       │          │         │       ┌────┼────┐
+       │          │         │       FCM Analytics
+       │          │         │           │
+       └──────────┴─────────┴───────────┤
+                                        │
+                                  Crashlytics
+
+Sentry is used for application-wide error and performance monitoring.
+
+CloudWatch is used for backend/AWS logs and metrics.
+
+Firebase provides mobile cloud services such as FCM, Analytics, and Crashlytics.
+
+Together they provide a complete monitoring and mobile-cloud solution for TaskHub.
+

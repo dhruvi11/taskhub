@@ -27,10 +27,6 @@ app.use(cloudWatchRequestMiddleware);
 
 app.use(helmet());
 
-cors({
-  origin: true,
-  credentials: true,
-});
 
 const allowedOrigins =
   process.env.CORS_ORIGINS?.split(",")
@@ -141,6 +137,6 @@ app.get("/api/v1/test/sentry", () => {
   );
 });
 
-app.use(errorMiddleware);
+// app.use(errorMiddleware);
 app.use(errorHandler);
 export default app;

@@ -112,7 +112,7 @@ async assignTask(
       }
     );
 
-  const deviceTokens =
+  const deviceTokens: Array<{ token: string }> =
     await prisma.deviceToken.findMany({
       where: {
         userId: assignedToId,
@@ -125,7 +125,7 @@ async assignTask(
 
   const tokens =
     deviceTokens.map(
-      item => item.token
+      (item: { token: string }) => item.token,
     );
 
   if (tokens.length) {

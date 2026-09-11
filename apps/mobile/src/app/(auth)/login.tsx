@@ -1,4 +1,5 @@
 import React, {
+    useEffect,
   useState,
 } from "react";
 
@@ -41,6 +42,7 @@ import {
   identifyUser,
   recordCrashlyticsError,
 } from "../../services/firebase.service";
+import { initializeSentry } from "../sentry";
 
 export default function LoginScreen() {
   const dispatch =
@@ -58,6 +60,10 @@ export default function LoginScreen() {
 
   const [password, setPassword] =
     useState("");
+
+    useEffect(() => {
+  initializeSentry();
+}, []);
 
   const handleLogin =
     async () => {
