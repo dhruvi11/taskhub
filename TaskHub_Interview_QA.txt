@@ -30,8 +30,8 @@ request/response handling, and error handling.
 
 4. What is middleware?
 
-Answer: Middleware is a function that runs during the Express request-response lifecycle. It can authenticate, validate, log,
-parse data, or handle errors.
+Answer: Middleware is a function that runs during the Express request-response lifecycle. It can authenticate,
+validate, log, parse data, or handle errors.
 
 5. What is CORS?
 
@@ -78,7 +78,6 @@ Answer: GitHub Actions automates CI/CD. TaskHub can run lint, tests, type checks
 workflows on pushes or pull requests.
 
 14. Why a monorepo?
-TaskHub Interview Guide • Page 3
 
 Answer: A monorepo keeps web, mobile, backend, and shared packages in one repository, making shared types and
 coordinated changes easier to manage.
@@ -87,7 +86,6 @@ coordinated changes easier to manage.
 
 Answer: 201 Created indicates that a request successfully created a new resource, commonly returned by a successful
 POST create operation.
-TaskHub Interview Guide • Page 4
 
 Milestone 2 — PostgreSQL + Prisma
 
@@ -95,6 +93,12 @@ Milestone 2 — PostgreSQL + Prisma
 
 Answer: PostgreSQL is an open-source relational database. It stores structured data in tables and supports relationships,
 constraints, indexes, and transactions.
+
+SQL → data is organized like Excel tables with fixed columns and relationships
+Use SQL for banking, e-commerce, TaskHub, ERP—where relationships and transactions matter.
+
+NoSQL → data is usually stored more flexibly, often like JSON documents
+Use NoSQL for flexible, high-scale data like chat, IoT, social media, etc.
 
 2. Why PostgreSQL for TaskHub?
 
@@ -3172,3 +3176,214 @@ In M23, I added Sentry across the Next.js web app, Express backend and React Nat
 In M24, I added automated backend testing using Jest and Supertest, covering authentication, projects, tasks, validation and authorization.
 
 Together, these milestones improved TaskHub's production readiness through notifications, observability and automated quality checks.
+
+M25 Interview Questions & Answers
+1. What did you implement in Milestone 25?
+
+Answer:
+
+I standardized the TaskHub codebase using ESLint, Prettier and strict TypeScript configuration.
+
+I also established naming conventions, Git commit conventions and a pull request checklist.
+
+The goal was to improve maintainability, consistency and developer experience across the backend, web and mobile applications.
+
+2. What is ESLint?
+
+Answer:
+
+ESLint is a static code-analysis tool that identifies potential problems and enforces coding standards.
+
+It can detect things like:
+
+unused variables
+problematic patterns
+TypeScript issues
+inconsistent coding practices
+
+It helps maintain code quality across the project.
+
+3. What is Prettier?
+
+Answer:
+
+Prettier is an opinionated code formatter.
+
+It automatically formats code consistently based on a shared configuration.
+
+For example:
+
+Indentation
+Quotes
+Semicolons
+Line width
+Trailing commas
+
+This prevents developers from spending time manually formatting code.
+
+4. What is the difference between ESLint and Prettier?
+
+Answer:
+
+ESLint primarily focuses on code quality and potential problems, while Prettier focuses on code formatting.
+
+ESLint
+→ Is the code correct and following rules?
+
+Prettier
+→ Is the code consistently formatted?
+
+They work well together.
+
+5. Why use TypeScript strict mode?
+
+Answer:
+
+Strict TypeScript catches potential bugs during development instead of allowing them to reach runtime.
+
+For example, strict null checking helps prevent code from accidentally using null or undefined where a value is expected.
+
+This improves type safety and reliability.
+
+6. What does strict: true mean in TypeScript?
+
+Answer:
+
+strict: true enables a collection of stronger TypeScript type-checking options.
+
+It makes the compiler more aggressive about detecting unsafe code.
+
+This helps developers catch errors during development.
+
+7. What naming conventions did you use?
+
+Answer:
+
+I use consistent naming throughout TaskHub.
+
+For example:
+
+Variables/functions → camelCase
+Components/types    → PascalCase
+Constants           → UPPER_SNAKE_CASE
+Files               → descriptive names
+
+Examples:
+
+const projectId = "...";
+
+function createProject() {}
+
+const MAX_RETRY_COUNT = 3;
+
+React components use:
+
+ProjectCard
+TaskList
+LoginForm
+8. What are Conventional Commits?
+
+Answer:
+
+Conventional Commits provide a standardized format for Git commit messages.
+
+The general format is:
+
+type(scope): description
+
+Examples:
+
+feat(auth): add Google login
+fix(tasks): fix task update
+test(tasks): add task API tests
+refactor(auth): simplify token service
+docs(readme): update setup
+chore(deps): update dependencies
+9. Why are commit conventions useful?
+
+Answer:
+
+They make Git history easier to understand.
+
+A developer can quickly identify whether a commit contains a:
+
+feature
+bug fix
+test
+refactor
+documentation change
+dependency change
+
+It also helps teams maintain a consistent development workflow.
+
+10. What is a PR checklist?
+
+Answer:
+
+A PR checklist is a standard list of things a developer verifies before submitting code for review.
+
+For TaskHub, it includes checks such as:
+
+ESLint passes
+Prettier passes
+TypeScript passes
+Tests pass
+No secrets committed
+Documentation updated if required
+
+This reduces mistakes before code is merged.
+
+11. Why is code quality important in a large project?
+
+Answer:
+
+As the project grows, inconsistent code becomes difficult to maintain.
+
+Code-quality tools help ensure that different developers follow the same standards.
+
+This improves:
+
+readability
+maintainability
+debugging
+onboarding
+code reviews
+long-term scalability
+12. How do you verify TaskHub code quality?
+
+Answer:
+
+I run linting, formatting, TypeScript and automated tests.
+
+For example:
+
+npm run lint
+npx prettier --check .
+npx tsc --noEmit
+npm test
+
+This gives us automated validation before code is committed or merged.
+
+13. What happens if ESLint finds an error?
+
+Answer:
+
+The lint command exits with an error and identifies the file and line containing the problem.
+
+For fixable issues, ESLint can automatically fix them using:
+
+npm run lint:fix
+14. What is the benefit of formatting in a team?
+
+Answer:
+
+Without automatic formatting, developers may format the same code differently.
+
+For example:
+
+Developer A → 2 spaces
+Developer B → 4 spaces
+Developer C → different quotes
+
+Prettier gives everyone the same formatting rules and reduces unnecessary formatting changes in pull requests.
+

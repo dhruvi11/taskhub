@@ -1,11 +1,12 @@
 services:
   postgres:
-    image: postgres:17
+    image: postgres:16-alpine
     container_name: taskhub-postgres
+    restart: unless-stopped
 
     environment:
       POSTGRES_USER: taskhub
-      POSTGRES_PASSWORD: taskhub
+      POSTGRES_PASSWORD: taskhub_password
       POSTGRES_DB: taskhub
 
     ports:
@@ -13,6 +14,43 @@ services:
 
     volumes:
       - taskhub_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U taskhub -d taskhub",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: taskhub-backend
+
+    restart: unless-stopped
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    environment:
+      NODE_ENV: development
+      PORT: 5050
+
+      DATABASE_URL: postgresql://taskhub:taskhub_password@postgres:5432/taskhub
+
+    ports:
+      - "5050:5050"
+
+    volumes:
+      - ./backend/src:/app/src
+
+    command: npm run dev
 
 volumes:
   taskhub_postgres_data:
