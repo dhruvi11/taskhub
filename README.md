@@ -1,0 +1,2 @@
+
+Vercel deployment configuration verified.
