@@ -3387,3 +3387,375 @@ Developer C → different quotes
 
 Prettier gives everyone the same formatting rules and reduces unnecessary formatting changes in pull requests.
 
+M26 — GitHub Actions / CI-CD
+1. What is GitHub Actions?
+
+Answer:
+GitHub Actions is a CI/CD automation platform integrated with GitHub. I used it to automatically run checks such as TypeScript build, ESLint and Jest tests whenever code is pushed or a pull request is created.
+
+2. What is CI/CD?
+
+Answer:
+CI means Continuous Integration, where code changes are automatically validated through builds and tests. CD means Continuous Delivery or Deployment, where validated code can be delivered or deployed automatically. In TaskHub, GitHub Actions is used for the CI part and supports the overall deployment workflow.
+
+3. Why did you use GitHub Actions in TaskHub?
+
+Answer:
+I used GitHub Actions to make sure that every code change is validated before it is merged. It helps catch TypeScript errors, linting issues and test failures early instead of discovering them after deployment.
+
+4. When does your GitHub Actions workflow run?
+
+Answer:
+The workflow runs on GitHub events such as pushes and pull requests, depending on the workflow configuration. This allows the project to automatically validate new changes.
+
+5. What steps does your CI pipeline perform?
+
+Answer:
+My TaskHub CI pipeline performs the important quality checks required before merging code. These include installing dependencies, running linting, building the project and running automated tests.
+
+A typical flow is:
+
+Git Push / Pull Request
+        ↓
+GitHub Actions
+        ↓
+Checkout Repository
+        ↓
+Install Dependencies
+        ↓
+Lint
+        ↓
+TypeScript Build
+        ↓
+Jest Tests
+        ↓
+Pass / Fail
+6. What is a GitHub Actions workflow?
+
+Answer:
+A workflow is a YAML configuration file stored inside .github/workflows. It defines when automation should run and which jobs and steps should be executed.
+
+7. What is a job in GitHub Actions?
+
+Answer:
+A job is a group of steps that execute together on a GitHub Actions runner. For example, I can have a backend CI job that installs dependencies, runs ESLint, builds TypeScript and executes Jest tests.
+
+8. What is a runner?
+
+Answer:
+A runner is the machine or environment where GitHub Actions executes the workflow. GitHub provides hosted runners such as Ubuntu, Windows and macOS.
+
+9. Why do we use actions/checkout?
+
+Answer:
+actions/checkout downloads the repository code into the GitHub Actions runner so that subsequent commands can access and build the project.
+
+10. Why should CI use a lockfile?
+
+Answer:
+The lockfile ensures that CI installs consistent dependency versions. This reduces the chance of the local environment and CI environment using different package versions.
+
+For npm projects, I can use:
+
+npm ci
+
+instead of:
+
+npm install
+
+because npm ci is designed for clean and reproducible CI installations.
+
+11. What happens if Jest fails in GitHub Actions?
+
+Answer:
+The workflow fails. This prevents the CI pipeline from being considered successful and provides feedback about the failing tests.
+
+12. What happens if ESLint fails?
+
+Answer:
+The lint step exits with a non-zero status, causing the workflow to fail. This helps prevent code-quality problems from being merged.
+
+13. How do you protect secrets in GitHub Actions?
+
+Answer:
+I don't hardcode secrets in the workflow. Sensitive values such as database credentials, JWT secrets and AWS credentials should be stored as GitHub Actions secrets or environment variables and referenced securely.
+
+14. What is the difference between GitHub Actions and Git?
+
+Answer:
+Git is a version-control system used to track source-code changes. GitHub Actions is an automation platform that can react to GitHub events and execute tasks such as testing, building and deployment.
+
+15. What would you do if CI passes locally but fails on GitHub?
+
+Answer:
+I would compare the Node.js version, environment variables, dependency installation, operating-system differences and build/test commands. I would then reproduce the CI command locally and inspect the GitHub Actions logs.
+
+M26 — Scenario Questions
+16. Developer pushes broken code. What happens?
+
+Answer:
+
+Developer
+   ↓
+git push
+   ↓
+GitHub
+   ↓
+GitHub Actions
+   ↓
+Lint / Build / Tests
+   ↓
+Failure
+
+The failed CI status tells the developer that the change needs to be fixed.
+
+17. Why is CI important for a team?
+
+Answer:
+It provides consistent automated validation for every change. It reduces manual verification and catches problems before they reach production.
+
+18. What is the benefit of running tests automatically?
+
+Answer:
+Automated tests provide quick feedback whenever code changes. This reduces regression risk and makes refactoring safer.
+
+M27 — Docker
+19. What is Docker?
+
+Answer:
+Docker is a containerization platform. It packages an application together with its runtime environment and dependencies so that it can run consistently across different environments.
+
+20. Why did you use Docker for TaskHub?
+
+Answer:
+I used Docker to package the TaskHub backend into a consistent production environment. This makes the backend easier to run locally, in CI and on the Render deployment environment.
+
+21. What is a Docker image?
+
+Answer:
+A Docker image is a read-only template containing the application code, runtime, dependencies and configuration required to create a container.
+
+22. What is a Docker container?
+
+Answer:
+A container is a running instance of a Docker image. It provides an isolated environment in which the application executes.
+
+23. Image vs container?
+
+Answer:
+
+Docker Image
+    ↓
+Template / Package
+    ↓
+Docker Container
+    ↓
+Running Application
+
+An image is the packaged application, while a container is a running instance of that image.
+
+24. Explain your TaskHub Dockerfile.
+
+Answer:
+
+My production backend Dockerfile uses Node.js Alpine as the base image, installs production/build dependencies, generates the Prisma client, copies the TypeScript source, builds the application and starts the compiled server.
+
+The flow is:
+
+Node 20 Alpine
+      ↓
+WORKDIR /app
+      ↓
+Copy package files
+      ↓
+npm ci
+      ↓
+Copy Prisma schema
+      ↓
+Prisma generate
+      ↓
+Copy TypeScript configuration
+      ↓
+Copy src
+      ↓
+npm run build
+      ↓
+Expose port
+      ↓
+npm start
+25. Why use node:20-alpine?
+
+Answer:
+Alpine provides a relatively small Linux-based Node.js image. A smaller image can reduce image size and transfer time, although native dependencies need to be compatible with Alpine.
+
+26. Why use npm ci in Docker?
+
+Answer:
+npm ci installs dependencies from the lockfile in a clean and reproducible way. It is appropriate for production builds and CI environments.
+
+27. Why do you run prisma generate?
+
+Answer:
+Prisma generates the client code required by the backend to communicate with the database. Since the application uses Prisma, the generated client must be available in the Docker image.
+
+28. Why do you run npm run build inside Docker?
+
+Answer:
+The backend is written in TypeScript. npm run build compiles the TypeScript source into JavaScript so that the production container can run the compiled application.
+
+29. Why shouldn't production Docker run npm run dev?
+
+Answer:
+npm run dev is intended for development and usually uses a watcher such as tsx watch. Production should run the compiled application without development watchers.
+
+In TaskHub:
+
+Development:
+npm run dev
+
+Production:
+npm run build
+npm start
+30. Why is EXPOSE 10000 used?
+
+Answer:
+TaskHub's production server is configured to use Render's PORT environment variable, with 10000 as the fallback. The Dockerfile documents the port used by the application.
+
+31. Why does the backend listen on 0.0.0.0?
+
+Answer:
+Inside a container, listening only on localhost would make the application inaccessible from outside the container. Listening on 0.0.0.0 allows the service to accept connections through the container's network interface.
+
+32. What is .dockerignore?
+
+Answer:
+.dockerignore specifies files and directories that should not be copied into the Docker build context.
+
+For example:
+
+node_modules
+dist
+.env
+.git
+coverage
+
+This keeps the Docker build context smaller and prevents sensitive or unnecessary files from being included.
+
+33. Why should .env not be copied into a Docker image?
+
+Answer:
+.env can contain secrets such as database credentials, JWT secrets and AWS credentials. Production secrets should be supplied through the deployment platform's environment variables rather than baked into the Docker image.
+
+34. What is Docker layer caching?
+
+Answer:
+Docker builds an image in layers. If an earlier layer hasn't changed, Docker can reuse the cached layer, making subsequent builds faster.
+
+That's why a Dockerfile often copies:
+
+package.json
+package-lock.json
+
+before copying the entire source code.
+
+35. What problem did you face with Prisma and Docker?
+
+Answer:
+The Prisma 7 generated client initially had a module-format incompatibility with the CommonJS backend. The container produced an import.meta error. I resolved it by configuring the Prisma generator for CommonJS and regenerating the client before rebuilding the Docker image.
+
+36. Why did you use --no-cache while troubleshooting Docker?
+
+Answer:
+I used:
+
+docker build --no-cache .
+
+to force Docker to rebuild every layer. This ensured that an old generated Prisma client or previous build layer wasn't being reused while troubleshooting the production build.
+
+37. How does Docker fit into your deployment?
+
+Answer:
+
+Developer
+   ↓
+GitHub
+   ↓
+Render
+   ↓
+Docker Build
+   ↓
+Docker Image
+   ↓
+Docker Container
+   ↓
+TaskHub Express API
+   ↓
+PostgreSQL
+M26 + M27 Important Scenario Questions
+38. What happens when you push code to GitHub?
+
+Answer:
+GitHub Actions starts the configured CI workflow. It checks out the code, installs dependencies and runs the configured quality checks such as linting, building and tests. If the checks pass, the change is ready for the next stage of the development/deployment process.
+
+39. How would you debug a Docker deployment failure?
+
+Answer:
+I would check the Docker build logs first, then verify the base image, dependency installation, Prisma generation, TypeScript compilation and startup command. I would also run the same Docker build locally to reproduce the issue.
+
+40. How would you debug a container that builds successfully but doesn't start?
+
+Answer:
+I would inspect the container logs and verify the CMD, compiled output path, environment variables, database connection and port configuration.
+
+For example:
+
+docker logs <container-id>
+41. What is the difference between build-time and runtime configuration?
+
+Answer:
+Build-time configuration is used while creating the application/image. Runtime configuration is provided when the container/application starts. Secrets such as database credentials should generally be provided at runtime rather than embedded into the image.
+
+42. How do M26 and M27 work together?
+
+Answer:
+
+M26 — GitHub Actions
+        ↓
+Validate Code
+        ↓
+Tests + Lint + Build
+        ↓
+M27 — Docker
+        ↓
+Package Backend
+        ↓
+Docker Image
+        ↓
+Deploy
+
+
+M28 interview Q&A
+
+Q: How did you deploy TaskHub?
+A: The Next.js frontend is deployed on Vercel, while the Express/TypeScript backend is containerized with Docker and deployed on Render. PostgreSQL is hosted through Render.
+
+Q: Why use environment variables?
+A: They keep environment-specific configuration such as API URLs, database credentials, JWT secrets and AWS credentials outside the source code.
+
+Q: How does the frontend communicate with the backend?
+A: The Vercel frontend uses NEXT_PUBLIC_API_URL pointing to the Render API, for example https://taskhub-zp9p.onrender.com/api/v1.
+
+Q: What problem did CORS solve?
+A: The browser frontend and backend are hosted on different origins, so the backend must explicitly allow the Vercel frontend origin.
+
+Q: How are Prisma migrations handled in production?
+A: Production uses prisma migrate deploy, which applies existing migrations without creating development migrations.
+
+Q: Why does Render need 0.0.0.0?
+A: The server must listen on an externally accessible interface inside the container rather than only on localhost.
+
+Q: What is the purpose of the health endpoint?
+A: /api/v1/health provides a lightweight endpoint that Render can use to determine whether the service is healthy.
+
+Q: How are production errors monitored?
+A: TaskHub uses Sentry for application error tracking and CloudWatch for AWS-based logging/metrics.
