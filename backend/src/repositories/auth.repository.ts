@@ -17,14 +17,14 @@ export const findUserById = async (userId: string) => {
 };
 
 export const createRefreshToken = async (data: {
-  token: string;
+  tokenHash: string;
   userId: string;
   expiresAt: Date;
 }) => {
   return prisma.refreshToken.create({
     data,
   });
-};
+};    
 
 export const findUserByGoogleId = async (googleId: string) => {
   return prisma.user.findUnique({
