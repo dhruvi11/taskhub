@@ -53,6 +53,8 @@ model Project {
   tasks       Task[]
 
   @@index([ownerId])
+  @@index([createdAt])
+  @@index([status])
 }
 
 model ProjectMember {
@@ -80,14 +82,19 @@ model Task {
   updatedAt    DateTime     @updatedAt
   assignedToId String?
   createdById  String
-  assignedTo   User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
-  createdBy    User         @relation("TaskCreator", fields: [createdById], references: [id])
-  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  assignedTo User?   @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  createdBy  User    @relation("TaskCreator", fields: [createdById], references: [id])
+  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
   @@index([assignedToId])
   @@index([status])
   @@index([priority])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([projectId, status])
+  @@index([projectId, createdAt])
 }
 
 model RefreshToken {

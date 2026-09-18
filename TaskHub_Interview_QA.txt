@@ -3759,3 +3759,1282 @@ A: /api/v1/health provides a lightweight endpoint that Render can use to determi
 
 Q: How are production errors monitored?
 A: TaskHub uses Sentry for application error tracking and CloudWatch for AWS-based logging/metrics.
+
+# TaskHub
+# Milestones 29–35 — Final Interview Questions & Answers
+
+Project Status: COMPLETED
+Version: TaskHub v1
+
+---
+
+# MILESTONE 29 — PRODUCTION SECURITY
+
+## Q1. What was the objective of Milestone 29?
+
+Answer:
+
+The objective was to perform a production security hardening pass. I focused on HTTPS, secure cookies, refresh-token rotation, rate limiting, CORS restrictions, secret management, database backups, and security headers.
+
+---
+
+## Q2. Why is HTTPS important?
+
+Answer:
+
+HTTPS encrypts communication between the client and server. It prevents attackers from easily reading or modifying sensitive information such as authentication tokens, passwords, and API data while the request is travelling over the network.
+
+---
+
+## Q3. What is the difference between HTTP and HTTPS?
+
+Answer:
+
+HTTP sends data without transport encryption, while HTTPS uses TLS to encrypt communication between the client and server.
+
+---
+
+## Q4. How did you handle HTTPS in production?
+
+Answer:
+
+The production frontend and backend are deployed through platforms that provide HTTPS. The application uses HTTPS URLs in production so authentication and API communication are encrypted.
+
+---
+
+## Q5. What are secure cookies?
+
+Answer:
+
+Secure cookies are cookies configured with security attributes that reduce the risk of unauthorized access. Important attributes include Secure, HttpOnly, and SameSite.
+
+Secure ensures the cookie is sent only over HTTPS.
+
+HttpOnly prevents JavaScript from directly accessing the cookie.
+
+SameSite helps protect against cross-site request forgery.
+
+---
+
+## Q6. What is HttpOnly?
+
+Answer:
+
+HttpOnly prevents client-side JavaScript from reading a cookie. This reduces the impact of certain XSS attacks because JavaScript cannot directly access sensitive authentication cookies.
+
+---
+
+## Q7. What is the Secure cookie flag?
+
+Answer:
+
+The Secure flag tells the browser to send the cookie only over HTTPS connections.
+
+---
+
+## Q8. What is SameSite?
+
+Answer:
+
+SameSite controls when cookies are sent in cross-site requests. It helps reduce CSRF attacks by restricting cross-site cookie transmission.
+
+---
+
+## Q9. What is refresh-token rotation?
+
+Answer:
+
+Refresh-token rotation means that when a refresh token is used, the system issues a new refresh token and invalidates the previous one.
+
+The flow is:
+
+Old Refresh Token
+    ↓
+Validate
+    ↓
+Create New Refresh Token
+    ↓
+Revoke Old Token
+    ↓
+Return New Token
+
+This reduces the risk of long-lived refresh-token reuse.
+
+---
+
+## Q10. Why hash refresh tokens?
+
+Answer:
+
+I store a hash of the refresh token instead of the raw token. If the database is compromised, attackers cannot directly obtain usable refresh tokens from the database.
+
+---
+
+## Q11. What is token revocation?
+
+Answer:
+
+Token revocation means marking a refresh token as no longer valid before its natural expiration time.
+
+For example, when a user logs out, the refresh token can be revoked.
+
+---
+
+## Q12. What is rate limiting?
+
+Answer:
+
+Rate limiting restricts how many requests a client can make during a particular time period.
+
+It helps protect APIs from abuse, brute-force attacks, accidental request floods, and denial-of-service style traffic.
+
+---
+
+## Q13. Where would you apply rate limiting?
+
+Answer:
+
+I would especially apply stricter rate limits to sensitive endpoints such as login, registration, password-related endpoints, refresh-token endpoints, and other APIs that can be abused.
+
+---
+
+## Q14. Why restrict CORS?
+
+Answer:
+
+CORS controls which browser origins are allowed to communicate with the backend.
+
+In production I avoid allowing arbitrary origins and configure the backend to accept requests from the intended frontend origin.
+
+---
+
+## Q15. What is secret management?
+
+Answer:
+
+Secret management means keeping sensitive credentials outside source code.
+
+Examples include:
+
+DATABASE_URL
+JWT secrets
+AWS credentials
+Firebase private keys
+Google OAuth secrets
+Sentry DSN
+
+These should be provided through environment variables or the deployment platform's secret management system.
+
+---
+
+## Q16. Why should secrets not be committed to Git?
+
+Answer:
+
+Git repositories can have many copies and may be publicly accessible or shared with other developers. If a secret is committed, removing the file later does not necessarily remove it from Git history.
+
+If a secret is exposed, it should be rotated.
+
+---
+
+## Q17. What are security headers?
+
+Answer:
+
+Security headers are HTTP response headers that help browsers enforce security policies.
+
+Helmet is commonly used in Express applications to configure several security-related HTTP headers.
+
+---
+
+## Q18. Why are database backups important?
+
+Answer:
+
+Backups protect against accidental deletion, corruption, infrastructure failures, and operational mistakes.
+
+A production application should have a reliable backup and recovery strategy rather than depending only on the live database.
+
+---
+
+## Q19. What security checklist did you use?
+
+Answer:
+
+My production security checklist included:
+
+HTTPS
+Secure cookies
+JWT security
+Refresh-token rotation
+Token revocation
+Rate limiting
+CORS restrictions
+Secret management
+Security headers
+Database backups
+Input validation
+Authentication
+Authorization
+
+---
+
+## Q20. What did you learn from Milestone 29?
+
+Answer:
+
+I learned that production security is not a single feature. It is a combination of transport security, authentication, authorization, secret management, request protection, database protection, and operational practices.
+
+---
+
+# MILESTONE 30 — PERFORMANCE
+
+## Q21. What was the objective of Milestone 30?
+
+Answer:
+
+The objective was to improve application responsiveness and scalability as the amount of data grows.
+
+I focused on database indexes, efficient queries, pagination, frontend optimization, image optimization, and mobile list performance.
+
+---
+
+## Q22. What is a database index?
+
+Answer:
+
+A database index is a data structure that allows the database to find rows more efficiently without scanning the entire table.
+
+---
+
+## Q23. Which fields should be indexed?
+
+Answer:
+
+Fields that are frequently used for searching, filtering, joining, sorting, or identifying records are candidates for indexes.
+
+In TaskHub, important indexed fields include projectId, assignedToId, status, priority, userId, and expiration-related fields.
+
+---
+
+## Q24. What is the trade-off of database indexes?
+
+Answer:
+
+Indexes improve read performance, but they also consume storage and can add overhead to INSERT, UPDATE, and DELETE operations because the indexes must also be maintained.
+
+---
+
+## Q25. What is query optimization?
+
+Answer:
+
+Query optimization means designing database queries so that they retrieve only the required data and use the database efficiently.
+
+Examples include selecting only required fields, using indexes, avoiding unnecessary queries, and applying filtering and pagination at the database level.
+
+---
+
+## Q26. Why is pagination important?
+
+Answer:
+
+Without pagination, an API might return thousands of records in one response.
+
+Pagination limits the number of records returned per request, reducing database work, network payload size, memory usage, and frontend rendering cost.
+
+---
+
+## Q27. How does pagination work?
+
+Answer:
+
+The client sends parameters such as:
+
+page
+limit
+
+The backend calculates the required records and returns both the data and pagination information.
+
+For example:
+
+```text
+page = 2
+limit = 20
+Q28. Why should filtering happen at the database level?
+
+Answer:
+
+Filtering at the database level prevents unnecessary records from being transferred to the backend and then filtered in application memory.
+
+It is generally more efficient to ask the database for only the required records.
+
+Q29. How did you optimize TaskHub task queries?
+
+Answer:
+
+Task listing supports filtering, sorting, and pagination. The database also contains indexes for frequently queried task fields such as projectId, assignedToId, status, and priority.
+
+Q30. What is caching?
+
+Answer:
+
+Caching stores frequently used data temporarily so it can be returned faster without repeatedly performing the same expensive operation.
+
+Q31. Where can caching be used?
+
+Answer:
+
+Caching can be used at multiple levels:
+
+Browser
+Frontend state
+API layer
+Redis
+Database/query layer
+CDN
+
+In TaskHub, frontend API caching can be handled through RTK Query.
+
+Q32. How does RTK Query help performance?
+
+Answer:
+
+RTK Query manages API requests and caching. It can reuse cached responses and reduce unnecessary network requests.
+
+Q33. What is frontend optimization?
+
+Answer:
+
+Frontend optimization means reducing unnecessary rendering, reducing JavaScript and asset sizes, optimizing network requests, and loading resources efficiently.
+
+Q34. What is image optimization?
+
+Answer:
+
+Image optimization means reducing image file sizes and loading appropriate image dimensions and formats so that pages load faster and consume less bandwidth.
+
+Q35. How would you optimize React Native lists?
+
+Answer:
+
+For large lists I would use FlatList instead of rendering every item manually. I would also optimize item rendering, use stable keys, avoid unnecessary state updates, and configure list properties appropriately.
+
+Q36. Why is FlatList better for large mobile lists?
+
+Answer:
+
+FlatList uses virtualization, meaning it renders only the items needed around the visible area instead of rendering the entire dataset at once.
+
+Q37. What happens if you don't optimize large datasets?
+
+Answer:
+
+The application can experience slow API responses, high memory usage, long rendering times, poor scrolling performance, and potentially crashes on lower-end devices.
+
+Q38. What did you learn from Milestone 30?
+
+Answer:
+
+I learned that scalability requires optimization at multiple layers: database queries, API responses, frontend rendering, caching, and mobile rendering.
+
+MILESTONE 31 — ADMIN PANEL
+Q39. What was the objective of Milestone 31?
+
+Answer:
+
+The objective was to create an administrative interface that allows authorized administrators to manage platform-level resources.
+
+Q40. How did you secure the admin panel?
+
+Answer:
+
+The admin panel is protected by authentication and admin authorization.
+
+The flow is:
+
+Request
+↓
+Authentication
+↓
+Identify User
+↓
+Check ADMIN Role
+↓
+Admin Controller
+↓
+Admin Service
+
+Q41. What is RBAC?
+
+Answer:
+
+RBAC stands for Role-Based Access Control.
+
+Instead of checking permissions individually for every user, users are assigned roles and the role determines what operations they can perform.
+
+Q42. What admin role does TaskHub use?
+
+Answer:
+
+TaskHub has a global ADMIN user role.
+
+Normal users should not be able to access administrative endpoints.
+
+Q43. What can the admin panel manage?
+
+Answer:
+
+The admin functionality covers:
+
+Users
+Projects
+Tasks
+Activity
+Reports
+
+Q44. Why separate admin APIs from normal APIs?
+
+Answer:
+
+Administrative operations have different authorization requirements and responsibilities. Separating admin functionality makes the security boundary clearer and makes the API easier to maintain.
+
+Q45. What is operational CRUD?
+
+Answer:
+
+CRUD means:
+
+Create
+Read
+Update
+Delete
+
+Operational CRUD allows administrators to manage platform resources through controlled administrative APIs.
+
+Q46. What is an admin dashboard?
+
+Answer:
+
+An admin dashboard provides operational information about the platform, such as user counts, project counts, task counts, activity, and reports.
+
+Q47. What security risk exists in admin APIs?
+
+Answer:
+
+The major risk is unauthorized access. If authorization is incorrectly implemented, a normal user could access sensitive platform-level operations.
+
+Therefore authentication alone is not enough; admin authorization must also be checked.
+
+Q48. What did you learn from Milestone 31?
+
+Answer:
+
+I learned how to build a separate administrative security boundary and how authentication and authorization work together for platform-level operations.
+
+MILESTONE 32 — DASHBOARD & ANALYTICS
+Q49. What was the objective of Milestone 32?
+
+Answer:
+
+The objective was to create business and product analytics using aggregation, statistics, charts, dashboard APIs, and recent activity information.
+
+Q50. What metrics does the TaskHub dashboard provide?
+
+Answer:
+
+The dashboard provides metrics such as:
+
+Total projects
+Total tasks
+Completed tasks
+Pending tasks
+Task status counts
+Recent activity
+
+Q51. What is aggregation?
+
+Answer:
+
+Aggregation means processing multiple database records to produce summary information.
+
+For example:
+
+100 Tasks
+    ↓
+Completed = 60
+Pending = 40
+
+The dashboard can use those aggregated values instead of loading every task into the frontend.
+
+Q52. Why should dashboard statistics be calculated on the backend?
+
+Answer:
+
+Backend aggregation reduces the amount of data transferred to the frontend and keeps business calculations centralized.
+
+It also avoids sending potentially large datasets to the browser just to calculate simple statistics.
+
+Q53. How would you calculate completed tasks?
+
+Answer:
+
+I would query the task table using a condition such as:
+
+status = COMPLETED
+
+and count the matching records.
+
+Q54. What are dashboard APIs?
+
+Answer:
+
+Dashboard APIs are backend endpoints that return aggregated information specifically for dashboard displays.
+
+Instead of returning every task, they return summary information such as counts and recent activity.
+
+Q55. What is recent activity?
+
+Answer:
+
+Recent activity represents recent platform events or resource changes, such as newly created users, projects, or tasks.
+
+Q56. Why are charts useful?
+
+Answer:
+
+Charts allow users to understand trends and distributions more quickly than raw numbers.
+
+For example, a task status chart can visually show the distribution between TODO, IN_PROGRESS, and COMPLETED tasks.
+
+Q57. What did you learn from Milestone 32?
+
+Answer:
+
+I learned how raw transactional data can be transformed into useful operational metrics using aggregation and dashboard APIs.
+
+MILESTONE 33 — END-TO-END TESTING
+Q58. What was the objective of Milestone 33?
+
+Answer:
+
+The objective was to validate the complete critical user journey instead of testing individual APIs independently.
+
+Q59. What is end-to-end testing?
+
+Answer:
+
+End-to-end testing verifies that multiple components work together through a complete user workflow.
+
+Instead of testing only one function, it verifies the complete business process.
+
+Q60. What is the primary TaskHub E2E flow?
+
+Answer:
+
+The main flow is:
+
+Signup
+↓
+Login
+↓
+Create Project
+↓
+Add Member
+↓
+Create Task
+↓
+Assign Task
+↓
+Receive Notification
+↓
+Complete Task
+↓
+Dashboard Update
+
+Q61. Why is E2E testing important?
+
+Answer:
+
+Unit tests can verify individual components, but they may not detect integration problems between authentication, APIs, database operations, notifications, and frontend behavior.
+
+E2E testing validates that the complete workflow works together.
+
+Q62. What is regression testing?
+
+Answer:
+
+Regression testing verifies that new changes have not broken previously working functionality.
+
+Q63. How would you test signup?
+
+Answer:
+
+I would send a signup request with valid user information and verify that the API returns a successful response and creates the expected user.
+
+Q64. How would you test login?
+
+Answer:
+
+I would register or use a test user, send valid credentials to the login API, and verify that authentication tokens are returned.
+
+I would also test invalid credentials.
+
+Q65. How would you test project creation?
+
+Answer:
+
+After login, I would send an authenticated project creation request and verify that the project is created and associated with the authenticated user.
+
+Q66. How would you test adding a member?
+
+Answer:
+
+I would authenticate as a user with the required project permission, add another user to the project, and verify that the membership is created with the expected project role.
+
+Q67. How would you test task assignment?
+
+Answer:
+
+I would create a task, assign it to a project member, and verify both that the task's assignee is updated and that the notification service is triggered.
+
+Q68. Why mock notification services during tests?
+
+Answer:
+
+External services such as Firebase should not be required for every automated test. Mocking them makes tests faster, deterministic, and independent of external network availability.
+
+Q69. How would you test task completion?
+
+Answer:
+
+I would authenticate the user, call the task completion endpoint, and verify that the task status changes to COMPLETED.
+
+Q70. How would you test dashboard updates?
+
+Answer:
+
+After completing a task, I would call the dashboard API and verify that the completed and pending task statistics reflect the new state.
+
+Q71. What did you learn from Milestone 33?
+
+Answer:
+
+I learned how to validate business workflows rather than only individual functions and APIs. E2E testing provides confidence that the major application components work together.
+
+MILESTONE 34 — DOCUMENTATION
+Q72. What was the objective of Milestone 34?
+
+Answer:
+
+The objective was to create professional technical documentation so that a new developer could understand the project, set it up, run it, test it, troubleshoot it, and understand its architecture.
+
+Q73. What documentation did you create?
+
+Answer:
+
+I documented:
+
+Architecture
+Database
+API
+Authentication
+Deployment
+Development
+Testing
+Troubleshooting
+Security
+Git workflow
+
+Q74. Why is documentation important?
+
+Answer:
+
+Good documentation reduces onboarding time and makes a project easier to maintain. It also ensures that architectural and operational knowledge is not dependent on one developer.
+
+Q75. What does your architecture documentation explain?
+
+Answer:
+
+It explains the frontend, mobile application, backend layers, database, authentication flow, notification flow, monitoring, and deployment architecture.
+
+Q76. What does your database documentation explain?
+
+Answer:
+
+It explains the main entities, relationships, roles, task states, indexes, and Prisma commands.
+
+Q77. What does your API documentation contain?
+
+Answer:
+
+It documents the API base path, authentication APIs, project APIs, project-member APIs, task APIs, notification APIs, dashboard APIs, admin APIs, authentication headers, and API testing flow.
+
+Q78. What does your troubleshooting documentation contain?
+
+Answer:
+
+It covers common issues such as Prisma database errors, Docker PostgreSQL problems, CORS issues, Google OAuth redirect errors, Firebase configuration, Sentry, AWS SES, TypeScript build errors, 404 errors, and 401 errors.
+
+Q79. What did you learn from Milestone 34?
+
+Answer:
+
+I learned that documentation is part of engineering, not an optional final step. A production project should explain not only how it works but also how developers can run, test, deploy, and troubleshoot it.
+
+MILESTONE 35 — FINAL PORTFOLIO VERSION
+Q80. What was the objective of Milestone 35?
+
+Answer:
+
+The objective was to package TaskHub as a professional portfolio and interview project.
+
+I focused on repository cleanup, screenshots, architecture diagrams, API documentation, test evidence, CI/CD evidence, deployment evidence, a portfolio README, system design explanation, and interview preparation.
+
+Q81. Why did you create a portfolio README?
+
+Answer:
+
+The README gives recruiters and developers a quick understanding of what TaskHub does, the technology stack, architecture, major features, deployment, testing, and engineering decisions.
+
+Q82. What should a strong portfolio README contain?
+
+Answer:
+
+A strong README should contain:
+
+Project overview
+Features
+Technology stack
+Architecture
+Setup instructions
+Environment variables
+API information
+Testing
+Deployment
+Screenshots
+Security
+Architecture decisions
+Future improvements
+
+Q83. Why are screenshots useful?
+
+Answer:
+
+Screenshots provide immediate visual evidence of the application's functionality. They allow someone reviewing the repository to understand the product without running the application first.
+
+Q84. What evidence should you show for testing?
+
+Answer:
+
+I can show successful automated test execution and GitHub Actions results demonstrating that the project passes its validation pipeline.
+
+Q85. What evidence should you show for CI/CD?
+
+Answer:
+
+I would show the GitHub Actions workflow and a successful workflow execution containing steps such as dependency installation, linting, testing, and building.
+
+Q86. What evidence should you show for deployment?
+
+Answer:
+
+I would show:
+
+Vercel deployment
+Render deployment
+Backend health endpoint
+Production application
+GitHub repository
+
+Q87. How would you explain TaskHub in an interview?
+
+Answer:
+
+TaskHub is a full-stack task management platform that I built to demonstrate the complete software development lifecycle.
+
+It has a Next.js web application, React Native mobile application, and Express TypeScript backend using PostgreSQL and Prisma.
+
+I implemented JWT authentication, refresh-token security, Google OAuth, project-level RBAC, task management, Firebase notifications, AWS services, Sentry monitoring, automated testing, Docker, GitHub Actions, and cloud deployment.
+
+The project helped me work across frontend, backend, mobile, database, security, cloud, testing, CI/CD, deployment, and monitoring.
+
+KEY ARCHITECTURE FLOWS
+1. Backend Request Flow
+Request
+   ↓
+Route
+   ↓
+Middleware
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Prisma
+   ↓
+PostgreSQL
+   ↓
+Response
+Q88. Explain the backend request flow.
+
+Answer:
+
+When a request reaches the backend, the route determines which endpoint should handle it. Middleware performs authentication and authorization checks. The controller processes the HTTP request and calls the service. The service contains business logic and calls the repository. The repository uses Prisma to communicate with PostgreSQL. The result is then returned back through the controller as an HTTP response.
+
+2. Task Creation Flow
+Web / Mobile
+     ↓
+Redux Toolkit / RTK Query
+     ↓
+POST /api/v1/tasks
+     ↓
+JWT Authentication
+     ↓
+Express
+     ↓
+Task Controller
+     ↓
+Task Service
+     ↓
+Task Repository
+     ↓
+Prisma
+     ↓
+PostgreSQL
+     ↓
+JSON Response
+     ↓
+Client Cache / UI
+Q89. Explain the task creation flow.
+
+Answer:
+
+The web or mobile client sends a task creation request through the API layer. The JWT is validated by authentication middleware. The request reaches the task controller, which calls the task service. The service performs business validation and uses the repository to persist the task through Prisma. PostgreSQL stores the task and the resulting data is returned to the client.
+
+3. Push Notification Flow
+Task Assigned
+     ↓
+Express Backend
+     ↓
+Task Service
+     ↓
+Notification Service
+     ↓
+Firebase Cloud Messaging
+     ↓
+React Native
+     ↓
+Push Notification
+Q90. Explain the notification flow.
+
+Answer:
+
+When a task is assigned, the backend updates the task and invokes the notification service. The notification service uses Firebase Cloud Messaging to deliver the notification to the user's registered mobile device.
+
+OVERALL LEARNING PATH
+Foundation
+    ↓
+PostgreSQL + Prisma
+    ↓
+Express Architecture
+    ↓
+JWT Authentication
+    ↓
+Google OAuth
+    ↓
+CRUD + REST API
+    ↓
+Security + Swagger
+    ↓
+Next.js Web
+    ↓
+React Native Mobile
+    ↓
+AWS + Firebase
+    ↓
+Testing + Monitoring
+    ↓
+GitHub Actions + Docker
+    ↓
+Deployment
+    ↓
+Security
+    ↓
+Performance
+    ↓
+Admin
+    ↓
+Analytics
+    ↓
+Documentation
+    ↓
+Portfolio
+    ↓
+🚀 TASKHUB v1
+Q91. Explain your complete learning journey in TaskHub.
+
+Answer:
+
+I started with the foundation by designing the PostgreSQL database and connecting it with Prisma. Then I built the Express backend architecture and REST APIs.
+
+After that I implemented JWT authentication, refresh-token security, Google OAuth, CRUD operations, and role-based authorization.
+
+I then built the Next.js web application and React Native mobile application.
+
+After the core functionality was complete, I integrated Firebase and AWS services, added testing and monitoring, configured GitHub Actions and Docker, and deployed the application.
+
+Finally, I focused on production security, performance, admin functionality, analytics, documentation, and portfolio presentation.
+
+HOW WE EXECUTED EACH MILESTONE
+
+Each milestone followed a consistent engineering process.
+
+Goal
+  ↓
+Concepts
+  ↓
+Folder Structure
+  ↓
+Commands
+  ↓
+Implementation
+  ↓
+Testing
+  ↓
+Common Errors
+  ↓
+Checkpoint
+  ↓
+Interview Questions
+Q92. Why did you use incremental milestones?
+
+Answer:
+
+Incremental milestones make a large project easier to understand and debug. Each milestone has a clear objective and checkpoint, so I can verify that the current layer works before adding more complexity.
+
+Q93. Why not build everything at once?
+
+Answer:
+
+Building everything at once makes debugging difficult because multiple layers can fail simultaneously. Incremental development helps isolate problems and creates a stable foundation before advanced infrastructure is introduced.
+
+SYSTEM DESIGN QUESTIONS
+Q94. If TaskHub had one million tasks, what would you change?
+
+Answer:
+
+I would focus on database indexing, pagination, query optimization, caching, database connection management, and potentially read replicas. I would also consider Redis for frequently accessed data and background workers for expensive asynchronous operations.
+
+Q95. How would you scale the backend?
+
+Answer:
+
+I would make the API horizontally scalable by keeping application instances stateless where possible. Multiple backend instances could run behind a load balancer. Shared state such as sessions or caching could be handled through external infrastructure such as Redis.
+
+Q96. How would you scale notifications?
+
+Answer:
+
+For larger traffic I would move notification processing to a background job queue. The API would create a notification job, and workers would process Firebase or email delivery asynchronously.
+
+Q97. Why use background jobs?
+
+Answer:
+
+Background jobs prevent slow operations such as email delivery, notification processing, report generation, or file processing from blocking the main API request.
+
+Q98. How would you improve caching?
+
+Answer:
+
+I could introduce Redis for frequently requested data such as dashboard statistics, project metadata, or other data that does not need to be recalculated for every request.
+
+Q99. How would you improve database scalability?
+
+Answer:
+
+I would start with indexes and query optimization. If the workload increased significantly, I could introduce connection pooling, read replicas, partitioning for appropriate tables, and database monitoring.
+
+Q100. How would you improve real-time functionality?
+
+Answer:
+
+I could introduce WebSockets or a real-time messaging system so that task changes and notifications appear immediately without requiring the client to repeatedly poll the API.
+
+ARCHITECTURE TRADE-OFF QUESTIONS
+Q101. Why Express instead of a more opinionated framework?
+
+Answer:
+
+Express provides flexibility and a lightweight foundation. The trade-off is that I have to define more architectural conventions myself. I addressed this by separating routes, middleware, controllers, services, and repositories.
+
+Q102. Why REST instead of GraphQL?
+
+Answer:
+
+REST provides a straightforward API structure and was sufficient for TaskHub's requirements. It also makes the API easy to consume from both Next.js and React Native.
+
+Q103. Why PostgreSQL instead of MongoDB?
+
+Answer:
+
+TaskHub has strongly related entities such as users, projects, project memberships, and tasks. PostgreSQL provides relational constraints, transactions, joins, and indexing, which fit this domain well.
+
+Q104. Why Prisma instead of raw SQL?
+
+Answer:
+
+Prisma provides type-safe database access and improves developer productivity through schema management, migrations, and generated TypeScript types.
+
+Q105. What is the downside of Prisma?
+
+Answer:
+
+The application becomes dependent on Prisma's abstraction and query capabilities. For highly specialized database operations, raw SQL or database-specific features may sometimes be necessary.
+
+Q106. Why JWT instead of traditional sessions?
+
+Answer:
+
+JWT access tokens provide a stateless authentication mechanism that works well across web and mobile clients.
+
+The trade-off is that token revocation requires additional design, which is why refresh-token rotation and revocation are important.
+
+Q107. Why Firebase for notifications?
+
+Answer:
+
+Firebase Cloud Messaging provides cross-platform push notification infrastructure without requiring me to build a complete push delivery system from scratch.
+
+SECURITY INTERVIEW QUESTIONS
+Q108. What happens if a JWT access token is stolen?
+
+Answer:
+
+An attacker could potentially use it until it expires. This is why access tokens should have appropriate lifetimes and sensitive operations should have additional protections. Refresh-token security is also important because refresh tokens can create new access tokens.
+
+Q109. What happens if a refresh token is stolen?
+
+Answer:
+
+A stolen refresh token is more serious because it can potentially be used to obtain new access tokens. Hashing, rotation, expiration, revocation, and detection of token reuse reduce this risk.
+
+Q110. How do you protect passwords?
+
+Answer:
+
+Passwords should never be stored as plain text. They are stored using a secure password hashing algorithm.
+
+Q111. How do you protect API endpoints?
+
+Answer:
+
+I use authentication middleware, authorization checks, project permissions, rate limiting, CORS restrictions, Helmet, input validation, and secure environment-based configuration.
+
+DEPLOYMENT QUESTIONS
+Q112. Where is TaskHub deployed?
+
+Answer:
+
+The web application is deployed using Vercel and the backend is deployed using Render. The backend uses PostgreSQL for persistent data.
+
+Q113. How does production deployment work?
+
+Answer:
+
+Code is pushed to GitHub, CI/CD validates the application, and the deployment platforms build and run the respective applications.
+
+The production architecture is:
+
+GitHub
+   ↓
+Vercel → Next.js
+   ↓
+Render → Express
+   ↓
+PostgreSQL
+Q114. How do you deploy Prisma migrations?
+
+Answer:
+
+For development I use:
+
+npx prisma migrate dev
+
+For production I use:
+
+npx prisma migrate deploy
+Q115. How do you monitor production?
+
+Answer:
+
+I use Sentry for application errors, Firebase Crashlytics for mobile crashes, Firebase Analytics for mobile events, and AWS CloudWatch for backend monitoring and logs.
+
+FINAL PROJECT QUESTIONS
+Q116. What is the biggest thing you learned from TaskHub?
+
+Answer:
+
+I learned that building a production-oriented application is much more than implementing features. I had to think about architecture, database design, authentication, authorization, security, performance, testing, monitoring, deployment, CI/CD, and documentation.
+
+Q117. What part of the project demonstrates backend knowledge?
+
+Answer:
+
+The backend demonstrates Express architecture, REST API design, middleware, JWT authentication, Google OAuth, RBAC, project permissions, Prisma, PostgreSQL, pagination, filtering, notifications, testing, security, and cloud integrations.
+
+Q118. What part demonstrates frontend knowledge?
+
+Answer:
+
+The web application demonstrates Next.js, React, TypeScript, Tailwind CSS, Material UI, Redux Toolkit, RTK Query, API integration, caching, and dashboard interfaces.
+
+Q119. What part demonstrates mobile knowledge?
+
+Answer:
+
+The mobile application demonstrates React Native, Expo, Expo Router, Redux Toolkit, Firebase Cloud Messaging, Analytics, Crashlytics, and Sentry integration.
+
+Q120. What part demonstrates DevOps knowledge?
+
+Answer:
+
+Docker, GitHub Actions, CI/CD, environment configuration, cloud deployment, production migrations, health checks, monitoring, and deployment troubleshooting demonstrate the DevOps side of the project.
+
+FINAL 30-SECOND PROJECT ANSWER
+
+Answer:
+
+TaskHub is a full-stack task management platform that I built using Next.js, React Native, Express, TypeScript, Prisma, and PostgreSQL.
+
+It includes JWT authentication, secure refresh-token handling, Google OAuth, project-level RBAC, task management, Firebase notifications, AWS services, Sentry monitoring, automated testing, Docker, GitHub Actions, and cloud deployment.
+
+I built it as a complete engineering project so I could demonstrate the entire lifecycle from database design and API development through security, testing, CI/CD, deployment, monitoring, and documentation.
+
+FINAL 1-MINUTE PROJECT ANSWER
+
+Answer:
+
+TaskHub is a production-oriented full-stack task management application with web, mobile, and backend applications.
+
+The web application uses Next.js, TypeScript, Tailwind, Material UI, Redux Toolkit, and RTK Query. The mobile application uses React Native, Expo, Expo Router, and Redux Toolkit.
+
+The backend is built with Express and TypeScript and follows a layered architecture consisting of routes, middleware, controllers, services, repositories, Prisma, and PostgreSQL.
+
+I implemented JWT authentication, secure refresh-token rotation and revocation, Google OAuth, and role-based authorization with both admin and project-level roles.
+
+The application also integrates Firebase for notifications, analytics, and Crashlytics, AWS for email and monitoring, and Sentry for error tracking.
+
+I added automated testing with Jest and Supertest, Docker, GitHub Actions CI/CD, production deployment, security hardening, performance improvements, admin functionality, analytics, and complete technical documentation.
+
+FINAL 2-MINUTE PROJECT ANSWER
+
+Answer:
+
+TaskHub is a full-stack task management platform that I designed and developed to demonstrate a complete production-oriented development lifecycle.
+
+The project consists of a Next.js web application, a React Native mobile application, and an Express TypeScript backend.
+
+For the backend architecture, I separated routes, middleware, controllers, services, repositories, and database access. PostgreSQL is used as the relational database and Prisma provides type-safe database access.
+
+For authentication, I implemented JWT access tokens, secure refresh-token handling, token rotation and revocation, password authentication, and Google OAuth.
+
+For authorization, I implemented both global roles such as ADMIN and project roles such as OWNER, MANAGER, and MEMBER. Project-level middleware checks whether a user has permission to access a project resource.
+
+The core business functionality includes projects, project members, tasks, task assignment, task completion, notifications, dashboards, and administrative operations.
+
+For mobile services I integrated Firebase Cloud Messaging, Analytics, and Crashlytics. AWS SES is used for email, AWS CloudWatch for monitoring, and Sentry for error tracking.
+
+I also worked on performance through database indexes, pagination, filtering, sorting, query optimization, frontend caching, and mobile list optimization.
+
+For quality, I implemented Jest and Supertest tests and configured GitHub Actions for automated validation. The backend is Dockerized and the application is deployed using Vercel and Render with PostgreSQL.
+
+Finally, I performed production security hardening, documented the architecture and APIs, created deployment and troubleshooting documentation, added screenshots and architecture diagrams, and packaged the project as a portfolio application.
+
+The main thing I wanted to demonstrate with TaskHub was not just that I can build screens or APIs, but that I understand the complete lifecycle of a modern application from design and implementation through testing, security, deployment, monitoring, and maintenance.
+
+FINAL TASKHUB CHECKPOINT
+
+TaskHub demonstrates:
+
+✓ Requirements
+✓ Architecture
+✓ Database Design
+✓ REST API
+✓ Backend Development
+✓ Authentication
+✓ OAuth
+✓ Authorization
+✓ RBAC
+✓ Project Management
+✓ Task Management
+✓ Notifications
+✓ Web Application
+✓ Mobile Application
+✓ Firebase
+✓ AWS
+✓ Security
+✓ Performance
+✓ Admin Panel
+✓ Analytics
+✓ Automated Testing
+✓ E2E Testing
+✓ GitHub Actions
+✓ CI/CD
+✓ Docker
+✓ Deployment
+✓ Monitoring
+✓ Documentation
+✓ Portfolio Preparation
+TASKHUB V1 — COMPLETE
+
+The complete learning path is:
+
+Foundation
+      ↓
+Database
+      ↓
+Backend
+      ↓
+Authentication
+      ↓
+OAuth
+      ↓
+CRUD
+      ↓
+Authorization
+      ↓
+Web
+      ↓
+Mobile
+      ↓
+Firebase
+      ↓
+AWS
+      ↓
+Testing
+      ↓
+Monitoring
+      ↓
+CI/CD
+      ↓
+Docker
+      ↓
+Deployment
+      ↓
+Security
+      ↓
+Performance
+      ↓
+Admin
+      ↓
+Analytics
+      ↓
+Documentation
+      ↓
+Portfolio
+      ↓
+🚀 TASKHUB V1

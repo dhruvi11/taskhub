@@ -14,6 +14,8 @@ import projectMemberRoutes from "./routes/project-member.routes";
 import taskRoutes from "./routes/task.routes";
 import { errorHandler } from "./middleware/error-handler";
 import { cloudWatchRequestMiddleware } from "./middleware/cloudwatch.middleware";
+import adminRoutes from "./routes/admin.routes";
+import dashboardRoutes from "./routes/dashboard.routes";
 
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
@@ -133,6 +135,35 @@ app.get("/api/v1/test/sentry", () => {
   throw new Error("TaskHub Sentry test error");
 });
 
+/**
+ * @swagger
+ * /api/v1/admin
+ *   get:
+ *     tags:
+ *       - Test
+ *     summary: Test rate limiting
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: 
+ */
+
+app.use("/api/v1/admin", adminRoutes);
+
+/**
+ * @swagger
+ * /api/v1/dashboard  
+ *   get:
+ *     tags:
+ *       - Test
+ *     summary: Test rate limiting
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: 
+ */
+
+app.use("/api/v1/dashboard", dashboardRoutes);
 // app.use(errorMiddleware);
 app.use(errorHandler);
 export default app;
